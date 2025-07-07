@@ -293,6 +293,10 @@
 </script>
 @endpush --}}
 
+
+
+
+
 @extends('layouts.template')
 
 @section('title')
@@ -301,8 +305,10 @@
 
 @push('css')
 <!-- DataTables Bootstrap 4 CSS -->
+{{-- 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css"> 
+--}}
 @endpush
 
 @section('content')
@@ -313,30 +319,40 @@
   </div>
 
   <div class="section-body">
-    <div class="card">
-      <div class="card-header">
-        <h4>Data Riwayat Pendidikan</h4>
-        <div class="card-header-action ml-auto">
-          <button onclick="modalAction(`{{ url('/riwayat_pendidikan/create') }}`)" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Tambah
-          </button>
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h4>Data Riwayat Pendidikan</h4>
+          <div class="card-header-action ml-auto">
+            <button onclick="modalAction(`{{ url('/riwayat_pendidikan/create') }}`)" class="btn btn-primary">
+              <i class="fas fa-plus"></i> Tambah
+            </button>
+          </div>
         </div>
-      </div>
-      <div class="card-body p-0">
-        <div class="table-responsive">
-          <table class="table table-bordered table-hover table-striped dt-responsive nowrap" id="table_pendidikan" style="width:100%">
-            <thead class="thead-light">
-              <tr>
-                <th>#</th>
-                <th>Nama Sekolah</th>
-                <th>Tingkat</th>
-                <th>Prodi/Jurusan</th>
-                <th>Tahun Lulus</th>
-                <th>Status</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-          </table>
+
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover table-striped dt-responsive nowrap" id="table_pendidikan" style="width:100%">
+              <thead class="thead-light">
+                <tr>
+                  <th>#</th>
+                  <th>Nama Sekolah</th>
+                  <th>Tingkat</th>
+                  <th>Prodi/Jurusan</th>
+                  <th>Tahun Lulus</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{-- Data dimuat dinamis via DataTables --}}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card-footer text-right">
+          {{-- Pagination otomatis oleh DataTables --}}
         </div>
       </div>
     </div>
@@ -347,12 +363,6 @@
 @endsection
 
 @push('js')
-<!-- DataTables Scripts -->
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
-
 <script>
   $.ajaxSetup({
     headers: {

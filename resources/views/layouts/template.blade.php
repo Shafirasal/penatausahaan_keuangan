@@ -65,7 +65,6 @@
 <script src="{{ asset('stisla1/node_modules/jquery.nicescroll/dist/jquery.nicescroll.min.js') }}"></script>
 <script src="{{ asset('stisla1/node_modules/popper.js/dist/popper.min.js') }}"></script>
 
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="{{ asset('stisla1/node_modules/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 
 
@@ -80,15 +79,24 @@
 
   <!-- JS Libraies -->
   <!-- DataTables JS -->
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+{{-- <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script> --}}
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
+{{-- <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script> --}}
+<script src="{{ asset('stisla1/node_modules/datatables/media/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('stisla1/node_modules/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('stisla1/node_modules/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('stisla1/node_modules/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ asset('stisla1/node_modules/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
+
 
 
   <!-- Template JS File -->
 <script src="{{ asset('stisla1/assets/js/scripts.js') }}"></script>
 <script src="{{ asset('stisla1/assets/js/custom.js') }}"></script>
+<script src="{{ asset('stisla1/assets/js/page/components-table.js') }}"></script> 
+
 
 
   <!-- Page Specific JS File  -->
