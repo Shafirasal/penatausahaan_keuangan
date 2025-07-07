@@ -15,9 +15,12 @@ return new class extends Migration
             $table->id('id_jabatan_fungsional');
             $table->string('nip', 20);
             $table->string('nama_jabatan', 100);
-            $table->integer('tmt_jabatan');
-            $table->enum('status_fungsional', ['ya', 'tidak']);
-            $table->enum('status_diklat', ['ya', 'tidak']);
+            $table->string('instansi', 100);
+            $table->date('tmt_jabatan');
+            $table->integer('PAK');
+            $table->enum('status_fungsional', ['promosi', 'perpindahan dari jabatan lain', 'pertama']);
+            $table->string('status_diklat', 100);
+            $table->enum('aktif', ['ya', 'tidak']);
             $table->timestamps();
             $table->foreign('nip')->references('nip')->on('t_pegawai')->onDelete('cascade');
         });

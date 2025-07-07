@@ -16,11 +16,12 @@ return new class extends Migration
             $table->string('nip', 20);
             $table->string('nama_jabatan', 100);
             $table->enum('jenis_penilaian', ['...']); // sesuaikan nilainya
-            $table->string('unit_kerja', 100);
+            $table->unsignedBigInteger('id_unit_kerja');
             $table->string('unit_jabatan', 100);
             $table->enum('status_jabatan', ['ya', 'tidak']);
             $table->timestamps();
             $table->foreign('nip')->references('nip')->on('t_pegawai')->onDelete('cascade');
+            $table->foreign('id_unit_kerja')->references('id_unit_kerja')->on('t_unit_kerja')->onDelete('cascade');
         });
     }
 

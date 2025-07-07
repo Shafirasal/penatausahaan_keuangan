@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('t_jenis_kenaikan_pangkat', function (Blueprint $table) {
-            $table->id('id_jenis_kp');
-            $table->string('kode', 10)->unique();
-            $table->string('nama_jenis', 100);
+        Schema::create('t_unit_kerja', function (Blueprint $table) {
+            $table->id('id_unit_kerja');
+            $table->string('nama_unit_kerja', 150);
         });
     }
 
@@ -23,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('t_jenis_kenaikan_pangkat');
+        Schema::dropIfExists('t_unit_kerja');
     }
 };
