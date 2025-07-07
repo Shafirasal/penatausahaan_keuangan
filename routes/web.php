@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\JabatanStrukturalController;
 use App\Http\Controllers\RiwayatPendidikanController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,3 +27,7 @@ Route::prefix('riwayat_pendidikan')->group(function () {
     Route::get('/create', [RiwayatPendidikanController::class, 'create']);
     
 });
+
+Route::resource('jabatan_struktural', JabatanStrukturalController::class);
+
+Route::get('jabatan_struktural-data', [JabatanStrukturalController::class, 'getData'])->name('jabatan_struktural.data');
