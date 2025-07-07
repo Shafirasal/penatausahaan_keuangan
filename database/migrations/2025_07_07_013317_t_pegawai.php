@@ -14,6 +14,7 @@ return new class extends Migration
         // Tabel Pegawai
         Schema::create('t_pegawai', function (Blueprint $table) {
             $table->string('nip', 20)->primary();
+            $table->string('nama', 100);
             $table->string('gelar_depan', 10)->nullable();
             $table->string('gelar_belakang', 25)->nullable();
             $table->string('nik', 18)->unique();
