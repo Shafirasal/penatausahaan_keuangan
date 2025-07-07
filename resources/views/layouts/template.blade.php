@@ -82,6 +82,6 @@
 <script src="{{ asset('stisla1/assets/js/custom.js') }}"></script>
 
 
-  <!-- Page Specific JS File -->
+  <!-- Page Specific JS File  -->
 </body>
 </html>

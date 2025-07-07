@@ -26,6 +26,7 @@
   </div>
 </section> --}}
 
+
 <div class="section-header-breadcrumb">
   @foreach ($list as $key => $value)
     @if ($key == count($list) - 1)

@@ -219,7 +219,7 @@ assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
               </a>
               <div class="dropdown-divider"></div>
               <a href="#" class="dropdown-item has-icon text-danger">
-                <i class="fas fa-sign-out-alt"></i> Logout
+                <i class="fas fa-sign-out-alt"></i> Logoutt
               </a>
             </div>
           </li>
