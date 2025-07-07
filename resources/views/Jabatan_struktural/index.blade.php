@@ -5,20 +5,14 @@
 @endsection
 
 @push('css')
-{{-- Kalau butuh CSS tambahan untuk DataTables, bisa taruh di sini --}}
+{{-- Tambahkan CSS tambahan DataTables di sini kalau perlu --}}
 @endpush
 
 @section('content')
 <section class="section">
   <div class="section-header">
-    <h1>Data Jabatan Struktural</h1>
-    {{-- Kalau mau pakai breadcrumb, aktifkan ini --}}
-    {{-- @include('layouts.breadcrumb', ['list' => $breadcrumb->list]) --}}
-    <div class="section-header-button ml-auto">
-      <a href="{{ route('jabatan_struktural.create') }}" class="btn btn-primary">
-        <i class="fas fa-plus"></i> Tambah Jabatan
-      </a>
-    </div>
+    <h1>{{ $breadcrumb->title ?? 'Jabatan Struktural' }}</h1>
+    @include('layouts.breadcrumb', ['list' => $breadcrumb->list])
   </div>
 
   <div class="section-body">
@@ -33,43 +27,50 @@
       </div>
     @endif
 
-    <div class="card">
-      <div class="card-header">
-        <h4>Daftar Jabatan Struktural</h4>
-      </div>
-
-      <div class="card-body">
-        <div class="table-responsive">
-          <table class="table table-bordered table-striped table-hover dt-responsive nowrap" id="table_jabatan" style="width: 100%">
-            <thead class="thead-light">
-              <tr>
-                <th>#</th>
-                <th>NIP</th>
-                <th>Nama Jabatan</th>
-                <th>Jenis Pelantikan</th>
-                <th>Unit Kerja</th>
-                <th>TMT Jabatan</th>
-                <th>Status Jabatan</th>
-                <th>Aktif</th>
-                <th>Pegawai</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {{-- Data dimuat via DataTables --}}
-            </tbody>
-          </table>
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h4>Data Jabatan Struktural</h4>
+          <div class="card-header-action ml-auto">
+            <a href="{{ route('jabatan_struktural.create') }}" class="btn btn-primary">
+              <i class="fas fa-plus"></i> Tambah Jabatan
+            </a>
+          </div>
         </div>
-      </div>
 
-      <div class="card-footer text-right">
-        {{-- Pagination DataTables --}}
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover dt-responsive nowrap" id="table_jabatan" style="width: 100%">
+              <thead class="thead-light">
+                <tr>
+                  <th>#</th>
+                  <th>NIP</th>
+                  <th>Nama Jabatan</th>
+                  <th>Jenis Pelantikan</th>
+                  <th>Unit Kerja</th>
+                  <th>TMT Jabatan</th>
+                  <th>Status Jabatan</th>
+                  <th>Aktif</th>
+                  <th>Pegawai</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{-- Data dimuat via DataTables --}}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card-footer text-right">
+          {{-- Pagination DataTables --}}
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-{{-- Modal (opsional kalau mau pakai modal form) --}}
+{{-- Modal --}}
 <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 @endsection
 

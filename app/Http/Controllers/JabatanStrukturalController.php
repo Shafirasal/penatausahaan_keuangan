@@ -11,10 +11,16 @@ use Yajra\DataTables\Facades\DataTables;
 class JabatanStrukturalController extends Controller
 {
     // Tampilkan halaman index saja
-    public function index()
-    {
-        return view('layouts.jabatan_struktural.index');
-    }
+public function index()
+{
+    $breadcrumb = (object)[
+        'title' => 'Jabatan Struktural',
+        'list' => ['Home','Jabatan Struktural']
+    ];
+
+    return view('jabatan_struktural.index', compact('breadcrumb'));
+}
+
 
     // Endpoint untuk datatables AJAX
     public function getData(Request $request)
@@ -48,7 +54,7 @@ class JabatanStrukturalController extends Controller
     // Tampilkan form create
     public function create()
     {
-        return view('layouts.jabatan_struktural.create');
+        return view('jabatan_struktural.create');
     }
 
     // Simpan data baru
@@ -72,7 +78,7 @@ class JabatanStrukturalController extends Controller
     public function edit($id)
     {
         $jabatan = JabatanStrukturalModel::findOrFail($id);
-        return view('layouts.jabatan_struktural.edit', compact('jabatan'));
+        return view('jabatan_struktural.edit', compact('jabatan'));
     }
 
     // Update data
