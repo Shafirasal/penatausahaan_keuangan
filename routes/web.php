@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RiwayatPendidikanController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,6 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('home');
 });
-Route::get('/coba', function () {
-    return view('coba');
+
+
+
+Route::prefix('riwayat_pendidikan')->group(function () {
+    Route::get('/', [RiwayatPendidikanController::class, 'index']);
+    Route::post('/list', [RiwayatPendidikanController::class, 'list']);
+    Route::get('/create', [RiwayatPendidikanController::class, 'create']);
 });
