@@ -29,15 +29,16 @@ return new class extends Migration
             $table->string('kode_pos', 10)->nullable();
             $table->enum('agama', ['islam', 'kristen', 'katolik', 'budha', 'hindu', 'konghucu']);
             $table->enum('status_kepegawaian', ['cpns', 'pns', 'pppk', 'ptt']);
-            $table->string('kelurahan', 100)->nullable();
             $table->unsignedBigInteger('id_provinsi');
             $table->unsignedBigInteger('id_kabupaten_kota');
             $table->unsignedBigInteger('id_kecamatan');
+            $table->unsignedBigInteger('id_kelurahan');
             $table->timestamps();
 
             $table->foreign('id_provinsi')->references('id_provinsi')->on('t_provinsi');
             $table->foreign('id_kabupaten_kota')->references('id_kabupaten_kota')->on('t_kabupaten_kota');
             $table->foreign('id_kecamatan')->references('id_kecamatan')->on('t_kecamatan');
+            $table->foreign('id_kelurahan')->references('id_kelurahan')->on('t_kelurahan');
         });
     }
 

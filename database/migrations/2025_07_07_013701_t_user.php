@@ -14,7 +14,7 @@ return new class extends Migration
          Schema::create('t_user', function (Blueprint $table) {
             $table->id('id_user');
             $table->string('nip', 20)->unique();
-            $table->enum('level', ['pegawai', 'admin']);
+            $table->enum('level', ['pegawai', 'admin', 'operator']);
             $table->string('password', 225);
             $table->foreign('nip')->references('nip')->on('t_pegawai')->onDelete('cascade');
         });
