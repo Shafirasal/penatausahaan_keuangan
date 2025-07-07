@@ -14,7 +14,7 @@ class PendidikanSeeder extends Seeder
     public function run(): void
     {
          DB::table('t_pendidikan')->insert([
-            'nip' => '12345',
+            'nip' => '123',
             'nama_sekolah' => 'Universitas Negeri Surabaya',
             'tingkat' => 'S2',
             'prodi_jurusan' => 'Teknologi Pendidikan',
