@@ -1,4 +1,4 @@
-        {{-- <section class="section">
+{{-- <section class="section">
           <div class="section-header">
             <h1>Blank Page</h1>
           </div>
@@ -25,7 +25,6 @@
 
   </div>
 </section> --}}
-
 
 <div class="section-header-breadcrumb">
   @foreach ($list as $key => $value)
