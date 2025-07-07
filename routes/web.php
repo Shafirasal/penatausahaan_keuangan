@@ -24,4 +24,5 @@ Route::prefix('riwayat_pendidikan')->group(function () {
     Route::get('/', [RiwayatPendidikanController::class, 'index']);
     Route::post('/list', [RiwayatPendidikanController::class, 'list']);
     Route::get('/create', [RiwayatPendidikanController::class, 'create']);
+    
 });

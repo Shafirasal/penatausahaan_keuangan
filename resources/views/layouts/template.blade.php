@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="csrf-token" content="{{ csrf_token() }}"> {{-- untuk mengirimkan token laravel csrf pada setiap request ajax --}}
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   {{-- <title>Blank Page &mdash; Stisla</title> --}}
@@ -64,6 +65,7 @@
 <script src="{{ asset('stisla1/node_modules/jquery.nicescroll/dist/jquery.nicescroll.min.js') }}"></script>
 <script src="{{ asset('stisla1/node_modules/popper.js/dist/popper.min.js') }}"></script>
 
+<script src="{{ asset('stisla1/node_modules/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 
 
   {{-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script> --}}
@@ -76,12 +78,28 @@
 
 
   <!-- JS Libraies -->
+  <!-- DataTables JS -->
+{{-- <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script> --}}
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
+{{-- <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script> --}}
+<script src="{{ asset('stisla1/node_modules/datatables/media/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('stisla1/node_modules/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('stisla1/node_modules/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('stisla1/node_modules/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ asset('stisla1/node_modules/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
+
+
 
   <!-- Template JS File -->
 <script src="{{ asset('stisla1/assets/js/scripts.js') }}"></script>
 <script src="{{ asset('stisla1/assets/js/custom.js') }}"></script>
+<script src="{{ asset('stisla1/assets/js/page/components-table.js') }}"></script> 
+
 
 
   <!-- Page Specific JS File  -->
+  @stack('js')
 </body>
 </html>

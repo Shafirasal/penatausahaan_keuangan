@@ -64,7 +64,15 @@ class PendidikanSeeder extends Seeder
         'created_at' => now(),
         'updated_at' => now(),
     ],
-]);
 
+            'nip' => '123',
+            'nama_sekolah' => 'Universitas Negeri Surabaya',
+            'tingkat' => 'S2',
+            'prodi_jurusan' => 'Teknologi Pendidikan',
+            'tahun_lulus' => 2010,
+            'aktif' => 'tidak',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }
