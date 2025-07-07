@@ -459,3 +459,64 @@ assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
   <!-- Page Specific JS File -->
 </body>
 </html>
+
+
+@extends('layouts.template')
+
+@section('title')
+| Riwayat Pendidikan
+@endsection
+
+@section('content')
+<section class="section">
+  <div class="section-header">
+    <h1>{{ $breadcrumb->title ?? 'Riwayat Pendidikan' }}</h1>
+    @include('layouts.breadcrumb', ['list' => $breadcrumb->list])
+  </div>
+
+  <div class="section-body">
+    {{-- Konten utama di sini --}}
+    <div class="card">
+      <div class="card-header">
+        <h4>Data Riwayat Pendidikan</h4>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped" id="table_pendidikan">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nama Sekolah</th>
+              <th>Jenjang</th>
+              <th>Prodi/Jurusan</th>
+              <th>Tahun Lulus</th>
+              <th>Aktif</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+@endsection
+
+@push('js')
+<script>
+  $(document).ready(function () {
+    $('#table_pendidikan').DataTable({
+      processing: true,
+      serverSide: true,
+      ajax: "{{ url('/riwayat-pendidikan/list') }}",
+      columns: [
+        { data: 'DT_RowIndex', orderable: false, searchable: false },
+        { data: 'nama_sekolah' },
+        { data: 'jenjang' },
+        { data: 'prodi_jurusan' },
+        { data: 'tahun_lulus' },
+        { data: 'aktif' },
+        { data: 'aksi', orderable: false, searchable: false }
+      ]
+    });
+  });
+</script>
+@endpush
