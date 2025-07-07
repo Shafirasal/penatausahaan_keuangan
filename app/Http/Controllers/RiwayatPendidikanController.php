@@ -33,6 +33,7 @@ class RiwayatPendidikanController extends Controller
             'prodi_jurusan',
             'tahun_lulus',
             'aktif'
+            
         );
     }
 
