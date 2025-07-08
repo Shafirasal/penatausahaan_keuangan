@@ -14,7 +14,7 @@ class JabatanStrukturalModel extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'id_jabatan_stuktural', 
+        'id_jabatan_struktural', 
         'nip', 
         'nama_jabatan',
         'jenis_pelantikan',
@@ -29,4 +29,9 @@ class JabatanStrukturalModel extends Model
     {
         return $this-> belongsTo(PegawaiModel::class, 'nip', 'nip');
     }
+
+    public function unitKerja()
+{
+    return $this->belongsTo(UnitKerjaModel::class, 'id_unit_kerja');
+}
 }
