@@ -20,14 +20,17 @@ Route::get('/', function () {
 });
 
 
+Route::resource('jabatan_struktural', JabatanStrukturalController::class);
+
+Route::get('jabatan_struktural-data', [JabatanStrukturalController::class, 'getData'])->name('jabatan_struktural.data');
+
 
 Route::prefix('riwayat_pendidikan')->group(function () {
     Route::get('/', [RiwayatPendidikanController::class, 'index']);
     Route::post('/list', [RiwayatPendidikanController::class, 'list']);
     Route::get('/create', [RiwayatPendidikanController::class, 'create']);
+    Route::get('/{id}/show', [RiwayatPendidikanController::class, 'show']); 
+    Route::get('/{id}/confirm', [RiwayatPendidikanController::class, 'confirm']); 
+    Route::delete('/{id}/delete', [RiwayatPendidikanController::class, 'delete']); 
     
 });
-
-Route::resource('jabatan_struktural', JabatanStrukturalController::class);
-
-Route::get('jabatan_struktural-data', [JabatanStrukturalController::class, 'getData'])->name('jabatan_struktural.data');
