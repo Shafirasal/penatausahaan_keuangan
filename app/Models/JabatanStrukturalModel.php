@@ -29,4 +29,9 @@ class JabatanStrukturalModel extends Model
     {
         return $this-> belongsTo(PegawaiModel::class, 'nip', 'nip');
     }
+
+    public function unitKerja()
+{
+    return $this->belongsTo(UnitKerjaModel::class, 'id_unit_kerja');
+}
 }
