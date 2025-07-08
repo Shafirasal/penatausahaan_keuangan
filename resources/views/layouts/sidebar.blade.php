@@ -23,7 +23,7 @@
 
                   <li><a class="nav-link" href="{{ url('/riwayat_pendidikan') }}">Riwayat Pendidikan</a></li>
                   <li><a class="nav-link" href="layout-top-navigation.html">Jabatan Fungsional</a></li>
-                  <li><a class="nav-link" href="layout-top-navigation.html">Jabatan Struktural</a></li>
+                  <li><a class="nav-link" href="{{ route('jabatan_struktural.index') }}">Jabatan Struktural</a></li>
                   <li><a class="nav-link" href="layout-top-navigation.html">Riwayat Pegawai</a></li>
                 </ul>
               </li>

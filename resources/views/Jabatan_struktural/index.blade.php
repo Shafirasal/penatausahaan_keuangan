@@ -33,7 +33,7 @@
           <h4>Data Jabatan Struktural</h4>
           <div class="card-header-action ml-auto">
             <a href="{{ route('jabatan_struktural.create') }}" class="btn btn-primary">
-              <i class="fas fa-plus"></i> Tambah Jabatan
+              <i class="fas fa-plus"></i> Tambah
             </a>
           </div>
         </div>
@@ -51,7 +51,6 @@
                   <th>TMT Jabatan</th>
                   <th>Status Jabatan</th>
                   <th>Aktif</th>
-                  <th>Pegawai</th>
                   <th>Aksi</th>
                 </tr>
               </thead>
@@ -108,7 +107,6 @@
         { data: 'tmt_jabatan' },
         { data: 'status_jabatan' },
         { data: 'aktif' },
-        { data: 'pegawai_nama' },
         { data: 'action', orderable: false, searchable: false }
       ]
     });

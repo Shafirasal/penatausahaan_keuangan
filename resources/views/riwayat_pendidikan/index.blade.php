@@ -361,21 +361,28 @@
 
 <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 @endsection
-
 @push('js')
 <script>
+  // Konfigurasi CSRF token untuk Ajax
   $.ajaxSetup({
     headers: {
       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
   });
 
-  function loadRiwayatPendidikanTable() {
-    if ($.fn.DataTable.isDataTable('#table_pendidikan')) {
-      $('#table_pendidikan').DataTable().destroy();
-    }
+  // Fungsi untuk menampilkan modal dinamis
+  function modalAction(url = '') {
+    $('#myModal').load(url, function () {
+      $('#myModal').modal('show');
+    });
+  }
 
-    $('#table_pendidikan').DataTable({
+  // Deklarasi variabel global datatable
+  var dataRiwayatPendidikan;
+
+  // Inisialisasi saat dokumen siap
+  $(document).ready(function () {
+    dataRiwayatPendidikan = $('#table_pendidikan').DataTable({
       processing: true,
       serverSide: true,
       responsive: true,
@@ -384,25 +391,51 @@
         type: "POST"
       },
       columns: [
-        { data: 'DT_RowIndex', orderable: false, searchable: false },
-        { data: 'nama_sekolah' },
-        { data: 'tingkat' },
-        { data: 'prodi_jurusan' },
-        { data: 'tahun_lulus' },
-        { data: 'aktif', orderable: false, searchable: false },
-        { data: 'aksi', orderable: false, searchable: false }
+        {
+          data: 'DT_RowIndex',
+          className: 'text-center',
+          orderable: false,
+          searchable: false
+        },
+        {
+          data: 'nama_sekolah',
+          className: '',
+          orderable: true,
+          searchable: true
+        },
+        {
+          data: 'tingkat',
+          className: '',
+          orderable: true,
+          searchable: true
+        },
+        {
+          data: 'prodi_jurusan',
+          className: '',
+          orderable: true,
+          searchable: true
+        },
+        {
+          data: 'tahun_lulus',
+          className: 'text-center',
+          orderable: true,
+          searchable: true
+        },
+        {
+          data: 'aktif',
+          className: 'text-center',
+          orderable: false,
+          searchable: false
+        },
+        {
+          data: 'aksi',
+          className: 'text-center',
+          orderable: false,
+          searchable: false
+        }
       ]
     });
-  }
-
-  $(document).ready(function () {
-    loadRiwayatPendidikanTable();
   });
-
-  function modalAction(url = '') {
-    $('#myModal').load(url, function () {
-      $('#myModal').modal('show');
-    });
-  }
 </script>
 @endpush
+
