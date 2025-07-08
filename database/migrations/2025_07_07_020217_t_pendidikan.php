@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id('id_pendidikan');
             $table->string('nip', 20);
             $table->string('nama_sekolah', 100);
-            $table->enum('tingkat', ['sd', 'smp', 'sma/smk', 'd1', 'd2', 'd3', 's1', 's2', 's3']);
+            $table->enum('tingkat', ['sd', 'smp', 'sma/smk', 'd1', 'd2', 'd3', 'd4', 's1', 's2', 's3']);
             $table->string('prodi_jurusan', 100);
-            $table->year('tahun_lulus');
+            $table->date('tahun_lulus');
             $table->enum('aktif', ['ya', 'tidak']);
             $table->timestamps();
             $table->foreign('nip')->references('nip')->on('t_pegawai')->onDelete('cascade');
