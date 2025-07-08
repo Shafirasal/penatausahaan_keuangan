@@ -15,10 +15,11 @@ return new class extends Migration
             $table->id('id_jabatan_struktural');
             $table->string('nip', 20);
             $table->string('nama_jabatan', 100);
-            $table->enum('jenis_penilaian', ['...']); // sesuaikan nilainya
+            $table->enum('jenis_pelantikan', ['definitif', 'pj(pejabat)']); // sesuaikan nilainya
             $table->unsignedBigInteger('id_unit_kerja');
-            $table->string('unit_jabatan', 100);
-            $table->enum('status_jabatan', ['ya', 'tidak']);
+            $table->enum('status_jabatan', ['mutasi', 'promosi']);
+            $table->date('tmt_jabatan');
+            $table->enum('aktif', ['ya', 'tidak']);
             $table->timestamps();
             $table->foreign('nip')->references('nip')->on('t_pegawai')->onDelete('cascade');
             $table->foreign('id_unit_kerja')->references('id_unit_kerja')->on('t_unit_kerja')->onDelete('cascade');

@@ -16,9 +16,12 @@ class JabatanFungsionalSeeder extends Seeder
         DB::table('t_jabatan_fungsional')->insert([
             'nip' => '12345',
             'nama_jabatan' => 'Analis Data',
-            'tmt_jabatan' => 2020,
-            'status_fungsional' => 'ya',
-            'status_diklat' => 'tidak',
+            'instansi' => 'Dinas Komunikasi dan Informatika',
+            'tmt_jabatan' => '2020-01-01',
+            'PAK' => 80,
+            'status_fungsional' => 'promosi',
+            'status_diklat' => 'diklat fungsional',
+            'aktif' => 'ya',
             'created_at' => now(),
             'updated_at' => now(),
         ]);

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('masa_kerja_tahun');
             $table->integer('masa_kerja_bulan');
             $table->date('tmt_pangkat');
+            $table->string('keterangan', 255)->nullable();
             $table->enum('aktif', ['ya', 'tidak']);
             $table->timestamps();
 

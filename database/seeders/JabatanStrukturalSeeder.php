@@ -15,11 +15,11 @@ class JabatanStrukturalSeeder extends Seeder
         DB::table('t_jabatan_struktural')->insert([
             'nip' => '12345',
             'nama_jabatan' => 'Kepala Seksi',
-            'jenis_pelantikan' => 'Pelantikan Biasa',
+            'jenis_pelantikan' => 'definitif',
             'id_unit_kerja' => 1,
             'tmt_jabatan' => now(),
-            'status_jabatan' => 'Aktif',
-            'aktif' => true,
+            'status_jabatan' => 'mutasi',
+            'aktif' => 'ya',
             'created_at' => now(),
             'updated_at' => now(),
         ]);

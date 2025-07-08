@@ -36,8 +36,8 @@ class UserSeeder extends Seeder
 
         // Tambah data pegawai
         DB::table('t_pegawai')->insert([
-            'nip' => '123',
-            'nama' => 'athiyan',
+            'nip' => '12345',
+            'nama' => 'atmin',
             'gelar_depan' => 'Dr.',
             'gelar_belakang' => 'M.Kom',
             'nik' => '3512345678900003',
@@ -62,9 +62,9 @@ class UserSeeder extends Seeder
 
         // Tambah user login
         DB::table('t_user')->insert([
-            'nip' => '123',
-            'level' => 'operator',
-            'password' => Hash::make('123'),
+            'nip' => '12345',
+            'level' => 'admin',
+            'password' => Hash::make('12345'),
         ]);
     }
 }
