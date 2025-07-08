@@ -51,6 +51,8 @@
   <script src="{{ asset('stisla1/node_modules/jquery-ui-dist/jquery-ui.min.js') }}"></script>
 
 
+
+
   <!-- jQuery Validate -->
 {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/additional-methods.min.js"></script> --}}
@@ -73,6 +75,9 @@
   <!-- Page Specific JS -->
   <script src="{{ asset('stisla1/assets/js/page/bootstrap-modal.js') }}"></script>
   <script src="{{ asset('stisla1/assets/js/page/components-table.js') }}"></script>
+
+    <!-- SweetAlert2 CDN -->
+<script src="{{ asset('stisla1/assets/js/sweetalert2.all.min.js') }}"></script>
 
   <!-- AJAX CSRF Setup -->
   <script>
