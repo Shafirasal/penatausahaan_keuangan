@@ -115,7 +115,7 @@
 
           <div class="form-group">
             <label>Tahun Lulus</label>
-            <input type="number" name="tahun_lulus" id="tahun_lulus" class="form-control" required>
+            <input type="date" name="tahun_lulus" id="tahun_lulus" class="form-control" required>
             <small id="error-tahun_lulus" class="error-text form-text text-danger"></small>
           </div>
 
@@ -152,7 +152,7 @@
                 nama_sekolah: { required: true },
                 tingkat: { required: true },
                 prodi_jurusan: { required: true },
-                tahun_lulus: { required: true, digits: true, minlength: 4, maxlength: 4 },
+                tahun_lulus: { required: true, date: true },
                 aktif: { required: true }
             },
             submitHandler: function (form) {
