@@ -19,6 +19,7 @@ Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 Route::get('/sync-session', [AuthController::class, 'syncSession'])->middleware('web');
+
 Route::get('/home', function () {
     return view('home');
 })->middleware('web');
@@ -26,17 +27,18 @@ Route::get('/home', function () {
 
 
 
-Route::resource('jabatan_struktural', JabatanStrukturalController::class);
+Route::prefix('jabatan_struktural')->name('jabatan_struktural.')->group(function() {
+    Route::get('/list', [JabatanStrukturalController::class, 'list'])->name('data');
+    Route::resource('/', JabatanStrukturalController::class)->parameters(['' => 'id']);
+});
 
-Route::get('jabatan_struktural-data', [JabatanStrukturalController::class, 'getData'])->name('jabatan_struktural.data');
 
-
-Route::prefix('riwayat_pendidikan')->group(function () {
+Route::prefix('riwayat_pendidikan')->middleware('web')->group(function () {
     Route::get('/', [RiwayatPendidikanController::class, 'index']);
     Route::post('/list', [RiwayatPendidikanController::class, 'list']);
     Route::get('/create', [RiwayatPendidikanController::class, 'create']);
     Route::get('/{id}/show', [RiwayatPendidikanController::class, 'show']);
     Route::get('/{id}/confirm', [RiwayatPendidikanController::class, 'confirm']);
     Route::delete('/{id}/delete', [RiwayatPendidikanController::class, 'delete']);
-
 });
+

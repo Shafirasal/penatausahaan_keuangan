@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\PegawaiModel;
 use App\Models\JabatanStrukturalModel;
 use Illuminate\Http\Request;
@@ -10,58 +9,60 @@ use Yajra\DataTables\Facades\DataTables;
 
 class JabatanStrukturalController extends Controller
 {
-    // Tampilkan halaman index saja
-public function index()
-{
-    $breadcrumb = (object)[
-        'title' => 'Jabatan Struktural',
-        'list' => ['Home','Jabatan Struktural']
-    ];
-
-    return view('jabatan_struktural.index', compact('breadcrumb'));
-}
-
-
-    // Endpoint untuk datatables AJAX
-    public function getData(Request $request)
+    public function index()
     {
-        if ($request->ajax()) {
-            $data = JabatanStrukturalModel::with('pegawai')->select('*');
-            return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('pegawai_nama', function($row) {
-                    return $row->pegawai->nama ?? '-';
-                })
-                ->addColumn('action', function($row) {
-                    $editUrl = route('jabatan_struktural.edit', $row->id_jabatan_stuktural);
-                    $deleteUrl = route('jabatan_struktural.destroy', $row->id_jabatan_stuktural);
-                    $csrf = csrf_field();
-                    $method = method_field('DELETE');
-                    return '
-                        <a href="'.$editUrl.'" class="btn btn-warning btn-sm">Edit</a>
-                        <form action="'.$deleteUrl.'" method="POST" style="display:inline-block;">
-                            '.$csrf.'
-                            '.$method.'
-                            <button onclick="return confirm(\'Yakin hapus?\')" class="btn btn-danger btn-sm">Hapus</button>
-                        </form>
-                    ';
-                })
-                ->rawColumns(['action'])
-                ->make(true);
-        }
+        $breadcrumb = (object) [
+            'title' => 'Jabatan Struktural',
+            'list' => ['Home', 'Jabatan Struktural']
+        ];
+
+        $page = (object) [
+            'title' => 'Data Jabatan Struktural Pegawai'
+        ];
+
+        $activeMenu = 'jabatan';
+
+        return view('jabatan_struktural.index', compact('breadcrumb', 'page', 'activeMenu'));
     }
 
-    // Tampilkan form create
+    public function list(Request $request)
+    {
+        $data = JabatanStrukturalModel::with('pegawai')->select(
+            'id_jabatan_struktural',
+            'nip',
+            'nama_jabatan',
+            'jenis_pelantikan',
+            'id_unit_kerja',
+            'tmt_jabatan',
+            'status_jabatan',
+            'aktif'
+        );
+
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('nama_pegawai', function ($row) {
+                return $row->pegawai->nama ?? '-';
+            })
+            ->addColumn('action', function ($row) {
+                $btn = '<button onclick="modalAction(\'' . url('/jabatan_struktural/' . $row->id_jabatan_struktural . '/show') . '\')" class="btn btn-info btn-sm">Detail</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/jabatan_struktural/' . $row->id_jabatan_struktural . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/jabatan_struktural/' . $row->id_jabatan_struktural . '/confirm') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
+                return $btn;
+            })
+            ->rawColumns(['action'])
+            ->toJson();
+    }
+
     public function create()
     {
-        return view('jabatan_struktural.create');
+        $pegawai = PegawaiModel::all();
+        return view('jabatan_struktural.create', compact('pegawai'));
     }
 
-    // Simpan data baru
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nip' => 'required|string',
+            'nip' => 'required|string|exists:t_pegawai,nip',
             'nama_jabatan' => 'required|string',
             'jenis_pelantikan' => 'required|string',
             'id_unit_kerja' => 'required|integer',
@@ -71,23 +72,37 @@ public function index()
         ]);
 
         JabatanStrukturalModel::create($validated);
-        return redirect()->route('jabatan_struktural.index')->with('success', 'Data berhasil ditambahkan!');
+
+        return response()->json(['message' => 'Data berhasil disimpan.']);
     }
 
-    // Tampilkan form edit
+    public function show($id)
+    {
+        $data = JabatanStrukturalModel::with('pegawai')->find($id);
+
+        if (!$data) {
+            return response()->json(['message' => 'Data tidak ditemukan.'], 404);
+        }
+
+        return view('jabatan_struktural.show', compact('data'));
+    }
+
     public function edit($id)
     {
-        $jabatan = JabatanStrukturalModel::findOrFail($id);
-        return view('jabatan_struktural.edit', compact('jabatan'));
+        $data = JabatanStrukturalModel::find($id);
+        $pegawai = PegawaiModel::all();
+
+        if (!$data) {
+            return response()->json(['message' => 'Data tidak ditemukan.'], 404);
+        }
+
+        return view('jabatan_struktural.edit', compact('data', 'pegawai'));
     }
 
-    // Update data
     public function update(Request $request, $id)
     {
-        $jabatan = JabatanStrukturalModel::findOrFail($id);
-
-        $validated = $request->validate([
-            'nip' => 'required|string',
+        $request->validate([
+            'nip' => 'required|string|exists:t_pegawai,nip',
             'nama_jabatan' => 'required|string',
             'jenis_pelantikan' => 'required|string',
             'id_unit_kerja' => 'required|integer',
@@ -96,15 +111,27 @@ public function index()
             'aktif' => 'required|boolean',
         ]);
 
-        $jabatan->update($validated);
-        return redirect()->route('jabatan_struktural.index')->with('success', 'Data berhasil diupdate!');
+        $data = JabatanStrukturalModel::find($id);
+
+        if (!$data) {
+            return response()->json(['message' => 'Data tidak ditemukan.'], 404);
+        }
+
+        $data->update($request->all());
+
+        return response()->json(['message' => 'Data berhasil diperbarui.']);
     }
 
-    // Hapus data
     public function destroy($id)
     {
-        $jabatan = JabatanStrukturalModel::findOrFail($id);
-        $jabatan->delete();
-        return redirect()->route('jabatan_struktural.index')->with('success', 'Data berhasil dihapus!');
+        $data = JabatanStrukturalModel::find($id);
+
+        if (!$data) {
+            return response()->json(['message' => 'Data tidak ditemukan.'], 404);
+        }
+
+        $data->delete();
+
+        return response()->json(['message' => 'Data berhasil dihapus.']);
     }
 }
