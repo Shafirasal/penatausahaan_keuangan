@@ -14,10 +14,11 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login','register','refresh','logout']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'refresh', 'logout']]);
     }
 
-    public function register(Request $request){
+    public function register(Request $request)
+    {
         $request->validate([
             'nip' => 'required|string|max:20|unique:users',
             'level' => 'required|string|in:pegawai,admin,operator',
@@ -60,14 +61,13 @@ class AuthController extends Controller
 
         $user = Auth::guard('api')->user();
         return response()->json([
-                'status' => 'success',
-                'user' => $user,
-                'authorisation' => [
-                    'token' => $token,
-                    'type' => 'bearer',
-                ]
-            ]);
-
+            'status' => 'success',
+            'user' => $user,
+            'authorisation' => [
+                'token' => $token,
+                'type' => 'bearer',
+            ]
+        ]);
     }
 
     public function logout()
@@ -92,6 +92,19 @@ class AuthController extends Controller
         ]);
     }
 
+    public function syncSession(Request $request)
+    {
+        $user = auth('api')->user();
 
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
 
+        session()->put('nip', $user->nip);
+        session()->put('level', $user->level);
+
+        return response()->json([
+            'message' => 'Session synced',
+        ]);
+    }
 }

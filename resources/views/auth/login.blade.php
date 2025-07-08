@@ -89,16 +89,30 @@
                     password: password
                 },
                 success: function(response) {
-                    // Simpan token JWT di localStorage
-                    localStorage.setItem('token', response.authorisation.token);
+                    const token = response.authorisation.token;
+                    localStorage.setItem('token', token);
 
-                    // Redirect ke halaman dashboard
-                    window.location.href = '/home';
+                    // 🔁 Sync session
+                    $.ajax({
+                        url: '/sync-session',
+                        method: 'GET',
+                        headers: {
+                            Authorization: 'Bearer ' + token
+                        },
+                        success: function() {
+                            // ✅ Selesai, redirect ke dashboard
+                            window.location.href = '/home';
+                        },
+                        error: function() {
+                            alert('Gagal menyimpan session');
+                        }
+                    });
                 },
                 error: function(xhr) {
                     alert('Login gagal: ' + xhr.responseJSON.message);
                 }
             });
+
         });
     </script>
 

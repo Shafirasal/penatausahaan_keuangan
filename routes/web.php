@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\JabatanStrukturalController;
 use App\Http\Controllers\RiwayatPendidikanController;
 use Illuminate\Support\Facades\Route;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
+Route::get('/sync-session', [AuthController::class, 'syncSession'])->middleware('web');
 Route::get('/home', function () {
     return view('home');
 })->middleware('web');
