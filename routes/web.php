@@ -27,7 +27,7 @@ Route::get('/home', function () {
 
 
 
-Route::prefix('jabatan_struktural')->name('jabatan_struktural.')->group(function() {
+Route::prefix('jabatan_struktural')->name('jabatan_struktural.')->middleware('web')->group(function() {
     Route::get('/list', [JabatanStrukturalController::class, 'list'])->name('data');
     Route::resource('/', JabatanStrukturalController::class)->parameters(['' => 'id']);
 });
