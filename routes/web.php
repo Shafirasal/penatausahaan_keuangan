@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
+
 Route::get('/home', function () {
     return view('home');
 })->middleware('web');
@@ -30,12 +31,12 @@ Route::prefix('jabatan_struktural')->name('jabatan_struktural.')->group(function
 });
 
 
-Route::prefix('riwayat_pendidikan')->group(function () {
+Route::prefix('riwayat_pendidikan')->middleware('web')->group(function () {
     Route::get('/', [RiwayatPendidikanController::class, 'index']);
     Route::post('/list', [RiwayatPendidikanController::class, 'list']);
     Route::get('/create', [RiwayatPendidikanController::class, 'create']);
     Route::get('/{id}/show', [RiwayatPendidikanController::class, 'show']);
     Route::get('/{id}/confirm', [RiwayatPendidikanController::class, 'confirm']);
     Route::delete('/{id}/delete', [RiwayatPendidikanController::class, 'delete']);
-
 });
+
