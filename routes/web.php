@@ -14,10 +14,14 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('/', function () {
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
+Route::get('/home', function () {
     return view('home');
-});
+})->middleware('web');
+
+
 
 
 Route::resource('jabatan_struktural', JabatanStrukturalController::class);
@@ -29,8 +33,8 @@ Route::prefix('riwayat_pendidikan')->group(function () {
     Route::get('/', [RiwayatPendidikanController::class, 'index']);
     Route::post('/list', [RiwayatPendidikanController::class, 'list']);
     Route::get('/create', [RiwayatPendidikanController::class, 'create']);
-    Route::get('/{id}/show', [RiwayatPendidikanController::class, 'show']); 
-    Route::get('/{id}/confirm', [RiwayatPendidikanController::class, 'confirm']); 
-    Route::delete('/{id}/delete', [RiwayatPendidikanController::class, 'delete']); 
-    
+    Route::get('/{id}/show', [RiwayatPendidikanController::class, 'show']);
+    Route::get('/{id}/confirm', [RiwayatPendidikanController::class, 'confirm']);
+    Route::delete('/{id}/delete', [RiwayatPendidikanController::class, 'delete']);
+
 });
