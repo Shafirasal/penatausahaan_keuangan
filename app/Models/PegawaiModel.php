@@ -44,4 +44,10 @@ class PegawaiModel extends Model
     {
         return $this->hasMany(RiwayatPendidikanModel::class, 'nip', 'nip');
     }
+
+    public function riwayatKepegawaian()
+    {
+    return $this->hasMany(RiwayatKepegawaianModel::class, 'nip', 'nip');
+    }
+
 }
