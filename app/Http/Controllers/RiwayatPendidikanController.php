@@ -6,6 +6,7 @@ use App\Models\RiwayatPendidikanModel;
 use App\Models\PegawaiModel;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
 class RiwayatPendidikanController extends Controller
@@ -43,6 +44,10 @@ class RiwayatPendidikanController extends Controller
             ->addColumn('nama_pegawai', function ($row) {
                 return $row->pegawai->nama ?? '-';
             })
+            ->editColumn('tahun_lulus', function ($row) {
+            return \Carbon\Carbon::parse($row->tahun_lulus)->format('Y');
+            })
+
             ->addColumn('aksi', function ($row) {
                 $btn = '<button onclick="modalAction(\'' . url('/riwayat_pendidikan/' . $row->id_pendidikan . '/show') . '\')" class="btn btn-info btn-sm">Detail</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/riwayat_pendidikan/' . $row->id_pendidikan . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
@@ -128,6 +133,157 @@ public function confirm(string $id)
     return view('riwayat_pendidikan.confirm', ['riwayatPendidikan' => $riwayatPendidikan]);
 }
 
+
+public function edit(String $id)
+{
+    $riwayat = RiwayatPendidikanModel::find($id);
+
+    return view('riwayat_pendidikan.edit', ['riwayat' => $riwayat]);
+}
+
+
+public function update(Request $request, $id) 
+{ 
+    if ($request->ajax() || $request->wantsJson()) { 
+        $rules = [ 
+            'nama_sekolah'   => 'required|string|max:255', 
+            'tingkat'        => 'required|string|max:50', 
+            'prodi_jurusan'  => 'nullable|string|max:100', 
+            'tahun_lulus'    => 'required|digits:4|integer|min:1900|max:' . date('Y'), 
+            'aktif'          => 'required|in:ya,tidak', 
+        ]; 
+ 
+        $validator = Validator::make($request->all(), $rules); 
+ 
+        if ($validator->fails()) { 
+            return response()->json([ 
+                'status' => false, 
+                'message' => 'Validasi gagal.', 
+                'msgField' => $validator->errors() 
+            ]); 
+        } 
+ 
+        $riwayat = RiwayatPendidikanModel::find($id); 
+        if ($riwayat) { 
+            // Siapkan data untuk update
+            $data = $request->except(['_token', '_method']); 
+            $data['tahun_lulus'] = $request->tahun_lulus . '-01-01'; 
+ 
+            // *** CLEANER WAY: Use fill() then check isDirty() ***
+            $riwayat->fill($data);
+            
+            // Check if any attributes were actually changed
+            if (!$riwayat->isDirty()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Tidak ada perubahan data yang dilakukan.'
+                ]);
+            }
+
+            // Save the changes
+            $riwayat->save();
+            // *** END OF CLEANER METHOD ***
+ 
+            return response()->json([ 
+                'status' => true, 
+                'message' => 'Data berhasil diupdate' 
+            ]); 
+        } else { 
+            return response()->json([ 
+                'status' => false, 
+                'message' => 'Data tidak ditemukan' 
+            ]); 
+        } 
+    } 
+ 
+    return redirect('/'); 
+}
+
+// public function update(Request $request, $id)
+// {
+//     if ($request->ajax() || $request->wantsJson()) {
+//         $rules = [
+//             'nama_sekolah'   => 'required|string|max:255',
+//             'tingkat'        => 'required|string|max:50',
+//             'prodi_jurusan'  => 'nullable|string|max:100',
+//             'tahun_lulus'    => 'required|digits:4|integer|min:1900|max:' . date('Y'),
+//             'aktif'          => 'required|in:ya,tidak',
+//         ];
+
+//         $validator = Validator::make($request->all(), $rules);
+
+//         if ($validator->fails()) {
+//             return response()->json([
+//                 'status' => false,
+//                 'message' => 'Validasi gagal.',
+//                 'msgField' => $validator->errors()
+//             ]);
+//         }
+
+//         $riwayat = RiwayatPendidikanModel::find($id);
+//         if ($riwayat) {
+//             // Ubah tahun jadi format DATE
+//             $data = $request->except(['_token', '_method']);
+//             $data['tahun_lulus'] = $request->tahun_lulus . '-01-01';
+
+//             $riwayat->update($data);
+
+//             return response()->json([
+//                 'status' => true,
+//                 'message' => 'Data berhasil diupdate'
+//             ]);
+//         } else {
+//             return response()->json([
+//                 'status' => false,
+//                 'message' => 'Data tidak ditemukan'
+//             ]);
+//         }
+//     }
+
+//     return redirect('/');
+// }
+
+
+
+//REKOMENDASI MAIN FUNGSINYA
+// public function update(Request $request, $id)
+// {
+//     if ($request->ajax() || $request->wantsJson()) {
+//         $rules = [
+//             'nama_sekolah'   => 'required|string|max:255',
+//             'tingkat'        => 'required|string|max:50',
+//             'prodi_jurusan'  => 'nullable|string|max:100',
+//             'tahun_lulus'    => 'required|digits:4|integer|min:1900|max:' . date('Y'),
+//             'aktif'          => 'required|in:ya,tidak',
+//         ];
+
+//         $validator = Validator::make($request->all(), $rules);
+
+//         if ($validator->fails()) {
+//             return response()->json([
+//                 'status' => false,
+//                 'message' => 'Validasi gagal.',
+//                 'msgField' => $validator->errors()
+//             ]);
+//         }
+
+//         $riwayat = RiwayatPendidikanModel::find($id);
+//         if ($riwayat) {
+//             $riwayat->update($request->all());
+//             return response()->json([
+//                 'status' => true,
+//                 'message' => 'Data berhasil diupdate'
+//             ]);
+//         } else {
+//             return response()->json([
+//                 'status' => false,
+//                 'message' => 'Data tidak ditemukan'
+//             ]);
+//         }
+//     }
+
+//     return redirect('/');
+// }
 
     // public function edit($id)
     // {
