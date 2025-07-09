@@ -16,7 +16,7 @@
         </div>
     </div>
 @else
-<form action="{{ url('/jabatan_fungsional/' . $jabatan_fungsional->id_jabatan_fungsional . '/update') }}" method="POST" id="form-edit-jabatan-fungsional">
+<form action="{{ url('/jabatan_fungsional/' . $jabatan_fungsional->id_jabatan_fungsional . '/update') }}" method="POST" id="form-edit">
     @csrf
     @method('PUT')
     <div id="modal-master" class="modal-dialog modal-lg" role="document">

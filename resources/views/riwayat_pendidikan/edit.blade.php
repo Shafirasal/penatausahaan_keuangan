@@ -280,7 +280,7 @@
         </div>
     </div>
 @else
-<form action="{{ url('/riwayat_pendidikan/' . $riwayat->id_pendidikan . '/update') }}" method="POST" id="form-edit-riwayat-pendidikan">
+<form action="{{ url('/riwayat_pendidikan/' . $riwayat->id_pendidikan . '/update') }}" method="POST" id="form-edit">
     @csrf
     @method('PUT')
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
