@@ -351,7 +351,7 @@
 
 <script>
     $(document).ready(function() {
-        $("#form-edit-riwayat-pendidikan").validate({
+        $("#form-edit").validate({
             rules: {
                 nip: { required: true },
                 nama_sekolah: { required: true },

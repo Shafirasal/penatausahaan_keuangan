@@ -91,7 +91,7 @@
 
 <script>
     $(document).ready(function () {
-        $('#form-edit-jabatan-fungsional').validate({
+        $('#form-edit').validate({
             rules: {
                 nama_jabatan: { required: true },
                 instansi: { required: true },
