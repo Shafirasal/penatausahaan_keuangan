@@ -122,11 +122,12 @@ class JabatanStrukturalController extends Controller
 
         // Validasi
         $validated = $request->validate([
-            'nama_jabatan' => 'required|string|max:255',
-            'unit_kerja_id' => 'required|exists:unit_kerja,id',
-            'tmt_jabatan' => 'required|date',
-            'status_struktural' => 'required|in:definitif,pelaksana tugas',
-            'aktif' => 'required|in:ya,tidak'
+            'nama_jabatan'     => 'required|string|max:255',
+            'jenis_pelantikan' => 'required|string|max:100',
+            'id_unit_kerja'    => 'required|exists:t_unit_kerja,id_unit_kerja',
+            'tmt_jabatan'      => 'required|date',
+            'status_jabatan'   => 'required|in:mutasi,promosi',
+            'aktif'            => 'required|in:ya,tidak',
         ]);
 
         // Update

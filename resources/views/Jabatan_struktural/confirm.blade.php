@@ -17,7 +17,9 @@
         </div>
     </div>
 @else
-    <form id="form-delete-jabatan-struktural" method="POST" action="{{ url('/jabatan_struktural/' . $jabatan->id_jabatan_struktural . '/delete') }}">
+
+
+    <form action="{{ url('/jabatan_struktural/' . $jabatan->id_jabatan_struktural . '/delete') }}" method="POST" id="form-delete" >
         @csrf
         @method('DELETE')
 
@@ -65,7 +67,7 @@
 
     <script>
         $(document).ready(function () {
-            $('#form-delete-jabatan-struktural').submit(function (e) {
+            $('#form-delete').submit(function (e) {
                 e.preventDefault();
                 var form = $(this);
 

@@ -33,8 +33,8 @@ Route::prefix('jabatan_struktural')->name('jabatan_struktural.')->middleware('we
     Route::post('/list', [JabatanStrukturalController::class, 'list']);
     Route::get('/', [JabatanStrukturalController::class, 'index']);
     Route::get('/{id}/show', [JabatanStrukturalController::class, 'show']);
-    Route::get('/{id}/edit', [JabatanStrukturalController::class, 'edit'])->name('edit'); 
-    Route::put('/{id}/update', [JabatanStrukturalController::class, 'update'])->name('update');
+    Route::get('/{id}/edit', [JabatanStrukturalController::class, 'edit']);
+    Route::put('/{id}/update', [JabatanStrukturalController::class, 'update']);
     Route::get('/create', [JabatanStrukturalController::class, 'create']);
     Route::post('/store', [JabatanStrukturalController::class, 'store']);
     Route::get('/{id}/confirm', [JabatanStrukturalController::class, 'confirm']);

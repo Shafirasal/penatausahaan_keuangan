@@ -1,4 +1,4 @@
-<form action="{{ url('/jabatan_struktural/store') }}" method="POST" id="form-tambah-jabatan-struktural">
+<form action="{{ url('/jabatan_struktural/store') }}" method="POST" id="form-tambah">
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -81,7 +81,7 @@
 
 <script>
     $(document).ready(function() {
-        $("#form-tambah-jabatan-struktural").validate({
+        $("#form-tambah").validate({
             rules: {
                 nip: { required: true },
                 nama_jabatan: { required: true },
