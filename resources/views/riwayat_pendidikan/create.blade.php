@@ -203,7 +203,7 @@
 
 <form action="{{ url('/riwayat_pendidikan/store') }}" method="POST" id="form-tambah-riwayat-pendidikan">
     @csrf
-    <div id="modal-riwayat-pendidikan" class="modal-dialog modal-lg" role="document">
+    <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title text-primary">Tambah Riwayat Pendidikan</h5>
@@ -234,7 +234,7 @@
                         <option value="">-- Pilih Jenjang --</option>
                         <option value="sd">SD</option>
                         <option value="smp">SMP</option>
-                        <option value="sma">SMA</option>
+                        <option value="sma/smk">SMA/SMK</option>
                         <option value="d1">D1</option>
                         <option value="d2">D2</option>
                         <option value="d3">D3</option>

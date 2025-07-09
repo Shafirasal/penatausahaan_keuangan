@@ -1,6 +1,6 @@
 <form action="{{ url('/jabatan_fungsional/store') }}" method="POST" id="form-tambah-jabatan-fungsional">
     @csrf
-    <div id="modal-jabatan-fungsional" class="modal-dialog modal-lg" role="document">
+    <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title text-primary">Tambah Jabatan Fungsional</h5>

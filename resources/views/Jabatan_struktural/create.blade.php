@@ -1,6 +1,6 @@
 <form action="{{ url('/jabatan_struktural/store') }}" method="POST" id="form-tambah-jabatan-struktural">
     @csrf
-    <div id="modal-jabatan-struktural" class="modal-dialog modal-lg" role="document">
+    <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title text-primary">Tambah Jabatan Struktural</h5>
@@ -8,11 +8,12 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-
             <div class="modal-body">
+
                 <div class="form-group">
                     <label>NIP</label>
-                    <input type="text" name="nip" id="nip" class="form-control" value="{{ session('nip') }}" readonly>
+                    <input type="text" name="nip" id="nip" class="form-control"
+                        value="{{ session('nip') }}" readonly>
                     <small id="error-nip" class="error-text form-text text-danger"></small>
                 </div>
 
@@ -30,8 +31,7 @@
                         <option value="pj(pejabat)">Pj (Pejabat)</option>
                     </select>
                     <small id="error-jenis_pelantikan" class="error-text form-text text-danger"></small>
-                </div>  
-
+                </div>
 
                 <div class="form-group">
                     <label>Unit Kerja</label>
@@ -69,8 +69,8 @@
                     </select>
                     <small id="error-aktif" class="error-text form-text text-danger"></small>
                 </div>
-            </div>
 
+            </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-danger btn-sm">Batal</button>
                 <button type="submit" class="btn btn-primary btn-sm">Simpan</button>
@@ -79,10 +79,8 @@
     </div>
 </form>
 
-
-@push('js')
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $("#form-tambah-jabatan-struktural").validate({
             rules: {
                 nip: { required: true },
@@ -93,51 +91,46 @@
                 status_jabatan: { required: true },
                 aktif: { required: true }
             },
-            submitHandler: function (form) {
+            submitHandler: function(form) {
                 $.ajax({
                     url: form.action,
                     type: form.method,
                     data: $(form).serialize(),
-                    success: function (response) {
-                        $('#myModal').modal('hide');
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil',
-                            text: response.message
-                        });
-                        if (typeof dataJabatanStruktural !== 'undefined') {
+                    success: function(response) {
+                        if (response.status) {
+                            $('#myModal').modal('hide');
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: response.message
+                            });
                             dataJabatanStruktural.ajax.reload();
-                        }
-                    },
-                    error: function (xhr) {
-                        const res = xhr.responseJSON;
-                        $('.error-text').text('');
-                        if (res && res.errors) {
-                            $.each(res.errors, function (key, val) {
-                                $('#error-' + key).text(val[0]);
+                        } else {
+                            $('.error-text').text('');
+                            $.each(response.msgField, function(prefix, val) {
+                                $('#error-' + prefix).text(val[0]);
+                            });
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Terjadi Kesalahan',
+                                text: response.message
                             });
                         }
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal',
-                            text: res.message || 'Terjadi kesalahan saat menyimpan data.'
-                        });
                     }
                 });
                 return false;
             },
             errorElement: 'span',
-            errorPlacement: function (error, element) {
+            errorPlacement: function(error, element) {
                 error.addClass('invalid-feedback');
                 element.closest('.form-group').append(error);
             },
-            highlight: function (element) {
+            highlight: function(element) {
                 $(element).addClass('is-invalid');
             },
-            unhighlight: function (element) {
+            unhighlight: function(element) {
                 $(element).removeClass('is-invalid');
             }
         });
     });
 </script>
-@endpush
