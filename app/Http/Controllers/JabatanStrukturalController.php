@@ -66,25 +66,24 @@ class JabatanStrukturalController extends Controller
     }
 
     public function store(Request $request)
-{
-    $request->validate([
-        'nip'              => 'required|exists:t_pegawai,nip',
-        'nama_jabatan'     => 'required|string|max:255',
-        'jenis_pelantikan' => 'required|string|max:100',
-        'id_unit_kerja'    => 'required|exists:t_unit_kerja,id_unit_kerja',
-        'tmt_jabatan'      => 'required|date',
-        'status_jabatan'   => 'required|in:mutasi,promosi',
-        'aktif' => 'required|in:ya,tidak',
-    ]);
+    {
+        $request->validate([
+            'nip'              => 'required|exists:t_pegawai,nip',
+            'nama_jabatan'     => 'required|string|max:255',
+            'jenis_pelantikan' => 'required|string|max:100',
+            'id_unit_kerja'    => 'required|exists:t_unit_kerja,id_unit_kerja',
+            'tmt_jabatan'      => 'required|date',
+            'status_jabatan'   => 'required|in:mutasi,promosi',
+            'aktif'            => 'required|in:ya,tidak',
+        ]);
 
-    JabatanStrukturalModel::create($request->all());
+        JabatanStrukturalModel::create($request->all());
 
-    return response()->json([
-        'status'  => true,
-        'message' => 'Data berhasil disimpan.'
-    ]);
-}
-
+        return response()->json([
+            'status'  => true,
+            'message' => 'Data berhasil disimpan.'
+        ]);
+    }
 
     public function show($id)
     {
@@ -111,52 +110,33 @@ class JabatanStrukturalController extends Controller
     }
 
     public function update(Request $request, $id)
-{
-    if ($request->ajax()) {
-        $validator = Validator::make($request->all(), [
-            'nama_jabatan'     => 'required|string|max:255',
-            'jenis_pelantikan' => 'required|string|max:100',
-            'id_unit_kerja'    => 'required|exists:t_unit_kerja,id_unit_kerja',
-            'tmt_jabatan'      => 'required|date',
-            'status_jabatan'   => 'required|in:mutasi,promosi',
-            'aktif'            => 'required|boolean',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status'   => false,
-                'message'  => 'Validasi gagal.',
-                'msgField' => $validator->errors()
-            ]);
-        }
-
+    {
         $jabatan = JabatanStrukturalModel::find($id);
+
         if (!$jabatan) {
             return response()->json([
-                'status'  => false,
-                'message' => 'Data tidak ditemukan.'
+                'status' => false,
+                'message' => 'Data tidak ditemukan'
             ]);
         }
 
-        $jabatan->fill($request->except(['_token', '_method']));
+        // Validasi
+        $validated = $request->validate([
+            'nama_jabatan' => 'required|string|max:255',
+            'unit_kerja_id' => 'required|exists:unit_kerja,id',
+            'tmt_jabatan' => 'required|date',
+            'status_struktural' => 'required|in:definitif,pelaksana tugas',
+            'aktif' => 'required|in:ya,tidak'
+        ]);
 
-        if (!$jabatan->isDirty()) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'Tidak ada perubahan data.'
-            ]);
-        }
-
-        $jabatan->save();
+        // Update
+        $jabatan->update($validated);
 
         return response()->json([
-            'status'  => true,
-            'message' => 'Data berhasil diupdate.'
+            'status' => true,
+            'message' => 'Data jabatan struktural berhasil diperbarui.'
         ]);
     }
-
-    return redirect()->route('jabatan_struktural.index');
-}
 
 
     public function confirm($id)
