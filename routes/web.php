@@ -31,10 +31,10 @@ Route::get('/home', function () {
 
 Route::prefix('jabatan_struktural')->name('jabatan_struktural.')->middleware('web')->group(function () {
     Route::post('/list', [JabatanStrukturalController::class, 'list']);
-    Route::get('/', [JabatanFungsionalController::class, 'index']);
+    Route::get('/', [JabatanStrukturalController::class, 'index']);
     Route::get('/{id}/show', [JabatanStrukturalController::class, 'show']);
-    Route::get('/create', [RiwayatPendidikanController::class, 'create']);
-    Route::post('/store', [RiwayatPendidikanController::class, 'store']);
+    Route::get('/create', [JabatanStrukturalController::class, 'create']);
+    Route::post('/store', [JabatanStrukturalController::class, 'store']);
 });
 
 
