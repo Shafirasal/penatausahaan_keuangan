@@ -39,6 +39,7 @@ Route::prefix('riwayat_pendidikan')->middleware('web')->group(function () {
     Route::get('/', [RiwayatPendidikanController::class, 'index']);
     Route::post('/list', [RiwayatPendidikanController::class, 'list']);
     Route::get('/create', [RiwayatPendidikanController::class, 'create']);
+    Route::post('/store', [RiwayatPendidikanController::class, 'store']);
     Route::get('/{id}/show', [RiwayatPendidikanController::class, 'show']);
     Route::get('/{id}/confirm', [RiwayatPendidikanController::class, 'confirm']);
     Route::delete('/{id}/delete', [RiwayatPendidikanController::class, 'delete']);
@@ -52,7 +53,7 @@ Route::prefix('jabatan_fungsional')->middleware('web')->group(function () {
     Route::post('/list', [JabatanFungsionalController::class, 'list']);
     Route::get('/create', [JabatanFungsionalController::class, 'create']);
     Route::post('/store', [JabatanFungsionalController::class, 'store']);
-    Route::get('/{id}/show', [JabatanFungsionalController::class, 'show']); 
+    Route::get('/{id}/show', [JabatanFungsionalController::class, 'show']);
     Route::get('/{id}/edit', [JabatanFungsionalController::class, 'edit']);
     Route::put('/{id}/update', [JabatanFungsionalController::class, 'update']);
     Route::get('/{id}/confirm', [JabatanFungsionalController::class, 'confirm']);

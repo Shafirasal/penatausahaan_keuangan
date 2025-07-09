@@ -72,7 +72,7 @@
 
 
 
-{{-- 
+{{--
 <div class="row justify-content-center mt-5">
   <div class="col-12">
     <div class="card mx-auto" style="max-width: 600px;">
@@ -215,11 +215,12 @@
 
                 <div class="form-group">
                     <label>NIP</label>
-                    <input type="text" name="nip" id="nip" class="form-control" required>
+                    <input type="text" name="nip" id="nip" class="form-control"
+                        value="{{ session('nip') }}" readonly>
                     <small id="error-nip" class="error-text form-text text-danger"></small>
                 </div>
 
-                
+
 
                 <div class="form-group">
                     <label>Nama Sekolah</label>
@@ -231,16 +232,16 @@
                     <label>Jenjang</label>
                     <select name="tingkat" id="tingkat" class="form-control" required>
                         <option value="">-- Pilih Jenjang --</option>
-                        <option value="SD">SD</option>
-                        <option value="SMP">SMP</option>
-                        <option value="SMA">SMA</option>
-                        <option value="D3">D1</option>
-                        <option value="D3">D2</option>
-                        <option value="D3">D3</option>
-                        <option value="D3">D4</option>
-                        <option value="S1">S1</option>
-                        <option value="S2">S2</option>
-                        <option value="S3">S3</option>
+                        <option value="sd">SD</option>
+                        <option value="smp">SMP</option>
+                        <option value="sma">SMA</option>
+                        <option value="d1">D1</option>
+                        <option value="d2">D2</option>
+                        <option value="d3">D3</option>
+                        <option value="d4">D4</option>
+                        <option value="s1">S1</option>
+                        <option value="s2">S2</option>
+                        <option value="s3">S3</option>
                     </select>
                     <small id="error-tingkat" class="error-text form-text text-danger"></small>
                 </div>
@@ -261,8 +262,8 @@
                     <label>Status</label>
                     <select name="aktif" id="aktif" class="form-control" required>
                         <option value="">-- Pilih Status --</option>
-                        <option value="1">Aktif</option>
-                        <option value="0">Tidak Aktif</option>
+                        <option value="ya">Aktif</option>
+                        <option value="tidak">Tidak Aktif</option>
                     </select>
                     <small id="error-aktif" class="error-text form-text text-danger"></small>
                 </div>
@@ -295,7 +296,7 @@
                     data: $(form).serialize(),
                     success: function(response) {
                         if (response.status) {
-                            $('#modal-riwayat-pendidikan').modal('hide');
+                            $('#myModal').modal('hide');
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Berhasil',
