@@ -74,7 +74,7 @@ class JabatanStrukturalController extends Controller
         'id_unit_kerja'    => 'required|exists:t_unit_kerja,id_unit_kerja',
         'tmt_jabatan'      => 'required|date',
         'status_jabatan'   => 'required|in:mutasi,promosi',
-        'aktif'            => 'required|boolean',
+        'aktif' => 'required|in:ya,tidak',
     ]);
 
     JabatanStrukturalModel::create($request->all());

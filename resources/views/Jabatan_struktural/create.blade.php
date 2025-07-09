@@ -61,11 +61,11 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Status Aktif</label>
+                    <label>Status</label>
                     <select name="aktif" id="aktif" class="form-control" required>
                         <option value="">-- Pilih Status --</option>
-                        <option value="1">Aktif</option>
-                        <option value="0">Tidak Aktif</option>
+                        <option value="ya">Aktif</option>
+                        <option value="tidak">Tidak Aktif</option>
                     </select>
                     <small id="error-aktif" class="error-text form-text text-danger"></small>
                 </div>
