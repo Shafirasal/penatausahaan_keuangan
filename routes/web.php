@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\JabatanFungsionalController;
 use App\Http\Controllers\JabatanStrukturalController;
+use App\Http\Controllers\RiwayatKepegawaianController;
 use App\Http\Controllers\RiwayatPendidikanController;
 use Illuminate\Support\Facades\Route;
 
@@ -46,7 +47,6 @@ Route::prefix('riwayat_pendidikan')->middleware('web')->group(function () {
     Route::put('/{id}/update', [RiwayatPendidikanController::class, 'update']);
 });
 
-
 Route::prefix('jabatan_fungsional')->middleware('web')->group(function () {
     Route::get('/', [JabatanFungsionalController::class, 'index']);
     Route::post('/list', [JabatanFungsionalController::class, 'list']);
@@ -59,4 +59,16 @@ Route::prefix('jabatan_fungsional')->middleware('web')->group(function () {
     Route::delete('/{id}/delete', [JabatanFungsionalController::class, 'delete']);
 });
 
+
+
+Route::prefix('riwayat_kepegawaian')->middleware('web')->group(function () {
+    Route::get('/', [RiwayatKepegawaianController::class, 'index']);
+    Route::post('/list', [RiwayatKepegawaianController::class, 'list']);
+    Route::get('/create', [RiwayatKepegawaianController::class, 'create']);
+    Route::get('/{id}/show', [RiwayatKepegawaianController::class, 'show']);
+    Route::get('/{id}/confirm', [RiwayatKepegawaianController::class, 'confirm']);
+    Route::delete('/{id}/delete', [RiwayatKepegawaianController::class, 'delete']);
+        Route::get('/{id}/edit', [RiwayatKepegawaianController::class, 'edit']);
+    Route::put('/{id}/update', [RiwayatKepegawaianController::class, 'update']);
+});
 
