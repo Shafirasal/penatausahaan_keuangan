@@ -35,6 +35,8 @@ Route::prefix('jabatan_struktural')->name('jabatan_struktural.')->middleware('we
     Route::get('/{id}/show', [JabatanStrukturalController::class, 'show']);
     Route::get('/create', [JabatanStrukturalController::class, 'create']);
     Route::post('/store', [JabatanStrukturalController::class, 'store']);
+        Route::get('/{id}/confirm', [JabatanStrukturalController::class, 'confirm']);
+    Route::delete('/{id}/delete', [JabatanStrukturalController::class, 'delete']);
 });
 
 

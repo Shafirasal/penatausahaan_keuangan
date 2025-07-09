@@ -1,5 +1,5 @@
 @if(empty($jabatan))
-    <div id="modal-jabatan-struktural" class="modal-dialog modal-lg" role="document">
+    <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Kesalahan</h5>
@@ -21,7 +21,7 @@
         @csrf
         @method('DELETE')
 
-        <div id="modal-jabatan-struktural" class="modal-dialog modal-lg" role="document">
+        <div id="modal-master" class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Hapus Jabatan Struktural</h5>
