@@ -17,7 +17,7 @@
         </div>
     </div>
 @else
-    <form action="{{ url('/jabatan_fungsional/' . $jabatan_fungsional->id_jabatan_fungsional . '/delete') }}" method="POST" id="form-delete-jabatan-fungsional">
+    <form action="{{ url('/jabatan_fungsional/' . $jabatan_fungsional->id_jabatan_fungsional . '/delete') }}" method="POST" id="form-delete">
         @csrf
         @method('DELETE')
         <div id="modal-master" class="modal-dialog modal-lg" role="document">
@@ -73,7 +73,7 @@
 
     <script>
         $(document).ready(function() {
-            $("#form-delete-jabatan-fungsional").validate({
+            $("#form-delete").validate({
                 rules: {},
                 submitHandler: function(form) {
                     $.ajax({

@@ -17,7 +17,7 @@
         </div>
     </div>
 @else
-    <form action="{{ url('/riwayat_pendidikan/' . $riwayatPendidikan->id_pendidikan . '/delete') }}" method="POST" id="form-delete-riwayat-pendidikan">
+    <form action="{{ url('/riwayat_pendidikan/' . $riwayatPendidikan->id_pendidikan . '/delete') }}" method="POST" id="form-delete">
         @csrf
         @method('DELETE')
         <div id="modal-master" class="modal-dialog modal-lg" role="document">
@@ -58,7 +58,7 @@
 
     <script>
         $(document).ready(function() {
-            $("#form-delete-riwayat-pendidikan").validate({
+            $("#form-delete").validate({
                 rules: {},
                 submitHandler: function(form) {
                     $.ajax({

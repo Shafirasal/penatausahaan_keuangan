@@ -201,7 +201,7 @@
 
 
 
-<form action="{{ url('/riwayat_pendidikan/store') }}" method="POST" id="form-tambah-riwayat-pendidikan">
+<form action="{{ url('/riwayat_pendidikan/store') }}" method="POST" id="form-tambah">
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -280,7 +280,7 @@
 
 <script>
     $(document).ready(function() {
-        $("#form-tambah-riwayat-pendidikan").validate({
+        $("#form-tambah").validate({
             rules: {
                 nip: { required: true },
                 nama_sekolah: { required: true },
