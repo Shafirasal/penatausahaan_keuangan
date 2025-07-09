@@ -106,7 +106,6 @@
     $(document).ready(function () {
         $('#form-edit').validate({
             rules: {
-                nip: { required: true },
                 nama_jabatan: { required: true },
                 jenis_pelantikan: { required: true },
                 id_unit_kerja: { required: true },
