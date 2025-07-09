@@ -31,8 +31,10 @@ Route::get('/home', function () {
 
 Route::prefix('jabatan_struktural')->name('jabatan_struktural.')->middleware('web')->group(function () {
     Route::post('/list', [JabatanStrukturalController::class, 'list']);
-    Route::resource('/', JabatanStrukturalController::class)->parameters(['' => 'id']);
-        Route::get('/{id}/show', [JabatanStrukturalController::class, 'show']);
+    Route::get('/', [JabatanFungsionalController::class, 'index']);
+    Route::get('/{id}/show', [JabatanStrukturalController::class, 'show']);
+    Route::get('/create', [RiwayatPendidikanController::class, 'create']);
+    Route::post('/store', [RiwayatPendidikanController::class, 'store']);
 });
 
 
@@ -44,7 +46,7 @@ Route::prefix('riwayat_pendidikan')->middleware('web')->group(function () {
     Route::get('/{id}/show', [RiwayatPendidikanController::class, 'show']);
     Route::get('/{id}/confirm', [RiwayatPendidikanController::class, 'confirm']);
     Route::delete('/{id}/delete', [RiwayatPendidikanController::class, 'delete']);
-        Route::get('/{id}/edit', [RiwayatPendidikanController::class, 'edit']);
+    Route::get('/{id}/edit', [RiwayatPendidikanController::class, 'edit']);
     Route::put('/{id}/update', [RiwayatPendidikanController::class, 'update']);
 });
 
