@@ -10,7 +10,8 @@ class JabatanStrukturalModel extends Model
 {
     use HasFactory;
     protected $table = 't_jabatan_struktural';
-    protected $primaryKey = 'id_jabatan_stuktural';
+    protected $primaryKey = 'id_jabatan_struktural';
+
     public $timestamps = true;
 
     protected $fillable = [

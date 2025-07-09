@@ -22,4 +22,6 @@ class UnitKerjaModel extends Model
     {
         return $this->hasMany(JabatanStrukturalModel::class, 'id_unit_kerja');
     }
+
+    
 }

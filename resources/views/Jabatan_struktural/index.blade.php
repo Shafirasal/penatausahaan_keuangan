@@ -5,7 +5,10 @@
 @endsection
 
 @push('css')
-{{-- Tambahkan CSS tambahan DataTables di sini kalau perlu --}}
+{{-- 
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css"> 
+--}}
 @endpush
 
 @section('content')
@@ -16,35 +19,24 @@
   </div>
 
   <div class="section-body">
-    @if (session('success'))
-      <div class="alert alert-success">
-        {{ session('success') }}
-      </div>
-    @endif
-    @if (session('error'))
-      <div class="alert alert-danger">
-        {{ session('error') }}
-      </div>
-    @endif
-
     <div class="col-12">
       <div class="card">
         <div class="card-header">
           <h4>Data Jabatan Struktural</h4>
           <div class="card-header-action ml-auto">
-            <a href="{{ route('jabatan_struktural.create') }}" class="btn btn-primary">
+            <button onclick="modalAction(`{{ url('/jabatan_struktural/create') }}`)" class="btn btn-primary">
               <i class="fas fa-plus"></i> Tambah
-            </a>
+            </button>
           </div>
         </div>
 
         <div class="card-body">
           <div class="table-responsive">
-            <table class="table table-bordered table-striped table-hover dt-responsive nowrap" id="table_jabatan" style="width: 100%">
+            <table class="table table-bordered table-hover table-striped dt-responsive nowrap" id="table_jabatan" style="width:100%">
               <thead class="thead-light">
                 <tr>
                   <th>#</th>
-                  <th>NIP</th>
+                  <th>Nama Pegawai</th>
                   <th>Nama Jabatan</th>
                   <th>Jenis Pelantikan</th>
                   <th>Unit Kerja</th>
@@ -55,21 +47,20 @@
                 </tr>
               </thead>
               <tbody>
-                {{-- Data dimuat via DataTables --}}
+                {{-- Data dimuat dinamis via DataTables --}}
               </tbody>
             </table>
           </div>
         </div>
 
         <div class="card-footer text-right">
-          {{-- Pagination DataTables --}}
+          {{-- Pagination otomatis oleh DataTables --}}
         </div>
       </div>
     </div>
   </div>
 </section>
 
-{{-- Modal --}}
 <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 @endsection
 
@@ -81,41 +72,80 @@
     }
   });
 
-  $(document).ready(function () {
-    loadJabatanTable();
-  });
-
-  function loadJabatanTable() {
-    if ($.fn.DataTable.isDataTable('#table_jabatan')) {
-      $('#table_jabatan').DataTable().destroy();
-    }
-
-    $('#table_jabatan').DataTable({
-      processing: true,
-      serverSide: true,
-      responsive: true,
-      ajax: {
-        url: "{{ route('jabatan_struktural.data') }}",
-        type: "GET"
-      },
-      columns: [
-        { data: 'DT_RowIndex', orderable: false, searchable: false },
-        { data: 'nip' },
-        { data: 'nama_jabatan' },
-        { data: 'jenis_pelantikan' },
-        { data: 'id_unit_kerja' },
-        { data: 'tmt_jabatan' },
-        { data: 'status_jabatan' },
-        { data: 'aktif' },
-        { data: 'action', orderable: false, searchable: false }
-      ]
-    });
-  }
-
   function modalAction(url = '') {
     $('#myModal').load(url, function () {
       $('#myModal').modal('show');
     });
   }
+
+  var dataJabatanStruktural;
+
+  $(document).ready(function () {
+    dataJabatanStruktural = $('#table_jabatan').DataTable({
+      processing: true,
+      serverSide: true,
+      responsive: true,
+      ajax: {
+        url: "{{ url('/jabatan_struktural/list') }}",
+        type: "POST"
+      },
+      columns: [
+        {
+          data: 'DT_RowIndex',
+          className: 'text-center',
+          orderable: false,
+          searchable: false
+        },
+        {
+          data: 'nama_pegawai',
+          className: '',
+          orderable: true,
+          searchable: true
+        },
+        {
+          data: 'nama_jabatan',
+          className: '',
+          orderable: true,
+          searchable: true
+        },
+        {
+          data: 'jenis_pelantikan',
+          className: '',
+          orderable: true,
+          searchable: true
+        },
+        {
+          data: 'nama_unit_kerja',
+          className: '',
+          orderable: true,
+          searchable: true
+        },
+        {
+          data: 'tmt_jabatan',
+          className: 'text-center',
+          orderable: true,
+          searchable: true
+        },
+        {
+          data: 'status_jabatan',
+          className: '',
+          orderable: true,
+          searchable: true
+        },
+        {
+          data: 'aktif',
+          className: 'text-center',
+          orderable: false,
+          searchable: false
+        },
+        {
+          data: 'aksi',
+          className: 'text-center',
+          orderable: false,
+          searchable: false
+        }
+      ]
+    });
+  });
 </script>
 @endpush
