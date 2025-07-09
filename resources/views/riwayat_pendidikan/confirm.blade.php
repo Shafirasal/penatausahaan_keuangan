@@ -23,7 +23,7 @@
         <div id="modal-riwayat-pendidikan" class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Hapus Riwayat Pendidikan</h5>
+                    <h5 class="modal-title text-primary">Hapus Riwayat Pendidikan</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -49,8 +49,8 @@
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn" data-dismiss="modal" style="color: #EF5428; background-color: white; border-color: #EF5428;">Batal</button>
-                    <button type="submit" class="btn" style="color: white; background-color: #EF5428; border-color: #EF5428;">Ya, Hapus</button>
+                    <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Ya, Hapus</button>
                 </div>
             </div>
         </div>
@@ -67,13 +67,13 @@
                         data: $(form).serialize(),
                         success: function(response) {
                             if (response.status) {
-                                $('#modal-riwayat-pendidikan').modal('hide');
+                                $('#myModal').modal('hide');
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Berhasil',
                                     text: response.message
                                 });
-                                dataRiwayat.ajax.reload(); // Pastikan ini adalah instance DataTables kamu
+                                dataRiwayatPendidikan.ajax.reload(); // Pastikan ini adalah instance DataTables kamu
                             } else {
                                 Swal.fire({
                                     icon: 'error',
