@@ -89,5 +89,6 @@
   </script>
 
   @stack('js') <!-- For page-specific JS -->
+    @yield('scripts')
 </body>
 </html>
