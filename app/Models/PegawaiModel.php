@@ -50,4 +50,9 @@ class PegawaiModel extends Model
     return $this->hasMany(RiwayatKepegawaianModel::class, 'nip', 'nip');
     }
 
+    public function jabatanFungsional()
+    {
+        return $this->hasMany(JabatanFungsionalModel::class, 'nip', 'nip');
+    }
 }
+

@@ -8,7 +8,7 @@
           </div>
 
         {{--sidebar menu--}}
-          <ul class="sidebar-menu"> 
+          <ul class="sidebar-menu">
             <li class="menu-header">Dashboard</li>
               <li class="nav-item dropdown">
                 <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Dashboard</span></a>
@@ -22,7 +22,7 @@
                 <ul class="dropdown-menu">
 
                   <li><a class="nav-link" href="{{ url('/riwayat_pendidikan') }}">Riwayat Pendidikan</a></li>
-                  <li><a class="nav-link" href="layout-top-navigation.html">Jabatan Fungsional</a></li>
+                  <li><a class="nav-link" href="{{ url('/jabatan_fungsional') }}">Jabatan Fungsional</a></li>
                   <li><a class="nav-link" href="{{ route('jabatan_struktural.index') }}">Jabatan Struktural</a></li>
                   <li><a class="nav-link" href="layout-top-navigation.html">Riwayat Pegawai</a></li>
                 </ul>
@@ -34,7 +34,7 @@
                   <li><a class="nav-link" href="layout-transparent.html">Bagian PBJ</a></li>
                   <li><a class="nav-link" href="bootstrap-badge.html">Bagian LPSE</a></li>
                   <li><a class="nav-link" href="bootstrap-breadcrumb.html">Bagian Pembinaan</a></li>
-    
+
                 </ul>
               </li>
               <li class="menu-header">Transaksional</li>
@@ -55,8 +55,8 @@
                   <li><a class="nav-link" href="components-article.html">Bagian Pembinaan</a></li>
                 </ul>
               </li>
-              
-              
+
+
               <li class="menu-header">Laporan</li>
               <li class="nav-item dropdown">
                 <a href="#" class="nav-link has-dropdown"><i class="far fa-user"></i> <span>Auth</span></a>

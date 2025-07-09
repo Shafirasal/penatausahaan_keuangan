@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\JabatanFungsionalController;
 use App\Http\Controllers\JabatanStrukturalController;
 use App\Http\Controllers\RiwayatPendidikanController;
 use Illuminate\Support\Facades\Route;
@@ -44,4 +45,18 @@ Route::prefix('riwayat_pendidikan')->middleware('web')->group(function () {
         Route::get('/{id}/edit', [RiwayatPendidikanController::class, 'edit']);
     Route::put('/{id}/update', [RiwayatPendidikanController::class, 'update']);
 });
+
+
+Route::prefix('jabatan_fungsional')->middleware('web')->group(function () {
+    Route::get('/', [JabatanFungsionalController::class, 'index']);
+    Route::post('/list', [JabatanFungsionalController::class, 'list']);
+    Route::get('/create', [JabatanFungsionalController::class, 'create']);
+    Route::post('/store', [JabatanFungsionalController::class, 'store']);
+    Route::get('/{id}/show', [JabatanFungsionalController::class, 'show']); 
+    Route::get('/{id}/edit', [JabatanFungsionalController::class, 'edit']);
+    Route::put('/{id}/update', [JabatanFungsionalController::class, 'update']);
+    Route::get('/{id}/confirm', [JabatanFungsionalController::class, 'confirm']);
+    Route::delete('/{id}/delete', [JabatanFungsionalController::class, 'delete']);
+});
+
 
