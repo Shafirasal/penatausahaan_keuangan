@@ -1,4 +1,10 @@
+@extends('layouts.template')
 
+@section('title')
+| Tambah Jabatan Struktural
+@endsection
+
+@section('content')
 <div class="row justify-content-center mt-5">
     <div class="col-12">
         <div class="card mx-auto" style="max-width: 600px;">
@@ -72,6 +78,7 @@
         </div>
     </div>
 </div>
+@endsection
 
 @push('js')
 <script>

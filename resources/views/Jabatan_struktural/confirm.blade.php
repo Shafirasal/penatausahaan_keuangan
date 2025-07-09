@@ -17,9 +17,10 @@
         </div>
     </div>
 @else
-    <form method="POST" id="form-delete-jabatan-struktural" data-id="{{ $jabatan->id_jabatan_struktural }}">
+    <form id="form-delete-jabatan-struktural" method="POST" action="{{ url('/jabatan_struktural/' . $jabatan->id_jabatan_struktural . '/delete') }}">
         @csrf
         @method('DELETE')
+
         <div id="modal-jabatan-struktural" class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -30,7 +31,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-warning">
-                        <h5><i class="icon fas fa-ban"></i> Konfirmasi</h5>
+                        <h5><i class="icon fas fa-exclamation-triangle"></i> Konfirmasi</h5>
                         Apakah Anda yakin ingin menghapus data jabatan struktural berikut?
                     </div>
                     <table class="table table-sm table-bordered table-striped">
@@ -53,10 +54,51 @@
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn" data-dismiss="modal" style="color: #EF5428; background: white; border-color: #EF5428;">Batal</button>
-                    <button type="submit" class="btn" style="color: white; background: #EF5428; border-color: #EF5428;">Ya, Hapus</button>
+                    <button type="button" class="btn" data-dismiss="modal"
+                        style="color: #EF5428; background: white; border-color: #EF5428;">Batal</button>
+                    <button type="submit" class="btn"
+                        style="color: white; background: #EF5428; border-color: #EF5428;">Ya, Hapus</button>
                 </div>
             </div>
         </div>
     </form>
+
+    <script>
+        $(document).ready(function () {
+            $('#form-delete-jabatan-struktural').submit(function (e) {
+                e.preventDefault();
+                var form = $(this);
+
+                $.ajax({
+                    url: form.attr('action'),
+                    method: 'POST',
+                    data: form.serialize(),
+                    success: function (response) {
+                        if (response.status) {
+                            $('#myModal').modal('hide');
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: response.message
+                            });
+                            dataJabatanStruktural.ajax.reload();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: response.message
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Terjadi kesalahan server.'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 @endif
