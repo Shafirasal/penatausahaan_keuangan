@@ -1,5 +1,5 @@
 @empty($riwayatPendidikan)
-    <div id="modal-riwayat-pendidikan" class="modal-dialog modal-lg" role="document">
+    <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Kesalahan</h5>
@@ -20,7 +20,7 @@
     <form action="{{ url('/riwayat_pendidikan/' . $riwayatPendidikan->id_pendidikan . '/delete') }}" method="POST" id="form-delete-riwayat-pendidikan">
         @csrf
         @method('DELETE')
-        <div id="modal-riwayat-pendidikan" class="modal-dialog modal-lg" role="document">
+        <div id="modal-master" class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title text-primary">Hapus Riwayat Pendidikan</h5>

@@ -1,5 +1,5 @@
 @empty($jabatan_fungsional)
-    <div id="modal-jabatan-fungsional" class="modal-dialog modal-lg" role="document">
+    <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Kesalahan</h5>
@@ -20,7 +20,7 @@
     <form action="{{ url('/jabatan_fungsional/' . $jabatan_fungsional->id_jabatan_fungsional . '/delete') }}" method="POST" id="form-delete-jabatan-fungsional">
         @csrf
         @method('DELETE')
-        <div id="modal-jabatan-fungsional" class="modal-dialog modal-lg" role="document">
+        <div id="modal-master" class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Hapus Jabatan Fungsional</h5>
