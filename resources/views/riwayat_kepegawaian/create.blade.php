@@ -1,6 +1,6 @@
-<form action="{{ url('/riwayat_kepegawaian/store') }}" method="POST" id="form-create-riwayat" enctype="multipart/form-data">
+<form action="{{ url('/riwayat_kepegawaian/store') }}" method="POST" id="form-tambah" enctype="multipart/form-data">
     @csrf
-    <div class="modal-dialog modal-lg" role="document">
+    <div id="modal-master" class="modal-dialog modal-lg" role="document" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title text-primary">Tambah Riwayat Kepegawaian</h5>
@@ -86,7 +86,7 @@
 
 <script>
 $(document).ready(function() {
-    $("#form-create-riwayat").validate({
+    $("#form-tambah").validate({
         rules: {
             nip: { required: true },
             id_golongan: { required: true },
@@ -112,9 +112,7 @@ $(document).ready(function() {
                             title: 'Berhasil',
                             text: response.message
                         });
-                        if (typeof $('#table-riwayat').DataTable() !== 'undefined') {
-                            $('#table-riwayat').DataTable().ajax.reload();
-                        }
+                        dataRiwayatKepegawaian.ajax.reload();
                     }
                 },
                 error: function(xhr) {
