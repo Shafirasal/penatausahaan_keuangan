@@ -17,6 +17,10 @@
   <link rel="stylesheet" href="{{ asset('stisla1/assets/css/style.css') }}">
   <link rel="stylesheet" href="{{ asset('stisla1/assets/css/components.css') }}">
 
+<!-- Bootstrap Datepicker CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+
+
   @stack('css') <!-- For page-specific CSS -->
 </head>
 
@@ -88,7 +92,13 @@
     });
   </script>
 
+
+
+<!-- Bootstrap Datepicker JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+
   @stack('js') <!-- For page-specific JS -->
-    @yield('scripts')
+  @yield('scripts')
 </body>
 </html>
