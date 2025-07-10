@@ -152,7 +152,8 @@ class RiwayatPendidikanController extends Controller
                 'nama_sekolah'   => 'required|string|max:255',
                 'tingkat'        => 'required|string|max:50',
                 'prodi_jurusan'  => 'nullable|string|max:100',
-                'tahun_lulus'    => 'required|digits:4|integer|min:1900|max:' . date('Y'),
+                // 'tahun_lulus'    => 'required|digits:4|integer|min:1900|max:' . date('Y'),
+                'tahun_lulus'    =>'required|date',
                 'aktif'          => 'required|in:ya,tidak',
             ];
 

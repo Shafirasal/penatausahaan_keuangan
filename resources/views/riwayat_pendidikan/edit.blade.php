@@ -318,11 +318,15 @@
                     <small id="error-prodi_jurusan" class="error-text form-text text-danger"></small>
                 </div>
 
+                {{-- <div class="form-group">
+                    <label>Tahun Lulus</label>
+                        <input type="text" name="tahun_lulus" id="tahun_lulus" class="form-control datepicker-year" value="{{ \Carbon\Carbon::parse($riwayat->tahun_lulus)->format('Y') }}">
+                    <small id="error-tahun_lulus" class="error-text form-text text-danger"></small>
+                </div> --}}
+
                 <div class="form-group">
                     <label>Tahun Lulus</label>
-<input type="text" name="tahun_lulus" id="tahun_lulus" class="form-control datepicker-year" value="{{ \Carbon\Carbon::parse($riwayat->tahun_lulus)->format('Y') }}">
-
-
+                    <input type="date" name="tahun_lulus" id="tahun_lulus" class="form-control" value="{{ $riwayat->tahun_lulus }}" required>
                     <small id="error-tahun_lulus" class="error-text form-text text-danger"></small>
                 </div>
 
@@ -403,15 +407,15 @@
         });
     });
 
-        $(document).ready(function () {
+    //     $(document).ready(function () {
         
-        $('#tahun_lulus').datepicker({
-            format: "yyyy",
-            viewMode: "years",
-            minViewMode: "years",
-            autoclose: true
-        });
-    });
+    //     $('#tahun_lulus').datepicker({
+    //         format: "yyyy",
+    //         viewMode: "years",
+    //         minViewMode: "years",
+    //         autoclose: true
+    //     });
+    // });
 </script>
 @endempty
 
