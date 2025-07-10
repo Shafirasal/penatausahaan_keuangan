@@ -74,29 +74,40 @@ public function confirm(string $id)
     return view('riwayat_kepegawaian.confirm', ['kepegawaian' => $kepegawaian]);
 }
 
-public function delete(Request $request, $id)
-{
-    if ($request->ajax()) {
-        $kepegawaian = RiwayatKepegawaianModel::find($id);
+    public function delete(Request $request, $id)
+    {
+        if ($request->ajax()) {
+            $kepegawaian = RiwayatKepegawaianModel::find($id);
 
-        if (!$kepegawaian) {
+            if (!$kepegawaian) {
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Data tidak ditemukan.'
+                ]);
+            }
+
+            $kepegawaian->delete();
+
             return response()->json([
-                'status'  => false,
-                'message' => 'Data tidak ditemukan.'
+                'status'  => true,
+                'message' => 'Data berhasil dihapus.'
             ]);
         }
 
-        $kepegawaian->delete();
-
-        return response()->json([
-            'status'  => true,
-            'message' => 'Data berhasil dihapus.'
-        ]);
+        return redirect()->route('riwayat_kepegawaian.index');
     }
+        public function edit($id)
+    {
+        $data = RiwayatKepegawaianModel::findOrFail($id);
+        $golongan = GolonganModel::all();
+        $jenisKp = JenisKenaikanPangkatModel::all();
 
-    return redirect()->route('riwayat_kepegawaian.index');
-}
+        if (!$jenisKp) {
+            abort(404);
+        }
 
+        return view('riwayat_kepegawaian.edit', compact('data', 'golongan', 'jenisKp'));
+    }
 
 
     public function store(Request $request)
@@ -131,6 +142,7 @@ public function delete(Request $request, $id)
         $data->save();
 
         return response()->json([
+            'status' => true,
             'message' => 'Data Riwayat Kepegawaian berhasil disimpan!'
         ], 200);
     }
