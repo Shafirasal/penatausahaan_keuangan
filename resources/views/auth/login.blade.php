@@ -31,12 +31,16 @@
 
                         <form id="loginForm" method="POST" action="#" class="needs-validation" novalidate="">
                             @csrf
+
+                            <!-- Tambahkan di sini -->
+                            <div id="loginError" class="alert alert-danger d-none"></div>
+
                             <div class="form-group">
                                 <label for="nip">NIP</label>
                                 <input id="nip" type="text" class="form-control" name="nip" required
                                     autofocus>
                                 <div class="invalid-feedback">
-                                    Masukkan NIP
+                                    Masukkan NIP yang benar
                                 </div>
                             </div>
 
@@ -44,7 +48,7 @@
                                 <label for="password">Password</label>
                                 <input id="password" type="password" class="form-control" name="password" required>
                                 <div class="invalid-feedback">
-                                    Masukkan Password
+                                    Masukkan password yang benar
                                 </div>
                             </div>
 
@@ -100,21 +104,29 @@
                             Authorization: 'Bearer ' + token
                         },
                         success: function() {
-                            // ✅ Selesai, redirect ke dashboard
                             window.location.href = '/home';
                         },
                         error: function() {
-                            alert('Gagal menyimpan session');
+                            $('#loginError').removeClass('d-none').text(
+                                'Gagal menyimpan session');
                         }
                     });
                 },
                 error: function(xhr) {
-                    alert('Login gagal: ' + xhr.responseJSON.message);
+                    const message = xhr.responseJSON?.message || 'Login gagal. Silakan coba lagi.';
+                    $('#loginError').removeClass('d-none').text(message);
+                    $('#nip, #password').addClass('is-invalid');
                 }
             });
+        });
 
+        // Hapus error saat input berubah
+        $('#nip, #password').on('input', function() {
+            $(this).removeClass('is-invalid');
+            $('#loginError').addClass('d-none').text('');
         });
     </script>
+
 
 </body>
 

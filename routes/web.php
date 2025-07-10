@@ -22,9 +22,11 @@ Route::get('/login', function () {
 })->name('login');
 Route::get('/sync-session', [AuthController::class, 'syncSession'])->middleware('web');
 
+Route::post('/logout', [AuthController::class, 'logout'])->middleware(['web'])->name('logout');
+Route::middleware(['web', 'session.auth'])->group(function () {
 Route::get('/home', function () {
     return view('home');
-})->middleware('web');
+});
 
 
 
@@ -78,5 +80,7 @@ Route::prefix('riwayat_kepegawaian')->middleware('web')->group(function () {
     Route::delete('/{id}/delete', [RiwayatKepegawaianController::class, 'delete']);
         Route::get('/{id}/edit', [RiwayatKepegawaianController::class, 'edit']);
     Route::put('/{id}/update', [RiwayatKepegawaianController::class, 'update']);
+});
+
 });
 

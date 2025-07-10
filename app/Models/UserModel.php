@@ -55,4 +55,10 @@ class UserModel extends Authenticatable implements JWTSubject
             'level' => $this->level,
         ];
     }
+
+
+    public function pegawai()
+    {
+        return $this->belongsTo(PegawaiModel::class, 'nip', 'nip');
+    }
 }

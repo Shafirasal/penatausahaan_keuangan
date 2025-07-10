@@ -66,6 +66,7 @@
 @endsection
 @push('js')
 <script>
+    
   // Konfigurasi CSRF token untuk Ajax
   $.ajaxSetup({
     headers: {

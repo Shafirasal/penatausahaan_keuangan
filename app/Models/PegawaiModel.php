@@ -54,5 +54,9 @@ class PegawaiModel extends Model
     {
         return $this->hasMany(JabatanFungsionalModel::class, 'nip', 'nip');
     }
+
+    public function user(){
+        return $this->hasOne(UserModel::class, 'nip', 'nip');
+    }
 }
 

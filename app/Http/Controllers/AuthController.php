@@ -49,20 +49,20 @@ class AuthController extends Controller
             'nip' => 'required|string',
             'password' => 'required|string',
         ]);
+
         $credentials = $request->only('nip', 'password');
 
-        $token = Auth::guard('api')->attempt($credentials);
-        if (!$token) {
+        if (!$token = Auth::guard('api')->attempt($credentials)) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Unauthorized',
+                'status' => false,
+                'message' => 'NIP atau password salah',
             ], 401);
         }
 
-        $user = Auth::guard('api')->user();
         return response()->json([
-            'status' => 'success',
-            'user' => $user,
+            'status' => true,
+            'message' => 'Login berhasil',
+            'user' => Auth::guard('api')->user(),
             'authorisation' => [
                 'token' => $token,
                 'type' => 'bearer',
@@ -70,14 +70,22 @@ class AuthController extends Controller
         ]);
     }
 
-    public function logout()
-    {
-        Auth::guard('api')->logout();
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Successfully logged out',
-        ]);
-    }
+    public function logout(Request $request)
+{
+    // Hapus semua data session
+    $request->session()->invalidate();
+
+    // Regenerasi token CSRF untuk sesi berikutnya (jika diperlukan)
+    $request->session()->regenerateToken();
+
+    // Return JSON response
+    return response()->json([
+        'success' => true,
+        'message' => 'Berhasil logout dan sesi dihapus'
+    ]);
+}
+
+
 
 
     public function refresh()
@@ -94,17 +102,25 @@ class AuthController extends Controller
 
     public function syncSession(Request $request)
     {
-        $user = auth('api')->user();
+        try {
+            $token = $request->bearerToken();
+            if (!$token) {
+                return response()->json(['error' => 'Token not provided'], 401);
+            }
 
-        if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            $user = JWTAuth::setToken($token)->authenticate();
+            if (!$user) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            Auth::login($user);
+
+            session()->put('nip', $user->nip);
+            session()->put('level', $user->level);
+            session()->put('nama', optional($user->pegawai)->nama); // pakai relasi
+
+            return response()->json(['message' => 'Session synced']);
+        } catch (\PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException $e) {
+            return response()->json(['error' => 'Token error: ' . $e->getMessage()], 401);
         }
-
-        session()->put('nip', $user->nip);
-        session()->put('level', $user->level);
-
-        return response()->json([
-            'message' => 'Session synced',
-        ]);
     }
 }
