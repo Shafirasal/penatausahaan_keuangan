@@ -6,8 +6,8 @@
 
 @push('css')
 {{-- 
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css"> 
 --}}
 @endpush
 
@@ -15,7 +15,7 @@
 <section class="section">
   <div class="section-header">
     <h1>{{ $breadcrumb->title ?? 'Riwayat Kepegawaian' }}</h1>
-    @include('layouts.breadcrumb', ['list' => $breadcrumb->list ?? []])
+    @include('layouts.breadcrumb', ['list' => $breadcrumb->list])
   </div>
 
   <div class="section-body">
@@ -32,17 +32,18 @@
 
         <div class="card-body">
           <div class="table-responsive">
-            <table class="table table-bordered table-hover table-striped dt-responsive nowrap" id="table-riwayat" style="width:100%">
+            <table class="table table-bordered table-hover table-striped dt-responsive nowrap" id="table_riwayat" style="width:100%">
               <thead class="thead-light">
                 <tr>
                   <th>#</th>
-                  <th>NIP</th>
                   <th>Nama Pegawai</th>
                   <th>Golongan</th>
-                  <th>Jenis KP</th>
+                  <th>Jenis Kenaikan Pangkat</th>
                   <th>TMT Pangkat</th>
                   <th>Masa Kerja</th>
+                  <th>Keterangan</th>
                   <th>File</th>
+                  <th>Aktif</th>
                   <th>Aksi</th>
                 </tr>
               </thead>
@@ -66,6 +67,12 @@
 
 @push('js')
 <script>
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+
   function modalAction(url = '') {
     $('#myModal').load(url, function () {
       $('#myModal').modal('show');
@@ -75,16 +82,13 @@
   var dataRiwayatKepegawaian;
 
   $(document).ready(function () {
-    dataRiwayatKepegawaian = $('#table-riwayat').DataTable({
+    dataRiwayatKepegawaian = $('#table_riwayat').DataTable({
       processing: true,
       serverSide: true,
       responsive: true,
       ajax: {
         url: "{{ url('/riwayat_kepegawaian/list') }}",
-        type: "POST",
-        data: {
-          _token: "{{ csrf_token() }}"
-        }
+        type: "POST"
       },
       columns: [
         {
@@ -94,25 +98,19 @@
           searchable: false
         },
         {
-          data: 'nip',
+          data: 'nama_pegawai',
           className: '',
           orderable: true,
           searchable: true
         },
         {
-          data: 'pegawai_nama',
+          data: 'nama_golongan',
           className: '',
           orderable: true,
           searchable: true
         },
         {
-          data: 'golongan_nama',
-          className: '',
-          orderable: true,
-          searchable: true
-        },
-        {
-          data: 'jenis_kp_nama',
+          data: 'nama_jenis_kp',
           className: '',
           orderable: true,
           searchable: true
@@ -125,15 +123,26 @@
         },
         {
           data: null,
-          render: function(data) {
-            return data.masa_kerja_tahun + ' Tahun ' + data.masa_kerja_bulan + ' Bulan';
+          render: function (data, type, row) {
+            return row.masa_kerja_tahun + ' th ' + row.masa_kerja_bulan + ' bln';
           },
-          className: 'text-center',
-          orderable: false,
-          searchable: false
+          className: 'text-center'
+        },
+        {
+          data: 'keterangan',
+          className: '',
+          orderable: true,
+          searchable: true
         },
         {
           data: 'file',
+          className: '',
+          render: function (data, type, row) {
+            return data ? `<a href="/storage/${data}" target="_blank">Lihat File</a>` : '-';
+          }
+        },
+        {
+          data: 'aktif',
           className: 'text-center',
           orderable: false,
           searchable: false

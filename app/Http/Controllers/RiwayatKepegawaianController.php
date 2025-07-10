@@ -14,45 +14,51 @@ class RiwayatKepegawaianController extends Controller
 {
     public function index()
     {
-        return view('riwayat_kepegawaian.index');
+        $breadcrumb = (object)[
+            'title' => 'Riwayat Kepegawaian',
+            'list' => ['Home', 'Riwayat Kepegawaian']
+        ];
+
+        $page = (object)[
+            'title' => 'Data Riwayat Kepegawaian'
+        ];
+
+        $activeMenu = 'riwayat-kepegawaian';
+
+        return view('riwayat_kepegawaian.index', compact('breadcrumb', 'page', 'activeMenu'));
     }
 
+
+    
     public function list(Request $request)
     {
-        if ($request->ajax()) {
-            $data = RiwayatKepegawaianModel::with(['pegawai', 'golongan', 'jenisKenaikanPangkat'])
-                ->where('aktif', 1)
-                ->get();
+        $data = RiwayatKepegawaianModel::with(['pegawai', 'golongan', 'jenisKenaikanPangkat'])->select(
+            'id_riwayat_kepegawaian',
+            'nip',
+            'id_golongan',
+            'id_jenis_kp',
+            'tmt_pangkat',
+            'file',
+            'masa_kerja_tahun',
+            'masa_kerja_bulan',
+            'keterangan',
+            'aktif'
+        );
 
-            return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('pegawai_nama', function ($row) {
-                    return $row->pegawai->nama ?? '-';
-                })
-                ->addColumn('golongan_nama', function ($row) {
-                    return $row->golongan->nama_golongan ?? '-';
-                })
-                ->addColumn('jenis_kp_nama', function ($row) {
-                    return $row->jenisKenaikanPangkat->nama_jenis_kp ?? '-';
-                })
-                ->addColumn('file', function ($row) {
-                    if ($row->file) {
-                        return '<a href="'.asset('storage/'.$row->file).'" target="_blank">Lihat File</a>';
-                    }
-                    return '-';
-                })
-                ->addColumn('aksi', function ($row) {
-                    return '
-                        <button class="btn btn-sm btn-primary edit" data-id="'.$row->id_riwayat_kepegawaian.'">Edit</button>
-                        <button class="btn btn-sm btn-danger delete" data-id="'.$row->id_riwayat_kepegawaian.'">Hapus</button>
-                    ';
-                })
-                ->rawColumns(['aksi', 'file'])
-                ->make(true);
-        }
-
-        // KALAU BUKAN AJAX
-        return abort(404);
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('nama_pegawai', fn($row) => $row->pegawai->nama ?? '-')
+            ->addColumn('nama_golongan', fn($row) => $row->golongan->nama_golongan ?? '-')
+            ->addColumn('nama_jenis_kp', fn($row) => $row->jenisKenaikanPangkat->nama_jenis ?? '-')
+            ->addColumn('aksi', function ($row) {
+                return '
+                    <button onclick="modalAction(`' . url('/riwayat_kepegawaian/' . $row->id_riwayat_kepegawaian . '/show') . '`)" class="btn btn-info btn-sm">Detail</button>
+                    <button onclick="modalAction(`' . url('/riwayat_kepegawaian/' . $row->id_riwayat_kepegawaian . '/edit') . '`)" class="btn btn-warning btn-sm">Edit</button>
+                    <button onclick="modalAction(`' . url('/riwayat_kepegawaian/' . $row->id_riwayat_kepegawaian . '/confirm') . '`)" class="btn btn-danger btn-sm">Hapus</button>
+                ';
+            })
+            ->rawColumns(['aksi'])
+            ->toJson();
     }
 
     public function store(Request $request)
