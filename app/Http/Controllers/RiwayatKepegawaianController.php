@@ -142,7 +142,6 @@ public function delete(Request $request, $id)
     return view('riwayat_kepegawaian.create', compact('pegawai', 'golongan', 'jenisKp'));
     }
 
-
     public function update(Request $request, $id)
     {
         $riwayat = RiwayatKepegawaianModel::findOrFail($id);
@@ -182,11 +181,4 @@ public function delete(Request $request, $id)
         return response()->json(['message' => 'Data berhasil diperbarui']);
     }
 
-    public function destroy($id)
-    {
-        $riwayat = RiwayatKepegawaianModel::findOrFail($id);
-        $riwayat->delete();
-
-        return response()->json(['message' => 'Data berhasil dihapus']);
-    }
 }
