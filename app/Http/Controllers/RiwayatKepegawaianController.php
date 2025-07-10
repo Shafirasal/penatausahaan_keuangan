@@ -61,6 +61,44 @@ class RiwayatKepegawaianController extends Controller
             ->toJson();
     }
 
+    public function show(string $id)
+{
+    $kepegawaian = RiwayatKepegawaianModel::with(['pegawai', 'golongan', 'jenisKenaikanPangkat'])->findOrFail($id);
+    return view('riwayat_kepegawaian.show', ['kepegawaian' => $kepegawaian]);
+}
+
+public function confirm(string $id)
+{
+    $kepegawaian = RiwayatKepegawaianModel::with(['pegawai', 'golongan', 'jenisKenaikanPangkat'])->find($id);
+
+    return view('riwayat_kepegawaian.confirm', ['kepegawaian' => $kepegawaian]);
+}
+
+public function delete(Request $request, $id)
+{
+    if ($request->ajax()) {
+        $kepegawaian = RiwayatKepegawaianModel::find($id);
+
+        if (!$kepegawaian) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Data tidak ditemukan.'
+            ]);
+        }
+
+        $kepegawaian->delete();
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Data berhasil dihapus.'
+        ]);
+    }
+
+    return redirect()->route('riwayat_kepegawaian.index');
+}
+
+
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
