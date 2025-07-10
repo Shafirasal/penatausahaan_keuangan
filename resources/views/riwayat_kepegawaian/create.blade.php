@@ -38,7 +38,7 @@
                     <select name="id_jenis_kp" id="id_jenis_kp" class="form-control" required>
                         <option value="">-- Pilih Jenis KP --</option>
                         @foreach ($jenisKp as $row)
-                        <option value="{{ $row->id_jenis_kp }}">{{ $row->nama_jenis_kp }}</option>
+                        <option value="{{ $row->id_jenis_kp }}">{{ $row->nama_jenis }}</option>
                         @endforeach
                     </select>
                     <small id="error-id_jenis_kp" class="error-text form-text text-danger"></small>

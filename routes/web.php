@@ -72,6 +72,7 @@ Route::prefix('riwayat_kepegawaian')->middleware('web')->group(function () {
     Route::get('/', [RiwayatKepegawaianController::class, 'index']);
     Route::post('/list', [RiwayatKepegawaianController::class, 'list']);
     Route::get('/create', [RiwayatKepegawaianController::class, 'create']);
+    Route::post('/store', [RiwayatKepegawaianController::class, 'store']);
     Route::get('/{id}/show', [RiwayatKepegawaianController::class, 'show']);
     Route::get('/{id}/confirm', [RiwayatKepegawaianController::class, 'confirm']);
     Route::delete('/{id}/delete', [RiwayatKepegawaianController::class, 'delete']);
