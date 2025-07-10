@@ -63,42 +63,40 @@ class RiwayatKepegawaianController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'nip' => 'required|exists:t_pegawai,nip',
-            'file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
             'id_golongan' => 'required|exists:t_golongan,id_golongan',
             'id_jenis_kp' => 'required|exists:t_jenis_kenaikan_pangkat,id_jenis_kp',
-            'masa_kerja_tahun' => 'required|integer',
-            'masa_kerja_bulan' => 'required|integer',
+            'masa_kerja_tahun' => 'required|integer|min:0',
+            'masa_kerja_bulan' => 'required|integer|min:0|max:12',
             'tmt_pangkat' => 'required|date',
             'keterangan' => 'nullable|string',
+            'file' => 'nullable|file|mimes:pdf|max:2048',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $data = $request->only([
-            'nip',
-            'id_golongan',
-            'id_jenis_kp',
-            'masa_kerja_tahun',
-            'masa_kerja_bulan',
-            'tmt_pangkat',
-            'keterangan'
-        ]);
-
+        $filePath = null;
         if ($request->hasFile('file')) {
-            $file = $request->file('file')->store('riwayat_kepegawaian', 'public');
-            $data['file'] = $file;
+            $filePath = $request->file('file')->store('riwayat_kepegawaian', 'public');
         }
 
-        $data['aktif'] = 1;
+        // membuat data
+        $data = new RiwayatKepegawaianModel();
+        $data->nip = $request->nip;
+        $data->id_golongan = $request->id_golongan;
+        $data->id_jenis_kp = $request->id_jenis_kp;
+        $data->masa_kerja_tahun = $request->masa_kerja_tahun;
+        $data->masa_kerja_bulan = $request->masa_kerja_bulan;
+        $data->tmt_pangkat = $request->tmt_pangkat;
+        $data->keterangan = $request->keterangan;
+        $data->file = $filePath;
+        $data->aktif = 1;
+        $data->save();
 
-        RiwayatKepegawaianModel::create($data);
-
-        return response()->json(['message' => 'Data berhasil disimpan']);
+        return response()->json([
+            'message' => 'Data Riwayat Kepegawaian berhasil disimpan!'
+        ], 200);
     }
+
     public function create() {
     $pegawai = PegawaiModel::all();
     $golongan = GolonganModel::all();
