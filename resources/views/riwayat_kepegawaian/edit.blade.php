@@ -94,8 +94,6 @@
         </div>
     </div>
 </form>
-
-@push('js')
 <script>
     $(document).ready(function () {
         $('#form-edit').validate({
@@ -107,25 +105,22 @@
                 file: { extension: "pdf|jpg|jpeg|png", filesize: 2 * 1024 * 1024 }
             },
             submitHandler: function (form) {
-                var formData = new FormData(form);
                 $.ajax({
                     url: form.action,
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (res) {
+                    type: form.method,
+                    data: $(form).serialize(),
+                    success: function (response) {
                         $('#myModal').modal('hide');
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil',
-                            text: res.message
+                            text: response.message
                         });
                         if (typeof dataRiwayatKepegawaian !== 'undefined') {
                             dataRiwayatKepegawaian.ajax.reload();
                         }
                     },
-                    error: function (xhr) {
+                    error: function () {
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal',
@@ -134,6 +129,17 @@
                     }
                 });
                 return false;
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element) {
+                $(element).removeClass('is-invalid');
             }
         });
 
@@ -142,5 +148,4 @@
         }, 'Ukuran file terlalu besar');
     });
 </script>
-@endpush
 @endempty
