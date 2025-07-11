@@ -40,7 +40,7 @@
                   <th>Golongan</th>
                   <th>Jenis Kenaikan Pangkat</th>
                   <th>TMT Pangkat</th>
-                  <th>Masa Kerja</th>
+                  <th>Masa Kerja</t   h>
                   <th>Keterangan</th>
                   <th>File</th>
                   <th>Aktif</th>
@@ -124,7 +124,7 @@
         {
           data: null,
           render: function (data, type, row) {
-            const masuk = new Date(row.tanggal_masuk); // Pastikan `row.tanggal_masuk` ada
+            const masuk = new Date(row.tmt_pangkat); // Pastikan `row.tanggal_masuk` ada
             const sekarang = new Date();
 
             let tahun = sekarang.getFullYear() - masuk.getFullYear();
