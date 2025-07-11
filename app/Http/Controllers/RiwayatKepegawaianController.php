@@ -113,7 +113,7 @@ public function confirm(string $id)
         $riwayat = RiwayatKepegawaianModel::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
-            'nip' => 'required|exists:t_pegawai,nip',
+            // 'nip' => 'required|exists:t_pegawai,nip',
             'file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
             'id_golongan' => 'required|exists:t_golongan,id_golongan',
             'id_jenis_kp' => 'required|exists:t_jenis_kenaikan_pangkat,id_jenis_kp',
