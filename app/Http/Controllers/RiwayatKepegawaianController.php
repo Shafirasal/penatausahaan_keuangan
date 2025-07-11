@@ -96,7 +96,7 @@ public function confirm(string $id)
     }
         public function edit($id)
     {
-        $data = RiwayatKepegawaianModel::findOrFail($id);
+        $kepegawaian = RiwayatKepegawaianModel::findOrFail($id);
         $golongan = GolonganModel::all();
         $jenisKp = JenisKenaikanPangkatModel::all();
 
@@ -104,9 +104,47 @@ public function confirm(string $id)
             abort(404);
         }
 
-        return view('riwayat_kepegawaian.edit', compact('data', 'golongan', 'jenisKp'));
+        return view('riwayat_kepegawaian.edit', compact('kepegawaian', 'golongan', 'jenisKp'));
     }
 
+
+    public function update(Request $request, $id)
+    {
+        $riwayat = RiwayatKepegawaianModel::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [
+            'nip' => 'required|exists:t_pegawai,nip',
+            'file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
+            'id_golongan' => 'required|exists:t_golongan,id_golongan',
+            'id_jenis_kp' => 'required|exists:t_jenis_kenaikan_pangkat,id_jenis_kp',
+            'tmt_pangkat' => 'required|date',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $data = $request->only([
+            'nip',
+            'id_golongan',
+            'id_jenis_kp',
+            'tmt_pangkat',
+            'keterangan',
+            'aktif'
+        ]);
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file')->store('riwayat_kepegawaian', 'public');
+            $data['file'] = $file;
+        }
+
+        $riwayat->update($data);
+
+        return response()->json(['message' => 'Data berhasil diperbarui']);
+    }
+    
+    
 
     public function store(Request $request)
     {
@@ -148,39 +186,5 @@ public function confirm(string $id)
     return view('riwayat_kepegawaian.create', compact('pegawai', 'golongan', 'jenisKp'));
     }
 
-    public function update(Request $request, $id)
-    {
-        $riwayat = RiwayatKepegawaianModel::findOrFail($id);
-
-        $validator = Validator::make($request->all(), [
-            'nip' => 'required|exists:t_pegawai,nip',
-            'file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
-            'id_golongan' => 'required|exists:t_golongan,id_golongan',
-            'id_jenis_kp' => 'required|exists:t_jenis_kenaikan_pangkat,id_jenis_kp',
-            'tmt_pangkat' => 'required|date',
-            'keterangan' => 'nullable|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $data = $request->only([
-            'nip',
-            'id_golongan',
-            'id_jenis_kp',
-            'tmt_pangkat',
-            'keterangan'
-        ]);
-
-        if ($request->hasFile('file')) {
-            $file = $request->file('file')->store('riwayat_kepegawaian', 'public');
-            $data['file'] = $file;
-        }
-
-        $riwayat->update($data);
-
-        return response()->json(['message' => 'Data berhasil diperbarui']);
-    }
 
 }
