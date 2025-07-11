@@ -18,8 +18,6 @@ class RiwayatKepegawaianModel extends Model
         'file',
         'id_golongan',
         'id_jenis_kp',
-        'masa_kerja_tahun',
-        'masa_kerja_bulan',
         'tmt_pangkat',
         'keterangan',
         'aktif'

@@ -41,16 +41,6 @@
         </div>
 
         <div class="form-group">
-          <label>Masa Kerja Tahun</label>
-          <input type="number" name="masa_kerja_tahun" class="form-control" value="{{ $data->masa_kerja_tahun }}" min="0" required>
-        </div>
-
-        <div class="form-group">
-          <label>Masa Kerja Bulan</label>
-          <input type="number" name="masa_kerja_bulan" class="form-control" value="{{ $data->masa_kerja_bulan }}" min="0" max="12" required>
-        </div>
-
-        <div class="form-group">
           <label>TMT Pangkat</label>
           <input type="date" name="tmt_pangkat" class="form-control" value="{{ $data->tmt_pangkat }}" required>
         </div>
@@ -84,8 +74,6 @@
       rules: {
         id_golongan: { required: true },
         id_jenis_kp: { required: true },
-        masa_kerja_tahun: { required: true, number: true, min: 0 },
-        masa_kerja_bulan: { required: true, number: true, min: 0, max: 12 },
         tmt_pangkat: { required: true, date: true },
         file: { extension: "pdf|jpg|jpeg|png", filesize: 2048 * 1024 }
       },

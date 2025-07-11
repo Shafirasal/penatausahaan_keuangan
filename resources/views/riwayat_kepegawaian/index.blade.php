@@ -124,7 +124,7 @@
         {
           data: null,
           render: function (data, type, row) {
-            const masuk = new Date(row.tmt_pangkat); // Pastikan `row.tanggal_masuk` ada
+            const masuk = new Date(row.tmt_pangkat);
             const sekarang = new Date();
 
             let tahun = sekarang.getFullYear() - masuk.getFullYear();

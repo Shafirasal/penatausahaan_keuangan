@@ -39,8 +39,6 @@ class RiwayatKepegawaianController extends Controller
             'id_jenis_kp',
             'tmt_pangkat',
             'file',
-            'masa_kerja_tahun',
-            'masa_kerja_bulan',
             'keterangan',
             'aktif'
         );
@@ -116,8 +114,6 @@ public function confirm(string $id)
             'nip' => 'required|exists:t_pegawai,nip',
             'id_golongan' => 'required|exists:t_golongan,id_golongan',
             'id_jenis_kp' => 'required|exists:t_jenis_kenaikan_pangkat,id_jenis_kp',
-            'masa_kerja_tahun' => 'required|integer|min:0',
-            'masa_kerja_bulan' => 'required|integer|min:0|max:12',
             'tmt_pangkat' => 'required|date',
             'keterangan' => 'nullable|string',
             'file' => 'nullable|file|mimes:pdf|max:2048',
@@ -133,8 +129,6 @@ public function confirm(string $id)
         $data->nip = $request->nip;
         $data->id_golongan = $request->id_golongan;
         $data->id_jenis_kp = $request->id_jenis_kp;
-        $data->masa_kerja_tahun = $request->masa_kerja_tahun;
-        $data->masa_kerja_bulan = $request->masa_kerja_bulan;
         $data->tmt_pangkat = $request->tmt_pangkat;
         $data->keterangan = $request->keterangan;
         $data->file = $filePath;
@@ -163,8 +157,6 @@ public function confirm(string $id)
             'file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
             'id_golongan' => 'required|exists:t_golongan,id_golongan',
             'id_jenis_kp' => 'required|exists:t_jenis_kenaikan_pangkat,id_jenis_kp',
-            'masa_kerja_tahun' => 'required|integer',
-            'masa_kerja_bulan' => 'required|integer',
             'tmt_pangkat' => 'required|date',
             'keterangan' => 'nullable|string',
         ]);
@@ -177,8 +169,6 @@ public function confirm(string $id)
             'nip',
             'id_golongan',
             'id_jenis_kp',
-            'masa_kerja_tahun',
-            'masa_kerja_bulan',
             'tmt_pangkat',
             'keterangan'
         ]);

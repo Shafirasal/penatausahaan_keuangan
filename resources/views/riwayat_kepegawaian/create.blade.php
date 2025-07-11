@@ -45,18 +45,6 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Masa Kerja (Tahun)</label>
-                    <input type="number" name="masa_kerja_tahun" id="masa_kerja_tahun" class="form-control" min="0" required>
-                    <small id="error-masa_kerja_tahun" class="error-text form-text text-danger"></small>
-                </div>
-
-                <div class="form-group">
-                    <label>Masa Kerja (Bulan)</label>
-                    <input type="number" name="masa_kerja_bulan" id="masa_kerja_bulan" class="form-control" min="0" max="12" required>
-                    <small id="error-masa_kerja_bulan" class="error-text form-text text-danger"></small>
-                </div>
-
-                <div class="form-group">
                     <label>TMT Pangkat</label>
                     <input type="date" name="tmt_pangkat" id="tmt_pangkat" class="form-control" required>
                     <small id="error-tmt_pangkat" class="error-text form-text text-danger"></small>
@@ -91,8 +79,6 @@ $(document).ready(function() {
             nip: { required: true },
             id_golongan: { required: true },
             id_jenis_kp: { required: true },
-            masa_kerja_tahun: { required: true, number: true, min: 0 },
-            masa_kerja_bulan: { required: true, number: true, min: 0, max: 12 },
             tmt_pangkat: { required: true, date: true },
         },
         submitHandler: function(form) {
