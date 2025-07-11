@@ -58,12 +58,13 @@
                     <small id="error-file" class="error-text form-text text-danger"></small>
                 </div>
 
+
                 <div class="form-group">
                     <label>Status</label>
                     <select name="aktif" id="aktif" class="form-control" required>
                         <option value="">-- Pilih Status --</option>
-                        <option value="1">Aktif</option>
-                        <option value="0">Tidak</option>
+                        <option value="ya">Aktif</option>
+                        <option value="tidak">Tidak Aktif</option>
                     </select>
                     <small id="error-aktif" class="error-text form-text text-danger"></small>
                 </div>
@@ -86,6 +87,7 @@ $(document).ready(function() {
             id_golongan: { required: true },
             id_jenis_kp: { required: true },
             tmt_pangkat: { required: true, date: true },
+            aktif: {required: true}
         },
         submitHandler: function(form) {
             var formData = new FormData(form);

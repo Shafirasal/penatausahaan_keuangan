@@ -155,6 +155,7 @@ public function confirm(string $id)
             'tmt_pangkat' => 'required|date',
             'keterangan' => 'nullable|string',
             'file' => 'nullable|file|mimes:pdf|max:2048',
+            'aktif' => 'required|in:ya,tidak'
         ]);
 
         $filePath = null;
