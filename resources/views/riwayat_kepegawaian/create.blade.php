@@ -13,12 +13,8 @@
 
                 <div class="form-group">
                     <label>NIP</label>
-                    <select name="nip" id="nip" class="form-control" required>
-                        <option value="">-- Pilih Pegawai --</option>
-                        @foreach ($pegawai as $row)
-                        <option value="{{ $row->nip }}">{{ $row->nip }} - {{ $row->nama }}</option>
-                        @endforeach
-                    </select>
+                    <input type="text" name="nip" id="nip" class="form-control"
+                        value="{{ session('nip') }}" readonly>
                     <small id="error-nip" class="error-text form-text text-danger"></small>
                 </div>
 
@@ -60,6 +56,16 @@
                     <label>Upload File</label>
                     <input type="file" name="file" id="file" class="form-control-file">
                     <small id="error-file" class="error-text form-text text-danger"></small>
+                </div>
+
+                <div class="form-group">
+                    <label>Status</label>
+                    <select name="aktif" id="aktif" class="form-control" required>
+                        <option value="">-- Pilih Status --</option>
+                        <option value="1">Aktif</option>
+                        <option value="0">Tidak</option>
+                    </select>
+                    <small id="error-aktif" class="error-text form-text text-danger"></small>
                 </div>
 
             </div>
