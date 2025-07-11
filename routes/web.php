@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JabatanFungsionalController;
 use App\Http\Controllers\JabatanStrukturalController;
 use App\Http\Controllers\RiwayatKepegawaianController;
@@ -29,7 +30,7 @@ Route::get('/home', function () {
 });
 
 
-
+// Route::get('/dashboard', [DashboardController::class, 'index']);
 
 Route::prefix('jabatan_struktural')->name('jabatan_struktural.')->middleware('web')->group(function () {
     Route::post('/list', [JabatanStrukturalController::class, 'list']);
