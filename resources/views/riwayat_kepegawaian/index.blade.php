@@ -124,7 +124,18 @@
         {
           data: null,
           render: function (data, type, row) {
-            return row.masa_kerja_tahun + ' th ' + row.masa_kerja_bulan + ' bln';
+            const masuk = new Date(row.tanggal_masuk); // Pastikan `row.tanggal_masuk` ada
+            const sekarang = new Date();
+
+            let tahun = sekarang.getFullYear() - masuk.getFullYear();
+            let bulan = sekarang.getMonth() - masuk.getMonth();
+
+            if (bulan < 0) {
+              tahun--;
+              bulan += 12;
+            }
+
+            return tahun + ' th ' + bulan + ' bln';
           },
           className: 'text-center'
         },
