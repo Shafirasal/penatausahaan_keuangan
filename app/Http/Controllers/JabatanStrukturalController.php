@@ -47,11 +47,10 @@ class JabatanStrukturalController extends Controller
             ->addColumn('nama_unit_kerja', fn($row) => $row->unitKerja->nama_unit_kerja ?? '-')
             ->editColumn('tmt_jabatan', fn($row) => \Carbon\Carbon::parse($row->tmt_jabatan)->format('d-m-Y'))
             ->addColumn('aksi', function ($row) {
-                return '
-                    <button onclick="modalAction(`' . url('/jabatan_struktural/' . $row->id_jabatan_struktural . '/show') . '`)" class="btn btn-info btn-sm">Detail</button>
-                    <button onclick="modalAction(`' . url('/jabatan_struktural/' . $row->id_jabatan_struktural . '/edit') . '`)" class="btn btn-warning btn-sm">Edit</button>
-                    <button onclick="modalAction(`' . url('/jabatan_struktural/' . $row->id_jabatan_struktural . '/confirm') . '`)" class="btn btn-danger btn-sm">Hapus</button>
-                ';
+                $btn = '<button onclick="modalAction(\'' . url('/jabatan_struktural/' . $row->id_jabatan_struktural . '/show') . '\')" class="btn btn-info btn-sm">Detail</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/jabatan_struktural/' . $row->id_jabatan_struktural . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/jabatan_struktural/' . $row->id_jabatan_struktural . '/confirm') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
+                return $btn;  
             })
             ->rawColumns(['aksi'])
             ->toJson();
