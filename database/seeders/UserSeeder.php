@@ -67,7 +67,6 @@ class UserSeeder extends Seeder
         //     'password' => Hash::make('12345'),
         // ]);
 
-
         // Tambah pegawai kedua
         DB::table('t_pegawai')->insert([
             'nip' => '67890',
