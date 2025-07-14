@@ -68,7 +68,7 @@ class UserSeeder extends Seeder
         // ]);
 
 
-                // Tambah pegawai kedua
+        // Tambah pegawai kedua
         DB::table('t_pegawai')->insert([
             'nip' => '67890',
             'nama' => 'admin1',
