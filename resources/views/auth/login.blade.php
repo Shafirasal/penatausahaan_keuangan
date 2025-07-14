@@ -105,23 +105,42 @@
     }
 
     .content {
-      height:100vh;
-      background: #222;
+      background: #4f443e;
       color: #fff;
-      padding: 80px 0;
+      padding: 100px 0;
+    }
+
+    .content i {
+      color: #fff;
     }
 
     .content h5 {
-      color: #d23553;
-      font-size: 22px;
+      font-size: 24px;
       margin-bottom: 10px;
     }
 
     .content p {
-      margin: 0;
       font-size: 16px;
       line-height: 1.6;
     }
+
+    .kontak-item {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 0.8s ease-out;
+    }
+
+    .kontak-item.is-inview {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .maps-embed iframe {
+      width: 100%;
+      height: 300px;
+      border: none;
+    }
+
 
     .tentang-section {
       position: relative;
@@ -136,6 +155,7 @@
       opacity: 0;
       transform: translateY(50px);
       transition: all 0.8s ease-out;
+      margin-bottom: 30px;
     }
 
     .tentang-item.is-inview {
@@ -146,7 +166,7 @@
     .tentang-image-wrapper {
       position: sticky;
       top: 100px; /* jarak dari atas viewport */
-      height: 80vh;
+      max-height: 80vh;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -157,6 +177,7 @@
       width: 100%;
       height: auto;
       display: block;
+      border-radius: 8px;
     }
 
     .tentang-overlay {
@@ -165,8 +186,9 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.3); /* overlay gelap */
+      background: rgba(0,0,0,0.3);
     }
+
 
     @media (max-width: 767px) {
       .tentang-image-wrapper {
@@ -240,36 +262,56 @@
     </div>
   </div>
 </div>
-<section class="content" data-scroll-section-speed="1">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12 mb-4" data-scroll data-scroll-speed="1" data-scroll-delay="0.05">
-        <h5>Kontak</h5>
-        <p><i class="fas fa-phone"></i> (0341) 123456</p>
-        <p><i class="fas fa-envelope"></i> biro@pbj.go.id</p>
+
+<section class="content" data-scroll-section>
+  <div class="container py-5">
+    <div class="row text-center">
+      <div class="col-md-4 mb-4 kontak-item" data-scroll data-scroll-call="fade-item" data-scroll-repeat>
+        <i class="fas fa-map-marker-alt fa-3x mb-3"></i>
+        <h5>Alamat</h5>
+        <p>Jl. Pahlawan No.110 Lt. 3 dan Lt. 6, Krembangan Sel., Kec. Krembangan, Surabaya, Jawa Timur 60175, Indonesia</p>
+      </div>
+      <div class="col-md-4 mb-4 kontak-item" data-scroll data-scroll-call="fade-item" data-scroll-repeat>
+        <i class="fas fa-phone fa-3x mb-3"></i>
+        <h5>Telepon</h5>
+        <p>+62 341 123456<br>+62 812 3456 7890</p>
+      </div>
+      <div class="col-md-4 mb-4 kontak-item" data-scroll data-scroll-call="fade-item" data-scroll-repeat>
+        <i class="fas fa-envelope fa-3x mb-3"></i>
+        <h5>Email</h5>
+        <p>biro@pbj.go.id<br>support@pbj.go.id</p>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="maps-embed overflow-hidden rounded shadow">
+          <iframe
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31662.49511434134!2d112.73061938126749!3d-7.262237535640607!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7f93e2c857c81%3A0xa60e788025c37814!2sBiro%20Pengadaan%20Barang%2FJasa%20Provinsi%20Jawa%20Timur!5e0!3m2!1sen!2sid!4v1752501272443!5m2!1sen!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
+
 <section class="tentang-section" data-scroll-section>
   <div class="container">
-    <div class="row">
+    <div class="row align-items-center">
       <!-- Kiri: List Tentang -->
       <div class="col-md-6 tentang-text">
         <h2 class="mb-4">Tentang Kami</h2>
 
-        <div class="tentang-item" data-scroll data-scroll-call="fade-item" data-scroll-repeat data-scroll data-scroll-speed="1">
+        <div class="tentang-item" data-scroll data-scroll-call="fade-item" data-scroll-repeat>
           <h5>01. Visi</h5>
           <p>Mewujudkan biro pengadaan barang/jasa yang profesional, transparan, dan akuntabel.</p>
         </div>
 
-        <div class="tentang-item" data-scroll data-scroll-call="fade-item" data-scroll-repeat data-scroll data-scroll-speed="1">
+        <div class="tentang-item" data-scroll data-scroll-call="fade-item" data-scroll-repeat>
           <h5>02. Misi</h5>
           <p>Meningkatkan efisiensi, efektivitas, dan kualitas layanan pengadaan melalui sistem digital.</p>
         </div>
 
-        <div class="tentang-item" data-scroll data-scroll-call="fade-item" data-scroll-repeat data-scroll data-scroll-speed="1">
+        <div class="tentang-item" data-scroll data-scroll-call="fade-item" data-scroll-repeat>
           <h5>03. Nilai</h5>
           <p>Integritas, kolaborasi, dan inovasi menjadi nilai dasar kerja kami.</p>
         </div>
@@ -285,6 +327,7 @@
     </div>
   </div>
 </section>
+
 
   <!-- FOOTER -->
 <footer>
@@ -358,6 +401,13 @@
         obj.el.classList.add('is-inview');
       }
     });
+
+    scroll.on('call', (value, way, obj) => {
+      if (value === 'fade-item' && way === 'enter') {
+        obj.el.classList.add('is-inview');
+      }
+    });
+
 </script>
 
 </body>
