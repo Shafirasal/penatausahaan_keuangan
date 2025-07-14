@@ -86,6 +86,25 @@
                     @endif
                 </div>
 
+
+                {{-- <div class="form-group">
+                    <label>File (Kosongkan jika tidak diubah)</label>
+                    <input type="file" name="file" class="form-control">
+
+                    @php
+                        $fileLama = basename($kepegawaian->file);
+                    @endphp
+
+                    @if ($kepegawaian->file)
+                        <small>
+                            <a href="{{ asset('storage/' . $kepegawaian->file) }}" target="_blank">
+                                {{ $fileLama }}
+                            </a>
+                        </small>
+                    @endif
+                </div> --}}
+
+
                 {{-- <div class="form-group">
                     <label for="file">Bukti Dokumen (PDF)</label>
                     <input type="file" name="file" id="file" accept=".pdf" class="form-control">
