@@ -9,6 +9,7 @@ use App\Models\PegawaiModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class RiwayatKepegawaianController extends Controller
 {
@@ -154,14 +155,21 @@ public function confirm(string $id)
             'id_jenis_kp' => 'required|exists:t_jenis_kenaikan_pangkat,id_jenis_kp',
             'tmt_pangkat' => 'required|date',
             'keterangan' => 'nullable|string',
-            'file' => 'nullable|file|mimes:pdf|max:2048',
+            'file' => 'nullable|file|mimes:pdf|max:5120',
             'aktif' => 'required|in:ya,tidak'
         ]);
 
-        $filePath = null;
+        // $filePath = null;
+        // if ($request->hasFile('file')) {
+        //     $filePath = $request->file('file')->store('riwayat_kepegawaian', 'public');
+        // }
         if ($request->hasFile('file')) {
-            $filePath = $request->file('file')->store('riwayat_kepegawaian', 'public');
-        }
+        $originalName = pathinfo($request->file('file')->getClientOriginalName(), PATHINFO_FILENAME);
+        $extension = $request->file('file')->getClientOriginalExtension();
+        $filename = time() . '_' . Str::slug($originalName) . '.' . $extension;
+        $request->file('file')->storeAs('public/riwayat_kepegawaian', $filename);
+        $filePath = 'riwayat_kepegawaian/' . $filename;
+    }
 
         // membuat data
         $data = new RiwayatKepegawaianModel();

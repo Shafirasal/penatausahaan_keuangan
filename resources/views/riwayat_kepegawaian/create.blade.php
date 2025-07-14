@@ -87,7 +87,8 @@ $(document).ready(function() {
             id_golongan: { required: true },
             id_jenis_kp: { required: true },
             tmt_pangkat: { required: true, date: true },
-            aktif: {required: true}
+            aktif: {required: true},
+            file:{required: true, extension: "pdf"}
         },
         submitHandler: function(form) {
             var formData = new FormData(form);

@@ -145,13 +145,39 @@
           orderable: true,
           searchable: true
         },
+        // {
+        //     data: 'file',
+        //     className: '',
+        //     render: function (data, type, row) {
+        //       if (!data) return '-';
+
+        //       // Ambil nama file asli dari path
+        //       const fileName = data.split('/').pop().replace(/^\d{10}_/, '');
+
+        //       return `
+        //         <a href="/storage/${data}" target="_blank" title="Preview PDF">${fileName}</a><br>
+
+        //       `;
+        //     }
+        // },
+
         {
-          data: 'file',
-          className: '',
-          render: function (data, type, row) {
-            return data ? `<a href="/storage/${data}" target="_blank">Lihat File</a>` : '-';
-          }
-        },
+            data: 'file',
+            className: '',
+            render: function (data, type, row) {
+              if (!data) return '-';
+
+              // Ambil nama file dari path
+              const fileName = data.split('/').pop().replace(/^\d{10}_/, '');
+
+              return `
+                <a href="/storage/${data}" download="${fileName}" title="Klik untuk download">
+                  ${fileName}
+                </a>
+              `;
+            }
+          },
+
         {
           data: 'aktif',
           className: 'text-center',
