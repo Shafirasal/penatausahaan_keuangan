@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class RiwayatKepegawaianController extends Controller
 {
@@ -34,8 +35,9 @@ class RiwayatKepegawaianController extends Controller
     
     public function list(Request $request)
     {
+        $user = JWTAuth::parseToken()->authenticate();
         $data = RiwayatKepegawaianModel::with(['pegawai', 'golongan', 'jenisKenaikanPangkat'])
-        // ->where('nip', Auth::id()) 
+        ->where('nip', $user->nip)
         ->select(
             'id_riwayat_kepegawaian',
             'nip',

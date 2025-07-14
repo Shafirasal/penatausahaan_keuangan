@@ -87,6 +87,7 @@
   <script>
     $.ajaxSetup({
       headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('token'),
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
       }
     });

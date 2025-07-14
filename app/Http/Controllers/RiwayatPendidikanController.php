@@ -7,6 +7,7 @@ use App\Models\PegawaiModel;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Yajra\DataTables\Facades\DataTables;
 
 class RiwayatPendidikanController extends Controller
@@ -29,7 +30,10 @@ class RiwayatPendidikanController extends Controller
 
     public function list(Request $request)
     {
-        $data = RiwayatPendidikanModel::with('pegawai')->select(
+        $user = JWTAuth::parseToken()->authenticate();
+        $data = RiwayatPendidikanModel::with('pegawai')
+              ->where('nip', $user->nip)
+              ->select(
             'id_pendidikan',
             'nip',
             'nama_sekolah',
