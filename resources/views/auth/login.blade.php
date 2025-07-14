@@ -88,7 +88,7 @@
     .hero .right {
       flex: 1;
       background: rgba(255, 255, 255, 0.6); /* transparan putih */
-      backdrop-filter: blur(10px); /* efek blur modern */
+      backdrop-filter: blur(10px); /* efek blur */
       padding: 40px;
       box-shadow: 0 0 20px rgba(0,0,0,0.1);
       border-radius: 8px;
@@ -104,20 +104,20 @@
       border: 1px solid #d23553;
     }
 
-    .feature {
+    .content {
       height:100vh;
       background: #222;
       color: #fff;
       padding: 80px 0;
     }
 
-    .feature h5 {
+    .content h5 {
       color: #d23553;
       font-size: 22px;
       margin-bottom: 10px;
     }
 
-    .feature p {
+    .content p {
       margin: 0;
       font-size: 16px;
       line-height: 1.6;
@@ -159,34 +159,13 @@
     <div id="lottie"></div>
   </div>
 
-    <!-- LEFT: ANIMASI + SLIDER -->
+    {{-- <!-- LEFT: ANIMASI + SLIDER -->
     <div class="center">
       <!-- Lottie -->
         <div id="lottie" class="position-absolute top-50 start-30 translate-middle" style="max-width: 400px; z-index: 1;">
           <div class="lottie-overlap"></div>
         </div>
-
-      <!-- Slider -->
-      {{-- <div id="sliderPBJ" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-          <div class="carousel-item active">
-            <img src="{{ asset('assets/slide1.jpg') }}" class="d-block w-100" alt="Slide 1">
-          </div>
-          <div class="carousel-item">
-            <img src="{{ asset('assets/slide2.jpg') }}" class="d-block w-100" alt="Slide 2">
-          </div>
-          <div class="carousel-item">
-            <img src="{{ asset('assets/slide3.jpg') }}" class="d-block w-100" alt="Slide 3">
-          </div>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#sliderPBJ" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#sliderPBJ" data-bs-slide="next">
-          <span class="carousel-control-next-icon"></span>
-        </button>
-      </div> --}}
-    </div>
+    </div> --}}
 
     <!-- RIGHT: FORM LOGIN -->
     <div class="right">
@@ -209,19 +188,10 @@
       </form>
     </div>
   </div>
-
-  <!-- FEATURE -->
-<section class="feature" data-scroll-section-speed="1">
+</div>
+<section class="content" data-scroll-section-speed="1">
   <div class="container">
     <div class="row">
-      <div class="col-md-12 mb-4" data-scroll data-scroll-speed="1" data-scroll-delay="0.1">
-        <h5>Informasi</h5>
-        <p>Sistem Penatausahaan Keuangan berbasis web, efisien & transparan. Gunakan akun Anda untuk akses fitur lengkap.</p>
-      </div>
-      <div class="col-md-12" data-scroll data-scroll-speed="1" data-scroll-delay="0.15">
-        <h5>Visi</h5>
-        <p>Mewujudkan tata kelola keuangan yang akuntabel, transparan & modern.</p>
-      </div>
       <div class="col-md-12 mb-4" data-scroll data-scroll-speed="1" data-scroll-delay="0.05">
         <h5>Kontak</h5>
         <p><i class="fas fa-phone"></i> (0341) 123456</p>
@@ -231,15 +201,46 @@
   </div>
 </section>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="container d-flex justify-content-between">
-      <span>© 2025 Biro PBJ</span>
-      <span>Developed by Tim IT</span>
-    </div>
-  </footer>
+<section class="tentang py-5" data-scroll-section>
+  <div class="container" id = "lerp-effect">
+    <div class="row align-items-center">
+      <!-- Kiri: List Tentang -->
+      <div class="col-md-5 mb-4 mb-md-0" data-scroll data-scroll-speed="1">
+        <h2 class="mb-4">Tentang Kami</h2>
 
-</div>
+        <div class="mb-4">
+          <h5 class="text-danger">01. Visi</h5>
+          <p>Mewujudkan biro pengadaan barang/jasa yang profesional, transparan, dan akuntabel.</p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="text-danger">02. Misi</h5>
+          <p>Meningkatkan efisiensi, efektivitas, dan kualitas layanan pengadaan melalui sistem digital.</p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="text-danger">03. Nilai</h5>
+          <p>Integritas, kolaborasi, dan inovasi menjadi nilai dasar kerja kami.</p>
+        </div>
+      </div>
+
+      <!-- Kanan: Gambar -->
+      <div class="col-md-7" data-scroll data-scroll-speed="1">
+        <div class="position-relative overflow-hidden rounded shadow">
+          <img src="{{ asset('assets/tentang.jpg') }}" alt="Tentang Biro PBJ" class="img-fluid w-100">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- FOOTER -->
+<footer>
+  <div class="container d-flex justify-content-between">
+    <span>© 2025 Biro PBJ</span>
+    <span>Developed by Tim IT</span>
+  </div>
+</footer>
 
 <!-- LIBS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js"></script>
@@ -297,9 +298,32 @@
 
     const scroll = new LocomotiveScroll({
     el: document.querySelector('[data-scroll-container]'),
-    smooth: true
+    smooth: true,
+    lerp: 0.1,
   });
 </script>
 
 </body>
 </html>
+
+{{-- dibuang sayang --}}
+      <!-- Slider -->
+      {{-- <div id="sliderPBJ" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="{{ asset('assets/slide1.jpg') }}" class="d-block w-100" alt="Slide 1">
+          </div>
+          <div class="carousel-item">
+            <img src="{{ asset('assets/slide2.jpg') }}" class="d-block w-100" alt="Slide 2">
+          </div>
+          <div class="carousel-item">
+            <img src="{{ asset('assets/slide3.jpg') }}" class="d-block w-100" alt="Slide 3">
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#sliderPBJ" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#sliderPBJ" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </button>
+      </div> --}}
