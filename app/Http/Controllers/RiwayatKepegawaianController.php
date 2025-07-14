@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class RiwayatKepegawaianController extends Controller
 {
@@ -115,7 +116,7 @@ public function confirm(string $id)
 
         $validator = Validator::make($request->all(), [
             // 'nip' => 'required|exists:t_pegawai,nip',
-            'file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
+            'file' => 'nullable|file|mimes:pdf|max:5120',
             'id_golongan' => 'required|exists:t_golongan,id_golongan',
             'id_jenis_kp' => 'required|exists:t_jenis_kenaikan_pangkat,id_jenis_kp',
             'tmt_pangkat' => 'required|date',
@@ -135,10 +136,28 @@ public function confirm(string $id)
             'aktif'
         ]);
 
-        if ($request->hasFile('file')) {
-            $file = $request->file('file')->store('riwayat_kepegawaian', 'public');
-            $data['file'] = $file;
-        }
+        // if ($request->hasFile('file')) {
+        //     $file = $request->file('file')->store('riwayat_kepegawaian', 'public');
+        //     $data['file'] = $file;
+        // }
+
+    if ($request->hasFile('file')) {
+            // Hapus file lama jika ada
+            if ($riwayat->file && Storage::exists('public/' . $riwayat->file)) {
+                Storage::delete('public/' . $riwayat->file);
+            }
+
+            // Buat nama baru yang rapi: timestamp_nama-bersih.pdf
+            $originalName = pathinfo($request->file('file')->getClientOriginalName(), PATHINFO_FILENAME);
+            $extension = $request->file('file')->getClientOriginalExtension();
+            $filename = time() . '_' . Str::slug($originalName) . '.' . $extension;
+
+            // Simpan file ke storage/app/public/riwayat_kepegawaian/
+            $request->file('file')->storeAs('public/riwayat_kepegawaian', $filename);
+
+            // Simpan path relatif di database
+            $data['file'] = 'riwayat_kepegawaian/' . $filename;
+    }
 
         $riwayat->update($data);
 

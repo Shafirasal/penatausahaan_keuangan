@@ -85,6 +85,30 @@
                         <small><a href="{{ asset('storage/'.$kepegawaian->file) }}" target="_blank">Lihat File Lama</a></small>
                     @endif
                 </div>
+
+                {{-- <div class="form-group">
+                    <label for="file">Bukti Dokumen (PDF)</label>
+                    <input type="file" name="file" id="file" accept=".pdf" class="form-control">
+                    <small class="form-text text-muted">
+                        Kosongkan jika tidak ingin mengganti file.
+                    </small>
+
+                    @if ($kepegawaian->file)
+                        @php
+                            // Ambil nama file asli tanpa folder
+                            $fileName = basename($kepegawaian->file);
+                            // Hilangkan prefix timestamp (jika menggunakan timestamp di awal nama file)
+                            $cleanFileName = preg_replace('/^\d{10}_/', '', $fileName);
+                        @endphp
+                        <small class="form-text">
+                            File saat ini:
+                            <a href="{{ asset('storage/' . $kepegawaian->file) }}" target="_blank" download>
+                                {{ $cleanFileName }}
+                            </a>
+                        </small>
+                    @endif
+                </div> --}}
+
             </div>
 
             <div class="modal-footer">
@@ -102,13 +126,16 @@
                 id_jenis_kp: { required: true },
                 tmt_pangkat: { required: true, date: true },
                 aktif: { required: true },
-                file: { extension: "pdf|jpg|jpeg|png", filesize: 2 * 1024 * 1024 }
+                'file[]': {required: false, extension: "pdf"}
             },
             submitHandler: function (form) {
+                var formData = new FormData(document.getElementById('form-edit'));
                 $.ajax({
                     url: form.action,
                     type: form.method,
-                    data: $(form).serialize(),
+                    data: formData,
+                    processData: false, // ❗ WAJIB untuk file
+                    contentType: false, // ❗ WAJIB untuk file
                     success: function (response) {
                         $('#myModal').modal('hide');
                         Swal.fire({
