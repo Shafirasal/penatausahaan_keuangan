@@ -7,6 +7,7 @@ use App\Models\PegawaiModel;
 use App\Models\UnitKerjaModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Yajra\DataTables\Facades\DataTables;
 
 class JabatanStrukturalController extends Controller
@@ -29,7 +30,9 @@ class JabatanStrukturalController extends Controller
 
     public function list(Request $request)
     {
+        $user = JWTAuth::parseToken()->authenticate();
         $data = JabatanStrukturalModel::with(['pegawai', 'unitKerja'])
+            ->where('nip', $user->nip)
             ->select(
                 'id_jabatan_struktural',
                 'nip',
