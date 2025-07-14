@@ -34,7 +34,9 @@ class RiwayatKepegawaianController extends Controller
     
     public function list(Request $request)
     {
-        $data = RiwayatKepegawaianModel::with(['pegawai', 'golongan', 'jenisKenaikanPangkat'])->select(
+        $data = RiwayatKepegawaianModel::with(['pegawai', 'golongan', 'jenisKenaikanPangkat'])
+        // ->where('nip', Auth::id()) 
+        ->select(
             'id_riwayat_kepegawaian',
             'nip',
             'id_golongan',
