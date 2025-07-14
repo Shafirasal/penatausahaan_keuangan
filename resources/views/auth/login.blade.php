@@ -32,7 +32,7 @@
     }
 
     header {
-      background: transparent; /* transparan */
+      background: transparent;
       border-bottom: none;
       padding: 15px 0;
     }
@@ -48,13 +48,42 @@
     .hero {
       flex: 1;
       display: flex;
-      padding: 40px 0;
+      align-items: center;   /* Tengah sumbu Y */
+      justify-content: space-between; /* Pisahkan kiri-kanan */
+      gap: 50px; /* Jarak antara kiri & kanan */
     }
 
     .hero .left {
-      flex: 2;
-      padding-right: 40px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center; /* Tengah vertikal */
     }
+    .hero .left h1 {
+      text-align: left;  /* Sejajar kiri */
+      margin-bottom: 2rem;
+    }
+
+    .lottie-wrapper {
+      position: relative;
+      width: 100%;
+      height: auto;
+    }
+
+    #lottie {
+      width: 100%;
+      height: auto;
+    }
+
+    .lottie-overlap {
+      position: relative;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 8px; /* Opsional, sama kayak card */
+    }
+
 
     .hero .right {
       flex: 1;
@@ -76,13 +105,22 @@
     }
 
     .feature {
+      height:100vh;
       background: #222;
       color: #fff;
-      padding: 40px 0;
+      padding: 80px 0;
     }
 
     .feature h5 {
       color: #d23553;
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .feature p {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.6;
     }
 
     footer {
@@ -96,11 +134,11 @@
 
 <body>
 
-<div class="main-container">
+<div class="main-container" data-scroll-container>
 
   <!-- HEADER -->
   <header>
-    <div class="container d-flex justify-content-between align-items-center">
+    <div class="container d-flex justify-content-between align-items-center" data-scroll-container>
       <div class="logo">
         <a href="#"><img src="{{ asset('assets/logo_biro.png') }}" alt="Logo"></a>
       </div>
@@ -115,11 +153,18 @@
   </header>
 
   <!-- HERO -->
-  <div class="container hero">
+  <div class="hero container" data-scroll-container>
+      <div class="left">
+    <h1>Selamat Datang di <span class="text-danger">Biro PBJ</span></h1>
+    <div id="lottie"></div>
+  </div>
+
     <!-- LEFT: ANIMASI + SLIDER -->
-    <div class="left">
+    <div class="center">
       <!-- Lottie -->
-      <div id="lottie" style="max-width: 600px; margin-bottom: 30px;"></div>
+        <div id="lottie" class="position-absolute top-50 start-30 translate-middle" style="max-width: 400px; z-index: 1;">
+          <div class="lottie-overlap"></div>
+        </div>
 
       <!-- Slider -->
       {{-- <div id="sliderPBJ" class="carousel slide" data-bs-ride="carousel">
@@ -145,9 +190,7 @@
 
     <!-- RIGHT: FORM LOGIN -->
     <div class="right">
-      <h4 class="mb-4">Selamat Datang di <span class="text-danger">Biro PBJ</span></h4>
       <p class="text-muted mb-4">Gunakan akun Anda untuk mengakses sistem.</p>
-
       <form id="loginForm" method="POST" action="#">
         @csrf
         <div id="loginError" class="alert alert-danger d-none"></div>
@@ -168,25 +211,25 @@
   </div>
 
   <!-- FEATURE -->
-  <div class="feature">
-    <div class="container">
-      <div class="row text-center">
-        <div class="col-md-4">
-          <h5>Kontak</h5>
-          <p><i class="fas fa-phone"></i> (0341) 123456</p>
-          <p><i class="fas fa-envelope"></i> biro@pbj.go.id</p>
-        </div>
-        <div class="col-md-4">
-          <h5>Informasi</h5>
-          <p>Sistem Penatausahaan Keuangan berbasis web, efisien & transparan. Gunakan akun Anda untuk akses fitur lengkap.</p>
-        </div>
-        <div class="col-md-4">
-          <h5>Visi</h5>
-          <p>Mewujudkan tata kelola keuangan yang akuntabel, transparan & modern.</p>
-        </div>
+<section class="feature" data-scroll-section-speed="1">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 mb-4" data-scroll data-scroll-speed="1" data-scroll-delay="0.1">
+        <h5>Informasi</h5>
+        <p>Sistem Penatausahaan Keuangan berbasis web, efisien & transparan. Gunakan akun Anda untuk akses fitur lengkap.</p>
+      </div>
+      <div class="col-md-12" data-scroll data-scroll-speed="1" data-scroll-delay="0.15">
+        <h5>Visi</h5>
+        <p>Mewujudkan tata kelola keuangan yang akuntabel, transparan & modern.</p>
+      </div>
+      <div class="col-md-12 mb-4" data-scroll data-scroll-speed="1" data-scroll-delay="0.05">
+        <h5>Kontak</h5>
+        <p><i class="fas fa-phone"></i> (0341) 123456</p>
+        <p><i class="fas fa-envelope"></i> biro@pbj.go.id</p>
       </div>
     </div>
   </div>
+</section>
 
   <!-- FOOTER -->
   <footer>
@@ -202,6 +245,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
 
 <script>
   // Lottie animasi
@@ -249,6 +293,11 @@
 
   $('#nip, #password').on('input', function() {
     $('#loginError').addClass('d-none').text('');
+  });
+
+    const scroll = new LocomotiveScroll({
+    el: document.querySelector('[data-scroll-container]'),
+    smooth: true
   });
 </script>
 
