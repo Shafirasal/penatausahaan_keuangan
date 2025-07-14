@@ -123,6 +123,59 @@
       line-height: 1.6;
     }
 
+    .tentang-section {
+      position: relative;
+      padding: 100px 0;
+    }
+
+    .tentang-text h2 {
+      font-size: 36px;
+    }
+
+    .tentang-item {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 0.8s ease-out;
+    }
+
+    .tentang-item.is-inview {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .tentang-image-wrapper {
+      position: sticky;
+      top: 100px; /* jarak dari atas viewport */
+      height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .tentang-image-wrapper img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .tentang-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.3); /* overlay gelap */
+    }
+
+    @media (max-width: 767px) {
+      .tentang-image-wrapper {
+        position: static;
+        height: auto;
+      }
+    }
+
+
     footer {
       background: #111;
       color: #aaa;
@@ -132,13 +185,11 @@
   </style>
 </head>
 
-<body>
-
-<div class="main-container" data-scroll-container>
-
+<body data-scroll-container>
+<div class="main-container" >
   <!-- HEADER -->
   <header>
-    <div class="container d-flex justify-content-between align-items-center" data-scroll-container>
+    <div class="container d-flex justify-content-between align-items-center">
       <div class="logo">
         <a href="#"><img src="{{ asset('assets/logo_biro.png') }}" alt="Logo"></a>
       </div>
@@ -153,7 +204,7 @@
   </header>
 
   <!-- HERO -->
-  <div class="hero container" data-scroll-container>
+  <div class="hero container">
       <div class="left">
     <h1>Selamat Datang di <span class="text-danger">Biro PBJ</span></h1>
     <div id="lottie"></div>
@@ -201,33 +252,34 @@
   </div>
 </section>
 
-<section class="tentang py-5" data-scroll-section>
-  <div class="container" id = "lerp-effect">
-    <div class="row align-items-center">
+<section class="tentang-section" data-scroll-section>
+  <div class="container">
+    <div class="row">
       <!-- Kiri: List Tentang -->
-      <div class="col-md-5 mb-4 mb-md-0" data-scroll data-scroll-speed="1">
+      <div class="col-md-6 tentang-text">
         <h2 class="mb-4">Tentang Kami</h2>
 
-        <div class="mb-4">
-          <h5 class="text-danger">01. Visi</h5>
+        <div class="tentang-item" data-scroll data-scroll-call="fade-item" data-scroll-repeat data-scroll data-scroll-speed="1">
+          <h5>01. Visi</h5>
           <p>Mewujudkan biro pengadaan barang/jasa yang profesional, transparan, dan akuntabel.</p>
         </div>
 
-        <div class="mb-4">
-          <h5 class="text-danger">02. Misi</h5>
+        <div class="tentang-item" data-scroll data-scroll-call="fade-item" data-scroll-repeat data-scroll data-scroll-speed="1">
+          <h5>02. Misi</h5>
           <p>Meningkatkan efisiensi, efektivitas, dan kualitas layanan pengadaan melalui sistem digital.</p>
         </div>
 
-        <div class="mb-4">
-          <h5 class="text-danger">03. Nilai</h5>
+        <div class="tentang-item" data-scroll data-scroll-call="fade-item" data-scroll-repeat data-scroll data-scroll-speed="1">
+          <h5>03. Nilai</h5>
           <p>Integritas, kolaborasi, dan inovasi menjadi nilai dasar kerja kami.</p>
         </div>
       </div>
 
-      <!-- Kanan: Gambar -->
-      <div class="col-md-7" data-scroll data-scroll-speed="1">
-        <div class="position-relative overflow-hidden rounded shadow">
-          <img src="{{ asset('assets/tentang.jpg') }}" alt="Tentang Biro PBJ" class="img-fluid w-100">
+      <!-- Kanan: Gambar Fixed -->
+      <div class="col-md-6">
+        <div class="tentang-image-wrapper">
+          <img src="{{ asset('assets/tentang.jpg') }}" alt="Tentang Biro PBJ" class="img-fluid">
+          <div class="tentang-overlay"></div>
         </div>
       </div>
     </div>
@@ -299,8 +351,13 @@
     const scroll = new LocomotiveScroll({
     el: document.querySelector('[data-scroll-container]'),
     smooth: true,
-    lerp: 0.1,
   });
+  // Fade effect on masuk viewport
+    scroll.on('call', (value, way, obj) => {
+      if (value === 'fade-item' && way === 'enter') {
+        obj.el.classList.add('is-inview');
+      }
+    });
 </script>
 
 </body>
