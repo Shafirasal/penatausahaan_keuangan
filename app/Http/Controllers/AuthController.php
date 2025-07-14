@@ -116,7 +116,7 @@ class AuthController extends Controller
 
             session()->put('nip', $user->nip);
             session()->put('level', $user->level);
-            session()->put('nama', optional($user->pegawai)->nama); // pakai relasi
+            session()->put('nama_pegawai', optional($user->pegawai)->nama); // pakai relasi
 
             return response()->json(['message' => 'Session synced']);
         } catch (\PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException $e) {
