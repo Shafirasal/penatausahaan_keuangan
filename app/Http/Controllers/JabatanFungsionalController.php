@@ -7,6 +7,7 @@ use App\Models\PegawaiModel;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Yajra\DataTables\Facades\DataTables;
 
 class JabatanFungsionalController extends Controller
@@ -29,7 +30,10 @@ class JabatanFungsionalController extends Controller
 
     public function list(Request $request)
     {
-        $data = JabatanFungsionalModel::with('pegawai')->select(
+        $user = JWTAuth::parseToken()->authenticate();
+        $data = JabatanFungsionalModel::with('pegawai')
+        ->where('nip', $user->nip)
+        ->select(
             'id_jabatan_fungsional',
             'nip',
             'nama_jabatan',
