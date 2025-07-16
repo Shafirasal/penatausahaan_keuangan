@@ -9,6 +9,8 @@ use App\Http\Controllers\RiwayatPendidikanController;
 use App\Http\Controllers\RiwayatKepegawaianController;
 use Illuminate\Support\Facades\Auth;
 
+
+Route::redirect('/', '/login');
 // Login page (GET)
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 
