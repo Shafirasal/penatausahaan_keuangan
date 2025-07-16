@@ -380,9 +380,11 @@
                 <h5>01. Visi</h5>
                 <p>Mewujudkan biro pengadaan barang/jasa yang profesional, transparan, dan akuntabel.</p>
               </div>
-              <div class="mb-4">
+              <div class="mb-4" style="max-width: 700px; margin: 0 auto; line-height: 1.6; font-size: 16px; text-align: justify;">
                 <h5>02. Misi</h5>
-                <p>Meningkatkan efisiensi, efektivitas, dan kualitas layanan pengadaan melalui sistem digital.</p>
+                <p>
+                  Melaksanakan proses pengadaan barang/jasa pemerintah yang efisien, efektif, transparan, keterbukaan, bersaing, adil/tidak diskriminatif, dan akuntabel untuk mewujudkan tata kelola pemerintahan yang baik dan bersih serta meningkatkan persaingan usaha yang sehat dalam layanan pengadaan barang/jasa pemerintah bagi masyarakat.
+                </p>
               </div>
               <div>
                 <h5>03. Nilai</h5>
