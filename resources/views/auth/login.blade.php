@@ -105,71 +105,153 @@
       box-shadow: 0 6px 18px rgba(0,0,0,0.2);
     }
 
-    /* Flex order setting */
-    .hero .left {
-      order: 1;
+    .hero .left { order: 1; }
+    .hero .right { order: 2; }
+
+    @media (max-width: 992px) {
+        .hero {
+            flex-direction: column;
+            text-align: center;
+        }
+        .hero-title { font-size: 32px; }
+        .glass-card { max-width: 100%; }
+        .hero .left { order: 2; }
+        .hero .right { order: 1; }
+    }
+    
+    .content-section {
+        padding: 80px 0;
+        background: #fff; /* Memberi background putih pada section */
+    }
+    
+    .content-section.dark {
+        background: #4f443e;
+        color: #fff;
+    }
+    .content-section.dark h5 {
+        color: #fff;
     }
 
-    .hero .right {
-      order: 2;
-    }
-
-    @media (max-width: 768px) {
-      .hero {
-        flex-direction: column;
+    /* === STYLE KARTU BARU === */
+    .custom-card {
+        background: #FFFFFF;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
         text-align: center;
-      }
-
-      .hero-title {
-        font-size: 32px;
-      }
-
-      .glass-card {
-        max-width: 100%;
-      }
-
-      .hero .left {
-        order: 2;
-      }
-
-      .hero .right {
-        order: 1;
-      }
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Center content vertically */
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-
-    .content {
-      background: #4f443e;
-      color: #fff;
-      padding: 100px 0;
+    .custom-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
     }
-
-    .content i {
-      color: #fff;
+    .custom-card i {
+        color: #a7283d; /* Warna ikon disamakan dengan tombol */
+        margin-bottom: 20px;
     }
-
-    .content h5 {
-      font-size: 24px;
-      margin-bottom: 10px;
+    .custom-card h5 {
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 10px;
     }
-
-    .content p {
-      font-size: 16px;
-      line-height: 1.6;
+    .custom-card p {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #666;
     }
 
     footer {
-      position: sticky;
       background: #111;
       color: #aaa;
       padding: 20px 0;
       font-size: 14px;
     }
+    
+    /* === STYLE SECTION TENTANG BARU === */
+    .tentang-section {
+        padding: 80px 0;
+        background: #f5f6f8;
+    }
+    .tentang-text-card {
+        background: #fff;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+        height: 100%;
+    }
+    .tentang-text-card h2 { font-weight: 600; }
+    .tentang-text-card h5 { font-size: 20px; font-weight: 600; color: #a7283d; }
+
+    .tentang-image-wrapper {
+        height: 100%;
+    }
+    .tentang-image-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 16px;
+    }
+
+    .footer-section {
+      background-color: #101535; /* Warna dasar biru gelap */
+      color: #EAEAEA;           /* Warna teks putih keabuan, lebih nyaman di mata */
+      padding: 80px 0;
+    }
+
+    .footer-section h5 {
+      color: #FFFFFF;           /* Warna judul dibuat sedikit lebih terang */
+      margin-bottom: 20px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 16px;
+    }
+
+    .footer-section p,
+    .footer-section li {
+      font-size: 14px;
+      line-height: 1.8;
+      margin-bottom: 10px;
+    }
+
+    /* Mengatur agar ikon sejajar dan memiliki warna yang konsisten */
+    .footer-section .contact-list i {
+      color: #00A9FF; /* Warna aksen untuk ikon */
+      margin-right: 12px;
+      width: 20px; /* Memberi lebar tetap agar teks rata */
+      text-align: center;
+    }
+
+    /* Membuat peta (iframe) menjadi responsif */
+    .footer-section .map-wrapper {
+      width: 100px;
+      height: 100px;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0; /* Mencegah gambar menyusut */
+    }
+
+    .footer-section .map-wrapper iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* Style untuk list agar lebih rapi */
+    .footer-section ul {
+      list-style: none;
+      padding: 0;
+    }
+    
   </style>
 </head>
 
 <body>
   <div class="main-container">
-    <!-- HEADER -->
     <header>
       <div class="container d-flex justify-content-between align-items-center">
         <div class="logo">
@@ -177,7 +259,7 @@
         </div>
         <nav>
           <ul class="nav">
-            <li class="nav-item"><a href="#" class="nav-link" data-scroll-to="#pelayanan">pelayanan</a></li>
+            <li class="nav-item"><a href="#" class="nav-link" data-scroll-to="#pelayanan">Pelayanan</a></li>
             <li class="nav-item"><a href="#" class="nav-link" data-scroll-to="#kontak">Kontak</a></li>
             <li class="nav-item"><a href="#" class="nav-link" data-scroll-to="#tentang">Tentang</a></li>
           </ul>
@@ -185,192 +267,191 @@
       </div>
     </header>
 
-    <!-- HERO -->
     <div class="hero container">
       <div class="left">
         <h1 class="hero-title">Selamat Datang di <span class="text-danger">Biro PBJ</span></h1>
         <div id="lottie"></div>
       </div>
-
       <div class="right glass-card" id="loginSection">
         <p class="text-muted mb-4">Gunakan akun Anda untuk mengakses sistem.</p>
         <form id="loginForm" method="POST" action="#">
           @csrf
           <div id="loginError" class="alert alert-danger d-none"></div>
-
           <div class="mb-3 position-relative">
             <label for="nip" class="form-label">NIP</label>
             <i class="fas fa-user icon-input"></i>
             <input type="text" id="nip" name="nip" class="form-control input-icon" required>
           </div>
-
           <div class="mb-3 position-relative">
             <label for="password" class="form-label">Password</label>
             <i class="fas fa-lock icon-input"></i>
             <input type="password" id="password" name="password" class="form-control input-icon" required>
           </div>
-
           <button type="submit" class="btn btn-danger w-100 btn-hover">Login</button>
         </form>
       </div>
     </div>
 
-    <!-- SECTION PELAYANAN -->
-    <section id="pelayanan" class="content">
-      <div class="container py-5">
-        <div class="row mb-4">
-          <div class="col-md-8 text-start" data-aos="fade-up">
-            <div class="d-flex align-items-start">
-              <i class="fas fa-briefcase fa-2x me-3"></i>
-              <div>
-                <h5>Bagian PBJ</h5>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla,
-                mattis ligula consectetur, ultrices mauris.
-                Maecenas vitae mattis tellus. Nullam quis imperdiet augue.
-                Vestibulum auctor ornare leo, non suscipit magna interdum eu.
-                Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet.
-                Pellentesque commodo lacus at sodales sodales. Quisque sagittis orci ut diam condimentum,
-                vel euismod erat placerat. In iaculis arcu eros, eget tempus orci facilisis id.Lorem ipsum dolor sit amet,
-                consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit
-                amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus.
-                Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu.
-                Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet.
-                Pellentesque commodo lacus at sodales sodales.
-                Quisque sagittis orci ut diam condimentum, vel euismod erat placerat.
-                In iaculis arcu eros, eget tempus orci facilisis id.</p>
-              </div>
+    <section id="pelayanan" class="content-section">
+      <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col">
+                <h2 style="font-weight: 600;">Pelayanan Kami</h2>
+                <p class="text-muted">Layanan utama yang kami sediakan untuk mendukung proses pengadaan.</p>
+            </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up">
+            <div class="custom-card">
+              <i class="fas fa-briefcase fa-3x"></i>
+              <h5>Bagian PBJ</h5>
+              <p>Membantu proses pengadaan barang dan jasa secara efisien, transparan, dan akuntabel.</p>
             </div>
           </div>
-        </div>
-
-        <div class="row mb-4 justify-content-md-end">
-          <div class="col-md-8 text-end" data-aos="fade-up">
-            <div class="d-flex align-items-start justify-content-end">
-              <div>
-                <h5>Bagian LPSE</h5>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla,
-                mattis ligula consectetur, ultrices mauris.
-                Maecenas vitae mattis tellus. Nullam quis imperdiet augue.
-                Vestibulum auctor ornare leo, non suscipit magna interdum eu.
-                Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet.
-                Pellentesque commodo lacus at sodales sodales. Quisque sagittis orci ut diam condimentum,
-                vel euismod erat placerat. In iaculis arcu eros, eget tempus orci facilisis id.Lorem ipsum dolor sit amet,
-                consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit
-                amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus.
-                Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu.
-                Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet.
-                Pellentesque commodo lacus at sodales sodales.
-                Quisque sagittis orci ut diam condimentum, vel euismod erat placerat.
-                In iaculis arcu eros, eget tempus orci facilisis id.</p>
-              </div>
-              <i class="fas fa-network-wired fa-2x ms-3"></i>
+          <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="custom-card">
+              <i class="fas fa-network-wired fa-3x"></i>
+              <h5>Bagian LPSE</h5>
+              <p>Menyediakan layanan pengadaan secara elektronik untuk kemudahan dan jangkauan yang lebih luas.</p>
             </div>
           </div>
-        </div>
-
-        <div class="row mb-4">
-          <div class="col-md-8 text-start" data-aos="fade-up">
-            <div class="d-flex align-items-start">
-              <i class="fas fa-users fa-2x me-3"></i>
-              <div>
-                <h5>Bagian Pembinaan</h5>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla,
-                mattis ligula consectetur, ultrices mauris.
-                Maecenas vitae mattis tellus. Nullam quis imperdiet augue.
-                Vestibulum auctor ornare leo, non suscipit magna interdum eu.
-                Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet.
-                Pellentesque commodo lacus at sodales sodales. Quisque sagittis orci ut diam condimentum,
-                vel euismod erat placerat. In iaculis arcu eros, eget tempus orci facilisis id.Lorem ipsum dolor sit amet,
-                consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit
-                amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus.
-                Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu.
-                Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet.
-                Pellentesque commodo lacus at sodales sodales.
-                Quisque sagittis orci ut diam condimentum, vel euismod erat placerat.
-                In iaculis arcu eros, eget tempus orci facilisis id.</p>
-              </div>
+          <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="custom-card">
+              <i class="fas fa-users fa-3x"></i>
+              <h5>Bagian Pembinaan</h5>
+              <p>Memberikan pembinaan dan advokasi untuk meningkatkan kompetensi sumber daya manusia.</p>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-<!-- SECTION KONTAK -->
-    <section id="kontak" class="content">
-      <div class="container py-5">
-        <div class="row text-center">
-          <div class="col-md-4 mb-4" data-aos="fade-up">
-            <i class="fas fa-map-marker-alt fa-3x mb-3"></i>
-            <h5>Alamat</h5>
-            <p>Jl. Pahlawan No.110 Lt. 3 dan Lt. 6, Krembangan Sel., Kec. Krembangan, Surabaya, Jawa Timur 60175, Indonesia</p>
-          </div>
-          <div class="col-md-4 mb-4" data-aos="fade-up">
-            <i class="fas fa-phone fa-3x mb-3"></i>
-            <h5>Telepon</h5>
-            <p>+62 341 123456<br>+62 812 3456 7890</p>
-          </div>
-          <div class="col-md-4 mb-4" data-aos="fade-up">
-            <i class="fas fa-envelope fa-3x mb-3"></i>
-            <h5>Email</h5>
-            <p>biro@pbj.go.id<br>support@pbj.go.id</p>
-          </div>
-        </div>
-        <div class="row mt-4">
-          <div class="col-12" data-aos="fade-up">
-            <div class="maps-embed overflow-hidden rounded shadow">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31662.49511434134!2d112.73061938126749!3d-7.262237535640607!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7f93e2c857c81%3A0xa60e788025c37814!2sBiro%20Pengadaan%20Barang%2FJasa%20Provinsi%20Jawa%20Timur!5e0!3m2!1sen!2sid!4v1752501272443!5m2!1sen!2sid"
-                width="600"
-                height="450"
-                style="border:0; width: 100%; height: 300px;"
-                allowfullscreen=""
-                loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade">
-              </iframe>
+    {{-- <section id="kontak" class="content-section dark">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col">
+                    <h2 style="font-weight: 600;">Hubungi Kami</h2>
+                    <p>Kami siap membantu Anda. Hubungi kami melalui detail di bawah ini.</p>
+                </div>
             </div>
-          </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up">
+                    <div class="custom-card">
+                        <i class="fas fa-map-marker-alt fa-3x"></i>
+                        <h5>Alamat</h5>
+                        <p>Jl. Pahlawan No.110 Lt. 3 & 6, Krembangan Sel., Surabaya, Jawa Timur.</p>
+                        <div class="maps-embed overflow-hidden rounded shadow mt-3">
+                            <iframe
+                                src="https://maps.google.com/maps?q=Jalan%20Pahlawan%20No.110%2C%20Surabaya&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                                style="border:0; width: 100%; height: 200px;"
+                                allowfullscreen=""
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="custom-card">
+                        <i class="fas fa-phone fa-3x"></i>
+                        <h5>Telepon</h5>
+                        <p>+62 341 123456<br>+62 812 3456 7890</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="custom-card">
+                        <i class="fas fa-envelope fa-3x"></i>
+                        <h5>Email</h5>
+                        <p>biro@pbj.go.id<br>support@pbj.go.id</p>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </section>
+    </section> --}}
 
-    <!-- SECTION TENTANG -->
+
     <section id="tentang" class="tentang-section">
-      <div class="container-fluid">
-        <div class="row align-items-start">
-          <div class="col-md-6">
-            <div class="tentang-text sticky-tentang">
+      <div class="container">
+        <div class="row align-items-stretch">
+          <div class="col-md-6 mb-4 mb-md-0" data-aos="fade-right">
+            <div class="tentang-text-card">
               <h2 class="mb-4">Tentang Kami</h2>
-
-              <div data-aos="fade-up">
+              <div class="mb-4">
                 <h5>01. Visi</h5>
                 <p>Mewujudkan biro pengadaan barang/jasa yang profesional, transparan, dan akuntabel.</p>
               </div>
-
-              <div data-aos="fade-up">
+              <div class="mb-4">
                 <h5>02. Misi</h5>
                 <p>Meningkatkan efisiensi, efektivitas, dan kualitas layanan pengadaan melalui sistem digital.</p>
               </div>
-
-              <div data-aos="fade-up">
+              <div>
                 <h5>03. Nilai</h5>
                 <p>Integritas, kolaborasi, dan inovasi menjadi nilai dasar kerja kami.</p>
               </div>
             </div>
           </div>
-
-          <div class="col-md-6">
+          <div class="col-md-6" data-aos="fade-left">
             <div class="tentang-image-wrapper">
-              <img src="{{ asset('assets/tentang.jpg') }}" alt="Tentang Biro PBJ" class="img-fluid">
+              <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2832&auto=format&fit=crop" alt="Tentang Biro PBJ" class="img-fluid">
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- FOOTER -->
+    <section id="kontak" class="footer-section">
+      <div class="container">
+        <div class="row gy-5">
+
+          <div class="col-lg-3 col-md-6">
+            <h5>Informasi Aplikasi</h5>
+            <ul>
+              <li><a href="#" class="text-decoration-none text-white-50">Dasar Hukum</a></li>
+              <li><a href="#" class="text-decoration-none text-white-50">Dokumentasi</a></li>
+              <li><a href="#" class="text-decoration-none text-white-50">FAQ</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-3 col-md-6">
+            <h5>Hubungi Kami</h5>
+            <ul class="contact-list">
+              <li><i class="fas fa-phone-alt"></i><span>+62 813 1763 3727</span></li>
+              <li><i class="fab fa-whatsapp"></i><span>+62 813 1763 3727</span></li>
+              <li><i class="fas fa-envelope"></i><span>sipd@kemendagri.go.id</span></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-3 col-md-6">
+            <h5>Alamat Kantor</h5>
+            <div class="d-flex">
+              <div class="map-wrapper me-3">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3957.955805132482!2d112.73773547460928!3d-7.245870092760547!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7f93e2c857c81%3A0xa60e788025c37814!2sBiro%20Pengadaan%20Barang%2FJasa%20Provinsi%20Jawa%20Timur!5e0!3m2!1sen!2sid!4v1752639383735!5m2!1sen!2sid"
+                  allowfullscreen=""
+                  loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+              </div>
+              <p>
+                Jl. Pahlawan No.110 Lt. 3 dan Lt. 6, Krembangan Sel., Kec. Krembangan, Surabaya, Jawa Timur 60175
+              </p>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6">
+            <h5>Media Sosial</h5>
+            <ul class="contact-list">
+              <li><i class="fab fa-instagram"></i><span>@sipdkemendagri</span></li>
+              <li><i class="fab fa-youtube"></i><span>sipdkemendagri</span></li>
+              <li><i class="fab fa-facebook"></i><span>sipdkemendagri</span></li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
     <footer>
       <div class="container d-flex justify-content-between">
         <span>© 2025 Biro PBJ</span>
