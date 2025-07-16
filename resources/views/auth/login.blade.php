@@ -294,7 +294,7 @@
 
     <section id="pelayanan" class="content-section">
       <div class="container">
-        <div class="row text-center mb-5">
+        <div class="row text-center mb-5" data-aos="fade-up">
             <div class="col">
                 <h2 style="font-weight: 600;">Pelayanan Kami</h2>
                 <p class="text-muted">Layanan utama yang kami sediakan untuk mendukung proses pengadaan.</p>
@@ -401,7 +401,7 @@
 
     <section id="kontak" class="footer-section">
       <div class="container">
-        <div class="row gy-5">
+        <div class="row gy-5 gx-5">
 
           <div class="col-lg-3 col-md-6">
             <h5>Informasi Aplikasi</h5>
