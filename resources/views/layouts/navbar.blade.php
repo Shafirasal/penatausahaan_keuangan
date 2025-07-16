@@ -1,5 +1,7 @@
       <div class="navbar-bg"></div>
       <nav class="navbar navbar-expand-lg main-navbar">
+          <meta name="csrf-token" content="{{ csrf_token() }}">
+
           <form class="form-inline mr-auto">
               <ul class="navbar-nav mr-3">
                   <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a>
@@ -216,16 +218,19 @@ assets/img/avatar/avatar-5.png"
               </li>
               <li class="dropdown"><a href="#" data-toggle="dropdown"
                       class="nav-link dropdown-toggle nav-link-lg nav-link-user">
-                      <img alt="image" src="{{ asset('stisla1') }}/
-assets/img/avatar/avatar-1.png"
+                      <img alt="image"
+                          src="{{ Auth::user()->pegawai && Auth::user()->pegawai->foto
+                              ? asset('storage/' . Auth::user()->pegawai->foto)
+                              : asset('storage/foto_profile/default_pp.jpg') }}"
                           class="rounded-circle mr-1">
                       <div class="d-sm-none d-lg-inline-block">
-                          Hi, {{ session('nama_pegawai', 'Nama Tidak Ditemukan') }}
+                          Hi, {{ Auth::user()?->pegawai?->nama ?? 'Nama Tidak Ditemukan' }}
                       </div>
+
 
                       <div class="dropdown-menu dropdown-menu-right">
                           <div class="dropdown-title">Logged in 5 min ago</div>
-                          <a href="features-profile.html" class="dropdown-item has-icon">
+                          <a href="/profile" class="dropdown-item has-icon">
                               <i class="far fa-user"></i> Profile
                           </a>
                           <a href="features-activities.html" class="dropdown-item has-icon">
@@ -254,27 +259,18 @@ assets/img/avatar/avatar-1.png"
               $('#btnLogout').on('click', function(e) {
                   e.preventDefault();
 
-                  const token = localStorage.getItem('token');
-                  if (!token) return window.location.href = '/login';
-
                   $.ajax({
                       url: '/logout',
                       method: 'POST',
-                      headers: {
-                          Authorization: 'Bearer ' + token
+                      data: {
+                          _token: '{{ csrf_token() }}'
                       },
                       success: function() {
-                          localStorage.removeItem('token');
                           window.location.href = '/login';
                       },
                       error: function(xhr) {
-                          console.log(xhr); // 🔍 Debug responsenya
-                          let message = 'Logout gagal.';
-                          if (xhr.responseJSON) {
-                              message = xhr.responseJSON.message || JSON.stringify(xhr
-                                  .responseJSON);
-                          }
-                          alert(message);
+                          console.log(xhr);
+                          alert('Logout gagal.');
                       }
                   });
               });
