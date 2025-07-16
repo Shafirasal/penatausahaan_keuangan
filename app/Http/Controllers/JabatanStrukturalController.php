@@ -6,6 +6,7 @@ use App\Models\JabatanStrukturalModel;
 use App\Models\PegawaiModel;
 use App\Models\UnitKerjaModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Yajra\DataTables\Facades\DataTables;
@@ -30,7 +31,7 @@ class JabatanStrukturalController extends Controller
 
     public function list(Request $request)
     {
-        $user = JWTAuth::parseToken()->authenticate();
+        $user = Auth::user();
         $data = JabatanStrukturalModel::with(['pegawai', 'unitKerja'])
             ->where('nip', $user->nip)
             ->select(
@@ -53,7 +54,7 @@ class JabatanStrukturalController extends Controller
                 $btn = '<button onclick="modalAction(\'' . url('/jabatan_struktural/' . $row->id_jabatan_struktural . '/show') . '\')" class="btn btn-info btn-sm">Detail</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/jabatan_struktural/' . $row->id_jabatan_struktural . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/jabatan_struktural/' . $row->id_jabatan_struktural . '/confirm') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
-                return $btn;  
+                return $btn;
             })
             ->rawColumns(['aksi'])
             ->toJson();

@@ -7,9 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
-
-class UserModel extends Authenticatable implements JWTSubject
+class UserModel extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -43,19 +41,6 @@ class UserModel extends Authenticatable implements JWTSubject
     protected $casts = [
         'password' => 'hashed',
     ];
-
-    public function getJWTIdentifier()
-    {
-        return $this->getKey();
-    }
-    public function getJWTCustomClaims(): array
-    {
-        return [
-            'nip' => $this->nip,
-            'level' => $this->level,
-        ];
-    }
-
 
     public function pegawai()
     {

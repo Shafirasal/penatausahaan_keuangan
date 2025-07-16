@@ -2,45 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
-
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register', 'refresh', 'logout']]);
+        // Gunakan middleware auth session kecuali untuk login dan register
+        $this->middleware('guest')->except(['logout']);
     }
 
-    public function register(Request $request)
+    public function showLoginForm()
     {
-        $request->validate([
-            'nip' => 'required|string|max:20|unique:users',
-            'level' => 'required|string|in:pegawai,admin,operator',
-            'password' => 'required|string|min:5',
-        ]);
-
-        $user = UserModel::create([
-            'nip' => $request->nip,
-            'level' => $request->level,
-            'password' => Hash::make($request->password),
-        ]);
-
-        $token = Auth::guard('api')->login($user);
-        return response()->json([
-            'status' => 'success',
-            'message' => 'User created successfully',
-            'user' => $user,
-            'authorisation' => [
-                'token' => $token,
-                'type' => 'bearer',
-            ]
-        ]);
+        return view('auth.login'); // tampilkan form login (buat view-nya)
     }
 
     public function login(Request $request)
@@ -52,75 +29,48 @@ class AuthController extends Controller
 
         $credentials = $request->only('nip', 'password');
 
-        if (!$token = Auth::guard('api')->attempt($credentials)) {
-            return response()->json([
-                'status' => false,
-                'message' => 'NIP atau password salah',
-            ], 401);
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate(); // Hindari session fixation
+
+            // Simpan data tambahan ke dalam session
+            $user = Auth::user();
+            session()->put('nip', $user->nip);
+            session()->put('level', $user->level);
+
+            return redirect()->intended('/home'); // arahkan ke halaman utama
         }
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Login berhasil',
-            'user' => Auth::guard('api')->user(),
-            'authorisation' => [
-                'token' => $token,
-                'type' => 'bearer',
-            ]
+        return back()->withErrors([
+            'nip' => 'NIP atau password salah.',
+        ])->withInput();
+    }
+
+    public function register(Request $request)
+    {
+        $request->validate([
+            'nip' => 'required|string|max:20|unique:t_user,nip',
+            'level' => 'required|string|in:pegawai,admin,operator',
+            'password' => 'required|string|min:5',
         ]);
+
+        $user = UserModel::create([
+            'nip' => $request->nip,
+            'level' => $request->level,
+            'password' => Hash::make($request->password),
+        ]);
+
+        Auth::login($user); // langsung login setelah register
+
+        return redirect('/profile')->with('success', 'Registrasi berhasil.');
     }
 
     public function logout(Request $request)
-{
-    // Hapus semua data session
-    $request->session()->invalidate();
-
-    // Regenerasi token CSRF untuk sesi berikutnya (jika diperlukan)
-    $request->session()->regenerateToken();
-
-    // Return JSON response
-    return response()->json([
-        'success' => true,
-        'message' => 'Berhasil logout dan sesi dihapus'
-    ]);
-}
-
-
-
-
-    public function refresh()
     {
-        return response()->json([
-            'status' => 'success',
-            'user' => Auth::guard('api')->user(),
-            'authorisation' => [
-                'token' => JWTAuth::parseToken()->refresh(),
-                'type' => 'bearer',
-            ]
-        ]);
-    }
+        Auth::logout();
 
-    public function syncSession(Request $request)
-    {
-        try {
-            $token = $request->bearerToken();
-            if (!$token) {
-                return response()->json(['error' => 'Token not provided'], 401);
-            }
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-            $user = JWTAuth::setToken($token)->authenticate();
-            if (!$user) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            Auth::login($user);
-
-            session()->put('nip', $user->nip);
-            session()->put('level', $user->level);
-            session()->put('nama_pegawai', optional($user->pegawai)->nama); // pakai relasi
-
-            return response()->json(['message' => 'Session synced']);
-        } catch (\PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException $e) {
-            return response()->json(['error' => 'Token error: ' . $e->getMessage()], 401);
-        }
+        return redirect('/login')->with('success', 'Anda telah logout.');
     }
 }

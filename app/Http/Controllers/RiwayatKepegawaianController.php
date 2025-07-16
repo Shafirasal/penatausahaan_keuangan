@@ -7,6 +7,7 @@ use App\Models\GolonganModel;
 use App\Models\JenisKenaikanPangkatModel;
 use App\Models\PegawaiModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
@@ -32,10 +33,10 @@ class RiwayatKepegawaianController extends Controller
     }
 
 
-    
+
     public function list(Request $request)
     {
-        $user = JWTAuth::parseToken()->authenticate();
+        $user = Auth::user();
         $data = RiwayatKepegawaianModel::with(['pegawai', 'golongan', 'jenisKenaikanPangkat'])
         ->where('nip', $user->nip)
         ->select(
@@ -167,8 +168,8 @@ public function confirm(string $id)
 
         return response()->json(['message' => 'Data berhasil diperbarui']);
     }
-    
-    
+
+
 
     public function store(Request $request)
     {

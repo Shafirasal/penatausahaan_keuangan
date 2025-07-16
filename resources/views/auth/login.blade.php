@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Login — Biro PBJ</title>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Bootstrap 5 -->
@@ -223,20 +224,20 @@
               <i class="fas fa-briefcase fa-2x me-3"></i>
               <div>
                 <h5>Bagian PBJ</h5>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, 
-                mattis ligula consectetur, ultrices mauris. 
-                Maecenas vitae mattis tellus. Nullam quis imperdiet augue. 
-                Vestibulum auctor ornare leo, non suscipit magna interdum eu. 
-                Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet. 
-                Pellentesque commodo lacus at sodales sodales. Quisque sagittis orci ut diam condimentum, 
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla,
+                mattis ligula consectetur, ultrices mauris.
+                Maecenas vitae mattis tellus. Nullam quis imperdiet augue.
+                Vestibulum auctor ornare leo, non suscipit magna interdum eu.
+                Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet.
+                Pellentesque commodo lacus at sodales sodales. Quisque sagittis orci ut diam condimentum,
                 vel euismod erat placerat. In iaculis arcu eros, eget tempus orci facilisis id.Lorem ipsum dolor sit amet,
-                consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit 
-                amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. 
-                Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. 
-                Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet. 
-                Pellentesque commodo lacus at sodales sodales. 
-                Quisque sagittis orci ut diam condimentum, vel euismod erat placerat. 
+                consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit
+                amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus.
+                Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu.
+                Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet.
+                Pellentesque commodo lacus at sodales sodales.
+                Quisque sagittis orci ut diam condimentum, vel euismod erat placerat.
                 In iaculis arcu eros, eget tempus orci facilisis id.</p>
               </div>
             </div>
@@ -248,20 +249,20 @@
             <div class="d-flex align-items-start justify-content-end">
               <div>
                 <h5>Bagian LPSE</h5>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, 
-                mattis ligula consectetur, ultrices mauris. 
-                Maecenas vitae mattis tellus. Nullam quis imperdiet augue. 
-                Vestibulum auctor ornare leo, non suscipit magna interdum eu. 
-                Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet. 
-                Pellentesque commodo lacus at sodales sodales. Quisque sagittis orci ut diam condimentum, 
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla,
+                mattis ligula consectetur, ultrices mauris.
+                Maecenas vitae mattis tellus. Nullam quis imperdiet augue.
+                Vestibulum auctor ornare leo, non suscipit magna interdum eu.
+                Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet.
+                Pellentesque commodo lacus at sodales sodales. Quisque sagittis orci ut diam condimentum,
                 vel euismod erat placerat. In iaculis arcu eros, eget tempus orci facilisis id.Lorem ipsum dolor sit amet,
-                consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit 
-                amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. 
-                Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. 
-                Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet. 
-                Pellentesque commodo lacus at sodales sodales. 
-                Quisque sagittis orci ut diam condimentum, vel euismod erat placerat. 
+                consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit
+                amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus.
+                Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu.
+                Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet.
+                Pellentesque commodo lacus at sodales sodales.
+                Quisque sagittis orci ut diam condimentum, vel euismod erat placerat.
                 In iaculis arcu eros, eget tempus orci facilisis id.</p>
               </div>
               <i class="fas fa-network-wired fa-2x ms-3"></i>
@@ -275,20 +276,20 @@
               <i class="fas fa-users fa-2x me-3"></i>
               <div>
                 <h5>Bagian Pembinaan</h5>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, 
-                mattis ligula consectetur, ultrices mauris. 
-                Maecenas vitae mattis tellus. Nullam quis imperdiet augue. 
-                Vestibulum auctor ornare leo, non suscipit magna interdum eu. 
-                Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet. 
-                Pellentesque commodo lacus at sodales sodales. Quisque sagittis orci ut diam condimentum, 
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla,
+                mattis ligula consectetur, ultrices mauris.
+                Maecenas vitae mattis tellus. Nullam quis imperdiet augue.
+                Vestibulum auctor ornare leo, non suscipit magna interdum eu.
+                Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet.
+                Pellentesque commodo lacus at sodales sodales. Quisque sagittis orci ut diam condimentum,
                 vel euismod erat placerat. In iaculis arcu eros, eget tempus orci facilisis id.Lorem ipsum dolor sit amet,
-                consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit 
-                amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. 
-                Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. 
-                Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet. 
-                Pellentesque commodo lacus at sodales sodales. 
-                Quisque sagittis orci ut diam condimentum, vel euismod erat placerat. 
+                consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit
+                amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus.
+                Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu.
+                Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet.
+                Pellentesque commodo lacus at sodales sodales.
+                Quisque sagittis orci ut diam condimentum, vel euismod erat placerat.
                 In iaculis arcu eros, eget tempus orci facilisis id.</p>
               </div>
             </div>
@@ -397,41 +398,36 @@
     // AOS
     AOS.init();
 
-    // Login AJAX
     $('#loginForm').on('submit', function(e) {
-      e.preventDefault();
-      const nip = $('#nip').val();
-      const password = $('#password').val();
+            e.preventDefault();
 
-      $.ajax({
-        url: '/api/login',
-        method: 'POST',
-        data: { nip, password },
-        success: function(response) {
-          const token = response.authorisation.token;
-          localStorage.setItem('token', token);
-          $.ajax({
-            url: '/sync-session',
-            method: 'GET',
-            headers: { Authorization: 'Bearer ' + token },
-            success: function() {
-              window.location.href = '/home';
-            },
-            error: function() {
-              $('#loginError').removeClass('d-none').text('Gagal menyimpan session');
-            }
-          });
-        },
-        error: function(xhr) {
-          const message = xhr.responseJSON?.message || 'Login gagal.';
-          $('#loginError').removeClass('d-none').text(message);
-        }
-      });
-    });
+            const nip = $('#nip').val();
+            const password = $('#password').val();
 
-    $('#nip, #password').on('input', function() {
-      $('#loginError').addClass('d-none').text('');
-    });
+            $.ajax({
+                url: '/login',
+                method: 'POST',
+                data: {
+                    nip: nip,
+                    password: password,
+                    _token: $('meta[name="csrf-token"]').attr('content') // penting!
+                },
+                success: function() {
+                    window.location.href = '/home';
+                },
+                error: function(xhr) {
+                    const message = xhr.responseJSON?.errors?.nip?.[0] || xhr.responseJSON?.message ||
+                        'Login gagal.';
+                    $('#loginError').removeClass('d-none').text(message);
+                }
+            });
+        });
+
+        // Reset error saat input
+        $('#nip, #password').on('input', function() {
+            $('#loginError').addClass('d-none').text('');
+        });
+
 
     // Smooth scroll nav
     document.querySelectorAll('[data-scroll-to]').forEach(link => {
