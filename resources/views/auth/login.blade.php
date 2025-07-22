@@ -84,6 +84,19 @@
       padding: 40px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-10px); }
+      40% { transform: translateX(10px); }
+      60% { transform: translateX(-10px); }
+      80% { transform: translateX(10px); }
+      100% { transform: translateX(0); }
+    }
+
+    .shake {
+      animation: shake 0.4s;
+    }
+
 
     .icon-input {
       position: absolute;
@@ -499,9 +512,17 @@
                     window.location.href = '/home';
                 },
                 error: function(xhr) {
-                    const message = xhr.responseJSON?.errors?.nip?.[0] || xhr.responseJSON?.message ||
-                        'Login gagal.';
-                    $('#loginError').removeClass('d-none').text(message);
+                  const message = xhr.responseJSON?.errors?.nip?.[0] || xhr.responseJSON?.message || 'Login gagal.';
+                  $('#loginError').removeClass('d-none').text("NIP atau password salah, coba lagi.");
+
+                  // Tambahkan animasi shake ke #loginSection
+                  const $section = $('#loginSection');
+                  $section.addClass('shake');
+
+                  // Hapus class shake setelah animasi selesai
+                  $section.on('animationend', function () {
+                    $section.removeClass('shake');
+                  });
                 }
             });
         });
@@ -509,6 +530,7 @@
         // Reset error saat input
         $('#nip, #password').on('input', function() {
             $('#loginError').addClass('d-none').text('');
+            $('#loginSection').removeClass('shake');
         });
 
 
