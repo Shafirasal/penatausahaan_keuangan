@@ -274,7 +274,7 @@
       </div>
       <div class="right glass-card" id="loginSection">
         <p class="text-muted mb-4">Gunakan akun Anda untuk mengakses sistem.</p>
-        <form id="loginForm" method="POST" action="#">
+        <form id="loginForm" method="POST" action="{{ route('login') }}">
           @csrf
           <div id="loginError" class="alert alert-danger d-none"></div>
           <div class="mb-3 position-relative">

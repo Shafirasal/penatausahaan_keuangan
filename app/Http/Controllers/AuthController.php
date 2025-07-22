@@ -20,30 +20,59 @@ class AuthController extends Controller
         return view('auth.login'); // tampilkan form login (buat view-nya)
     }
 
-    public function login(Request $request)
-    {
-        $request->validate([
-            'nip' => 'required|string',
-            'password' => 'required|string',
-        ]);
 
-        $credentials = $request->only('nip', 'password');
+    //   public function login(Request $request)
+    // {
+    //     $request->validate([
+    //         'nip' => 'required|string',
+    //         'password' => 'required|string',
+    //     ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate(); // Hindari session fixation
+    //     $credentials = $request->only('nip', 'password');
 
-            // Simpan data tambahan ke dalam session
-            $user = Auth::user();
-            session()->put('nip', $user->nip);
-            session()->put('level', $user->level);
+    //     if (Auth::attempt($credentials)) {
+    //         $request->session()->regenerate(); // Hindari session fixation
 
-            return redirect()->intended('/home'); // arahkan ke halaman utama
-        }
+    //         // Simpan data tambahan ke dalam session
+    //         $user = Auth::user();
+    //         session()->put('nip', $user->nip);
+    //         session()->put('level', $user->level);
 
-        return back()->withErrors([
-            'nip' => 'NIP atau password salah.',
-        ])->withInput();
+    //         return redirect()->intended('/home'); // arahkan ke halaman utama
+    //     }
+
+    //     return back()->withErrors([
+    //         'nip' => 'NIP atau password salah.',
+    //     ])->withInput();
+    // }
+public function login(Request $request)
+{
+    $request->validate([
+        'nip' => 'required|string',
+        'password' => 'required|string',
+    ]);
+
+    $credentials = $request->only('nip', 'password');
+
+    if (!Auth::attempt($credentials)) {
+        return response()->json([
+            'errors' => ['nip' => ['NIP atau password salah.']]
+        ], 422);
     }
+
+    $request->session()->regenerate();
+
+    /** @var \App\Models\UserModel $user */
+    $user = Auth::user();
+    session()->put('nip', $user->nip);
+    session()->put('level', $user->level);
+
+    return response()->json([
+        'redirect' => url('/home'),
+        'message'  => 'Login berhasil.',
+    ]);
+}
+
 
     public function register(Request $request)
     {
