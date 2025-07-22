@@ -19,7 +19,8 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         // Ambil user yang sedang login melalui session web
-        $user = Auth::user();
+        // $user = Auth::user();
+        $user = UserModel::findOrFail(Auth::id());
 
         if (!$user) {
             return redirect()->route('login')->withErrors('Anda harus login terlebih dahulu.');
@@ -40,7 +41,7 @@ class ProfileController extends Controller
             'password' => 'nullable|string|min:5',
             'foto' => 'nullable|image|max:2048',
         ]);
-
+        
         // Update data pegawai
         $pegawai->nama = $request->nama;
         $pegawai->hp = $request->hp;
