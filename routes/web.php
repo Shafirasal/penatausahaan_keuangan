@@ -30,6 +30,12 @@ Route::middleware(['web', 'session.auth'])->group(function () {
     // Profile
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile/change-password', function () {
+        return view('profile.change_password');
+    })->name('profile.change_password');
+    Route::put('/profile/change-password', [ProfileController::class, 'updatePassword'])->name('profile.update_password');
+
+
 
     // Jabatan Struktural
     Route::prefix('jabatan_struktural')->name('jabatan_struktural.')->group(function () {
