@@ -94,7 +94,7 @@
     }
 
     .shake {
-      animation: shake 0.4s;
+      animation: shake 0.4s ease-in-out;
     }
 
 
@@ -300,7 +300,7 @@
             <i class="fas fa-lock icon-input"></i>
             <input type="password" id="password" name="password" class="form-control input-icon" required>
           </div>
-          <button type="submit" class="btn btn-danger w-100 btn-hover">Login</button>
+          <button id="loginButton" type="submit" class="btn btn-danger w-100 btn-hover">Login</button>
         </form>
       </div>
     </div>
@@ -499,7 +499,16 @@
 
             const nip = $('#nip').val();
             const password = $('#password').val();
+            const $button = $('#loginButton');
 
+            // simpan text asli
+            const originalText = $button.html();
+
+              // Ganti dengan spinner + disable tombol
+            $button
+              .html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
+              .prop('disabled', true);
+              
             $.ajax({
                 url: '/login',
                 method: 'POST',
@@ -515,8 +524,13 @@
                   const message = xhr.responseJSON?.errors?.nip?.[0] || xhr.responseJSON?.message || 'Login gagal.';
                   $('#loginError').removeClass('d-none').text("NIP atau password salah, coba lagi.");
 
+                  // Kembalikan tombol seperti semula
+                  $button.html(originalText).prop('disabled', false);
+
                   // Tambahkan animasi shake ke #loginSection
                   const $section = $('#loginSection');
+                  $section.addClass('shake');
+                  void $section[0].offsetWidth;  // trik force reflow
                   $section.addClass('shake');
 
                   // Hapus class shake setelah animasi selesai
