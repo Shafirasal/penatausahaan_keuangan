@@ -131,12 +131,12 @@
         .hero .left { order: 2; }
         .hero .right { order: 1; }
     }
-    
+
     .content-section {
         padding: 80px 0;
         background: #fff; /* Memberi background putih pada section */
     }
-    
+
     .content-section.dark {
         background: #4f443e;
         color: #fff;
@@ -183,7 +183,7 @@
       padding: 20px 0;
       font-size: 14px;
     }
-    
+
     /* === STYLE SECTION TENTANG BARU === */
     .tentang-section {
         padding: 80px 0;
@@ -259,7 +259,7 @@
       list-style: none;
       padding: 0;
     }
-    
+
   </style>
 </head>
 
@@ -508,7 +508,7 @@
             $button
               .html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
               .prop('disabled', true);
-              
+
             $.ajax({
                 url: '/login',
                 method: 'POST',
@@ -518,7 +518,7 @@
                     _token: $('meta[name="csrf-token"]').attr('content') // penting!
                 },
                 success: function() {
-                    window.location.href = '/home';
+                    window.location.href = '/dashboard'; 
                 },
                 error: function(xhr) {
                   const message = xhr.responseJSON?.errors?.nip?.[0] || xhr.responseJSON?.message || 'Login gagal.';

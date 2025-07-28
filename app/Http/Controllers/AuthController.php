@@ -68,7 +68,7 @@ public function login(Request $request)
     session()->put('level', $user->level);
 
     return response()->json([
-        'redirect' => url('/home'),
+        'redirect' => url('/dashboard'),
         'message'  => 'Login berhasil.',
     ]);
 }
