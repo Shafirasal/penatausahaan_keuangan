@@ -21,6 +21,7 @@
                 <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Biodata Pegawai</span></a>
                 <ul class="dropdown-menu">
 
+                  <li><a class="nav-link" href="{{ url('/user') }}">Tambah User</a></li>
                   <li><a class="nav-link" href="{{ url('/riwayat_pendidikan') }}">Riwayat Pendidikan</a></li>
                   <li><a class="nav-link" href="{{ url('/jabatan_fungsional') }}">Jabatan Fungsional</a></li>
                   <li><a class="nav-link" href="{{ url('/jabatan_struktural') }}">Jabatan Struktural</a></li>
