@@ -67,13 +67,46 @@ class UserSeeder extends Seeder
         //     'password' => Hash::make('12345'),
         // ]);
 
-        // Tambah pegawai kedua
+        // // Tambah pegawai kedua
+        // DB::table('t_pegawai')->insert([
+        //     'nip' => '67890',
+        //     'nama' => 'admin1',
+        //     'gelar_depan' => 'Ir.',
+        //     'gelar_belakang' => 'S.T',
+        //     'nik' => '3512345678900004',
+        //     'tempat_lahir' => 'Malang',
+        //     'tanggal_lahir' => '1990-05-10',
+        //     'jenis_kelamin' => 'perempuan',
+        //     'hp' => '08123456789',
+        //     'email' => 'user2@example.com',
+        //     'alamat' => 'Jl. Kedua No.2',
+        //     'rt' => 5,
+        //     'rw' => 6,
+        //     'kode_pos' => '65123',
+        //     'agama' => 'islam',
+        //     'status_kepegawaian' => 'pppk',
+        //     'id_provinsi' => $provId,
+        //     'id_kabupaten_kota' => $kabId,
+        //     'id_kecamatan' => $kecId,
+        //     'id_kelurahan' => $kelId,
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        // ]);
+
+        // // Tambah user login kedua
+        // DB::table('t_user')->insert([
+        //     'nip' => '67890',
+        //     'level' => 'admin',
+        //     'password' => Hash::make('67890'),
+        // ]);
+
+                // Tambah pegawai kedua
         DB::table('t_pegawai')->insert([
-            'nip' => '67890',
-            'nama' => 'admin1',
+            'nip' => '23456',
+            'nama' => 'kuroo',
             'gelar_depan' => 'Ir.',
             'gelar_belakang' => 'S.T',
-            'nik' => '3512345678900004',
+            'nik' => '3512345618900004',
             'tempat_lahir' => 'Malang',
             'tanggal_lahir' => '1990-05-10',
             'jenis_kelamin' => 'perempuan',
@@ -94,11 +127,11 @@ class UserSeeder extends Seeder
         ]);
 
         // Tambah user login kedua
-        DB::table('t_user')->insert([
-            'nip' => '67890',
-            'level' => 'admin',
-            'password' => Hash::make('67890'),
-        ]);
+        // DB::table('t_user')->insert([
+        //     'nip' => '45678',
+        //     'level' => 'pegawai',
+        //     'password' => Hash::make('45678'),
+        // ]);
 
     }
 }

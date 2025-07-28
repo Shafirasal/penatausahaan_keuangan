@@ -13,7 +13,7 @@
               <li class="nav-item dropdown">
                 <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Dashboard</span></a>
                 <ul class="dropdown-menu">
-                  <li><a class="nav-link" href="">General Dashboard</a></li>
+                  <li><a class="nav-link" href="{{ url('/dashboard') }}">General Dashboard</a></li>
                 </ul>
               </li>
               <li class="menu-header">Master Data</li>

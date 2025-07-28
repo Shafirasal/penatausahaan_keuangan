@@ -17,6 +17,12 @@
   <link rel="stylesheet" href="{{ asset('stisla1/assets/css/style.css') }}">
   <link rel="stylesheet" href="{{ asset('stisla1/assets/css/components.css') }}">
 
+    <!-- Template Select2 -->
+  <link rel="stylesheet" href="{{ asset('stisla1/assets/select2/css/select2.min.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  
+
+
 <!-- Bootstrap Datepicker CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 
@@ -54,6 +60,9 @@
   <script src="{{ asset('stisla1/node_modules/jquery.nicescroll/dist/jquery.nicescroll.min.js') }}"></script>
   <script src="{{ asset('stisla1/node_modules/jquery-ui-dist/jquery-ui.min.js') }}"></script>
 
+    <!-- Select2-->
+  <script src="{{ asset('stisla1/assets/select2/js/select2.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 
 

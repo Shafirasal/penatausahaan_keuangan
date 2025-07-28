@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
@@ -73,6 +74,20 @@ Route::middleware(['web', 'session.auth'])->group(function () {
         Route::put('/{id}/update', [RiwayatPendidikanController::class, 'update']);
         Route::get('/{id}/confirm', [RiwayatPendidikanController::class, 'confirm']);
         Route::delete('/{id}/delete', [RiwayatPendidikanController::class, 'delete']);
+    });
+
+    Route::prefix('user')->name('user.')->group(function () {
+    Route::get('/', [UserController::class, 'index']);        
+    Route::post('/list', [UserController::class, 'list']);  
+    Route::get('/create', [UserController::class, 'create']);   
+    Route::post('/store', [UserController::class, 'store']); 
+    Route::get('/{id}/show', [UserController::class, 'show']);  // Perbaikan URL
+    Route::get('/{id}/edit', [UserController::class, 'edit']); 
+    Route::put('/{id}/update', [UserController::class, 'update']); // Perbaikan URL
+    Route::get('/{id}/confirm', [UserController::class, 'confirm']); 
+    Route::delete('/{id}/delete', [UserController::class, 'delete']); 
+    Route::get('/import', [UserController::class, 'import']);
+    Route::post('/import_ajax', [UserController::class, 'import_ajax']);
     });
 
     // Riwayat Kepegawaian
