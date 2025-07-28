@@ -25,12 +25,18 @@
                   <li><a class="nav-link" href="{{ url('/jabatan_fungsional') }}">Jabatan Fungsional</a></li>
                   <li><a class="nav-link" href="{{ url('/jabatan_struktural') }}">Jabatan Struktural</a></li>
                   <li><a class="nav-link" href="{{ url('/riwayat_kepegawaian') }}">Riwayat Pegawai</a></li>
+                  <li><a class="nav-link" href="{{ url('/riwayat_kepegawaian') }}">Daftar Pegawai</a></li>
                 </ul>
               </li>
               {{-- <li class="active"><a class="nav-link" href="blank.html"><i class="far fa-square"></i> <span>Blank Page</span></a></li> --}}
               <li class="nav-item dropdown">
                 <a href="#" class="nav-link has-dropdown"><i class="fas fa-th"></i> <span>SIPD</span></a>
                 <ul class="dropdown-menu">
+                  <li><a class="nav-link" href="layout-transparent.html">Master Program</a></li>
+                  <li><a class="nav-link" href="layout-transparent.html">Master Kegiatan</a></li>
+                  <li><a class="nav-link" href="layout-transparent.html">Master Sub-Kegiatan</a></li>
+                  <li><a class="nav-link" href="layout-transparent.html">Master Rekening</a></li>
+                  <li><a class="nav-link" href="layout-transparent.html">Master SSH</a></li>
                   <li><a class="nav-link" href="layout-transparent.html">Bagian PBJ</a></li>
                   <li><a class="nav-link" href="bootstrap-badge.html">Bagian LPSE</a></li>
                   <li><a class="nav-link" href="bootstrap-breadcrumb.html">Bagian Pembinaan</a></li>
