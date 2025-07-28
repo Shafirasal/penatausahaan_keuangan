@@ -47,16 +47,40 @@ class PegawaiModel extends Model
 
     public function riwayatKepegawaian()
     {
-    return $this->hasMany(RiwayatKepegawaianModel::class, 'nip', 'nip');
+        return $this->hasMany(RiwayatKepegawaianModel::class, 'nip', 'nip');
     }
 
     public function jabatanFungsional()
     {
         return $this->hasMany(JabatanFungsionalModel::class, 'nip', 'nip');
     }
+    public function jabatanStruktural()
+    {
+        return $this->hasMany(JabatanStrukturalModel::class, 'nip', 'nip');
+    }
 
-    public function user(){
+    public function provinsi()
+    {
+        return $this->belongsTo(ProvinsiModel::class, 'id_provinsi', 'id_provinsi');
+    }
+
+    public function kabupatenKota()
+    {
+        return $this->belongsTo(KabupatenKotaModel::class, 'id_kabupaten_kota', 'id_kabupaten_kota');
+    }
+
+    public function kecamatan()
+    {
+        return $this->belongsTo(KecamatanModel::class, 'id_kecamatan', 'id_kecamatan');
+    }
+
+    public function kelurahan()
+    {
+        return $this->belongsTo(KelurahanModel::class, 'id_kelurahan', 'id_kelurahan');
+    }
+
+    public function user()
+    {
         return $this->hasOne(UserModel::class, 'nip', 'nip');
     }
 }
-
