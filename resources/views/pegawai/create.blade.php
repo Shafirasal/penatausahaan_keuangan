@@ -67,7 +67,7 @@
                     <label>Jenis Kelamin</label>
                     <select name="jenis_kelamin" id="jenis_kelamin" class="form-control" required>
                         <option value="">-- Pilih Jenis Kelamin --</option>
-                        <option value="laki-Laki">Laki-laki</option>
+                        <option value="laki-laki">Laki-laki</option>
                         <option value="perempuan">Perempuan</option>
                     </select>
                     <small id="error-jenis_kelamin" class="error-text form-text text-danger"></small>
@@ -99,16 +99,16 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label>RT</label>
-                            <input type="text" name="rt" id="rt" class="form-control" placeholder="RT">
-                            <small id="error-rt" class="error-text form-text text-danger"></small>
+        <label>RT</label>
+        <input type="text" name="rt" id="rt" class="form-control" placeholder="00" maxlength="2" pattern="\d{2}">
+        <small id="error-rt" class="error-text form-text text-danger"></small>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label>RW</label>
-                            <input type="text" name="rw" id="rw" class="form-control" placeholder="RW">
-                            <small id="error-rw" class="error-text form-text text-danger"></small>
+        <label>RW</label>
+        <input type="text" name="rw" id="rw" class="form-control" placeholder="00" maxlength="2" pattern="\d{2}">
+        <small id="error-rw" class="error-text form-text text-danger"></small>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -201,10 +201,10 @@
                             <label>Status Kepegawaian</label>
                             <select name="status_kepegawaian" id="status_kepegawaian" class="form-control" required>
                                 <option value="">-- Pilih Status --</option>
-                                <option value="PNS">PNS</option>
-                                <option value="PPPK">PPPK</option>
-                                <option value="Honorer">Honorer</option>
-                                <option value="Kontrak">Kontrak</option>
+                                <option value="cpns">CPNS</option>
+                                <option value="pns">PNS</option>
+                                <option value="pppk">PPPK</option>
+                                <option value="ptt">PTT</option>
                             </select>
                             <small id="error-status_kepegawaian" class="error-text form-text text-danger"></small>
                         </div>
@@ -345,4 +345,50 @@ $(document).ready(function() {
         }
     });
 });
+
+$('#id_provinsi').change(function () {
+    var provId = $(this).val();
+    $('#id_kabupaten_kota').html('<option value="">Loading...</option>');
+    $('#id_kecamatan').html('<option value="">-- Pilih Kecamatan --</option>');
+    $('#id_kelurahan').html('<option value="">-- Pilih Kelurahan --</option>');
+    if (provId) {
+        $.get(`/pegawai/provinsi/${provId}/kabupaten`, function (data) {
+            var options = '<option value="">-- Pilih Kabupaten/Kota --</option>';
+            data.forEach(item => {
+                options += `<option value="${item.id_kabupaten_kota}">${item.nama_kabupaten_kota}</option>`;
+            });
+            $('#id_kabupaten_kota').html(options);
+        });
+    }
+});
+
+$('#id_kabupaten_kota').change(function () {
+    var kabId = $(this).val();
+    $('#id_kecamatan').html('<option value="">Loading...</option>');
+    $('#id_kelurahan').html('<option value="">-- Pilih Kelurahan --</option>');
+    if (kabId) {
+        $.get(`/pegawai/kabupaten/${kabId}/kecamatan`, function (data) {
+            var options = '<option value="">-- Pilih Kecamatan --</option>';
+            data.forEach(item => {
+                options += `<option value="${item.id_kecamatan}">${item.nama_kecamatan}</option>`;
+            });
+            $('#id_kecamatan').html(options);
+        });
+    }
+});
+
+$('#id_kecamatan').change(function () {
+    var kecId = $(this).val();
+    $('#id_kelurahan').html('<option value="">Loading...</option>');
+    if (kecId) {
+        $.get(`/pegawai/kecamatan/${kecId}/kelurahan`, function (data) {
+            var options = '<option value="">-- Pilih Kelurahan --</option>';
+            data.forEach(item => {
+                options += `<option value="${item.id_kelurahan}">${item.nama_kelurahan}</option>`;
+            });
+            $('#id_kelurahan').html(options);
+        });
+    }
+});
+
 </script>

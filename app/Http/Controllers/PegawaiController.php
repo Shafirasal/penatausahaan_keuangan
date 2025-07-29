@@ -127,16 +127,18 @@ class PegawaiController extends Controller
         return redirect()->route('pegawai.index');
     }
 
-    public function edit($nip)
-    {
-        $pegawai = PegawaiModel::findOrFail($nip);
-        $provinsi = ProvinsiModel::all();
-        $kabupatenKota = KabupatenKotaModel::all();
-        $kecamatan = KecamatanModel::all();
-        $kelurahan = KelurahanModel::all();
+public function edit($nip)
+{
+    $pegawai = PegawaiModel::findOrFail($nip);
+    $provinsi = ProvinsiModel::all();
+    
+    // Ambil kab/kec/kelurahan sesuai data pegawai
+    $kabupatenKota = KabupatenKotaModel::where('id_provinsi', $pegawai->id_provinsi)->get();
+    $kecamatan = KecamatanModel::where('id_kabupaten_kota', $pegawai->id_kabupaten_kota)->get();
+    $kelurahan = KelurahanModel::where('id_kecamatan', $pegawai->id_kecamatan)->get();
 
-        return view('pegawai.edit', compact('pegawai', 'provinsi', 'kabupatenKota', 'kecamatan', 'kelurahan'));
-    }
+    return view('pegawai.edit', compact('pegawai', 'provinsi', 'kabupatenKota', 'kecamatan', 'kelurahan'));
+}
 
     public function update(Request $request, $nip)
     {
@@ -210,8 +212,8 @@ class PegawaiController extends Controller
             'hp' => 'nullable|string|max:15',
             'email' => 'nullable|email|max:255|unique:t_pegawai,email',
             'alamat' => 'required|string',
-            'rt' => 'nullable|string|max:3',
-            'rw' => 'nullable|string|max:3',
+            'rt' => 'nullable|regex:/^\d{2}$/',
+            'rw' => 'nullable|regex:/^\d{2}$/',
             'kode_pos' => 'nullable|string|max:5',
             'agama' => 'required|string|max:50',
             'status_kepegawaian' => 'required|string|max:50',
@@ -262,13 +264,29 @@ class PegawaiController extends Controller
         ], 200);
     }
 
-    public function create() 
-    {
-        $provinsi = ProvinsiModel::all();
-        $kabupatenKota = KabupatenKotaModel::all();
-        $kecamatan = KecamatanModel::all();
-        $kelurahan = KelurahanModel::all();
-        
-        return view('pegawai.create', compact('provinsi', 'kabupatenKota', 'kecamatan', 'kelurahan'));
-    }
+public function create() 
+{
+    $provinsi = ProvinsiModel::all();
+    return view('pegawai.create', compact('provinsi'));
+}
+
+public function getKabupatenByProvinsi($id_provinsi)
+{
+    $kabupaten = KabupatenKotaModel::where('id_provinsi', $id_provinsi)->get();
+    return response()->json($kabupaten);
+}
+
+public function getKecamatanByKabupaten($id_kabupaten)
+{
+    $kecamatan = KecamatanModel::where('id_kabupaten_kota', $id_kabupaten)->get();
+    return response()->json($kecamatan);
+}
+
+public function getKelurahanByKecamatan($id_kecamatan)
+{
+    $kelurahan = KelurahanModel::where('id_kecamatan', $id_kecamatan)->get();
+    return response()->json($kelurahan);
+}
+
+
 }
