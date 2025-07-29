@@ -115,6 +115,10 @@ Route::middleware(['web', 'session.auth'])->group(function () {
         Route::put('/{nip}/update', [PegawaiController::class, 'update']);
         Route::get('/{nip}/confirm', [PegawaiController::class, 'confirm']);
         Route::delete('/{nip}/delete', [PegawaiController::class, 'delete']);
+
+    Route::get('/provinsi/{id_provinsi}/kabupaten', [PegawaiController::class, 'getKabupatenByProvinsi']);
+    Route::get('/kabupaten/{id_kabupaten}/kecamatan', [PegawaiController::class, 'getKecamatanByKabupaten']);
+    Route::get('/kecamatan/{id_kecamatan}/kelurahan', [PegawaiController::class, 'getKelurahanByKecamatan']);
     });
 
     Route::get('whoami', function () {
