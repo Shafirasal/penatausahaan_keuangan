@@ -36,7 +36,8 @@ class PegawaiModel extends Model
         'id_provinsi',
         'id_kabupaten_kota',
         'id_kecamatan',
-        'id_kelurahan'
+        'id_kelurahan',
+        'foto'
     ];
 
     // Contoh relasi jika dibutuhkan

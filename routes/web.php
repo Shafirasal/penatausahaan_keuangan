@@ -9,6 +9,7 @@ use App\Http\Controllers\JabatanStrukturalController;
 use App\Http\Controllers\JabatanFungsionalController;
 use App\Http\Controllers\RiwayatPendidikanController;
 use App\Http\Controllers\RiwayatKepegawaianController;
+use App\Http\Controllers\PegawaiController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -101,6 +102,19 @@ Route::middleware(['web', 'session.auth'])->group(function () {
         Route::put('/{id}/update', [RiwayatKepegawaianController::class, 'update']);
         Route::get('/{id}/confirm', [RiwayatKepegawaianController::class, 'confirm']);
         Route::delete('/{id}/delete', [RiwayatKepegawaianController::class, 'delete']);
+    });
+
+    // Pegawai
+    Route::prefix('pegawai')->name('pegawai.')->group(function () {
+        Route::post('/list', [PegawaiController::class, 'list']);
+        Route::get('/', [PegawaiController::class, 'index']);
+        Route::get('/create', [PegawaiController::class, 'create']);
+        Route::post('/store', [PegawaiController::class, 'store']);
+        Route::get('/{nip}/show', [PegawaiController::class, 'show']);
+        Route::get('/{nip}/edit', [PegawaiController::class, 'edit']);
+        Route::put('/{nip}/update', [PegawaiController::class, 'update']);
+        Route::get('/{nip}/confirm', [PegawaiController::class, 'confirm']);
+        Route::delete('/{nip}/delete', [PegawaiController::class, 'delete']);
     });
 
     Route::get('whoami', function () {

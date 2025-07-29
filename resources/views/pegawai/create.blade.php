@@ -1,0 +1,348 @@
+<form action="{{ url('/pegawai/store') }}" method="POST" id="form-tambah" enctype="multipart/form-data">
+    @csrf
+    <div id="modal-master" class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary">Tambah Data Pegawai</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label>NIP</label>
+                    <input type="text" name="nip" id="nip" class="form-control" placeholder="Masukkan NIP" required>
+                    <small id="error-nip" class="error-text form-text text-danger"></small>
+                </div>
+
+                <div class="form-group">
+                    <label>Nama</label>
+                    <input type="text" name="nama" id="nama" class="form-control" placeholder="Masukkan Nama" required>
+                    <small id="error-nama" class="error-text form-text text-danger"></small>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Gelar Depan</label>
+                            <input type="text" name="gelar_depan" id="gelar_depan" class="form-control" placeholder="Dr., Prof., dll">
+                            <small id="error-gelar_depan" class="error-text form-text text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Gelar Belakang</label>
+                            <input type="text" name="gelar_belakang" id="gelar_belakang" class="form-control" placeholder="S.Pd., M.Si., dll">
+                            <small id="error-gelar_belakang" class="error-text form-text text-danger"></small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>NIK</label>
+                    <input type="text" name="nik" id="nik" class="form-control" placeholder="Masukkan NIK" required>
+                    <small id="error-nik" class="error-text form-text text-danger"></small>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Tempat Lahir</label>
+                            <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control" placeholder="Masukkan Tempat Lahir" required>
+                            <small id="error-tempat_lahir" class="error-text form-text text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Tanggal Lahir</label>
+                            <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-control" required>
+                            <small id="error-tanggal_lahir" class="error-text form-text text-danger"></small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Jenis Kelamin</label>
+                    <select name="jenis_kelamin" id="jenis_kelamin" class="form-control" required>
+                        <option value="">-- Pilih Jenis Kelamin --</option>
+                        <option value="laki-Laki">Laki-laki</option>
+                        <option value="perempuan">Perempuan</option>
+                    </select>
+                    <small id="error-jenis_kelamin" class="error-text form-text text-danger"></small>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>No. HP</label>
+                            <input type="text" name="hp" id="hp" class="form-control" placeholder="Masukkan No. HP">
+                            <small id="error-hp" class="error-text form-text text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" id="email" class="form-control" placeholder="Masukkan Email">
+                            <small id="error-email" class="error-text form-text text-danger"></small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Alamat</label>
+                    <textarea name="alamat" id="alamat" class="form-control" rows="3" placeholder="Masukkan Alamat" required></textarea>
+                    <small id="error-alamat" class="error-text form-text text-danger"></small>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>RT</label>
+                            <input type="text" name="rt" id="rt" class="form-control" placeholder="RT">
+                            <small id="error-rt" class="error-text form-text text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>RW</label>
+                            <input type="text" name="rw" id="rw" class="form-control" placeholder="RW">
+                            <small id="error-rw" class="error-text form-text text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Kode Pos</label>
+                            <input type="text" name="kode_pos" id="kode_pos" class="form-control" placeholder="Kode Pos">
+                            <small id="error-kode_pos" class="error-text form-text text-danger"></small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Provinsi</label>
+                            <select name="id_provinsi" id="id_provinsi" class="form-control" required>
+                                <option value="">-- Pilih Provinsi --</option>
+                                @foreach ($provinsi as $row)
+                                <option value="{{ $row->id_provinsi }}">{{ $row->nama_provinsi }}</option>
+                                @endforeach
+                            </select>
+                            <small id="error-id_provinsi" class="error-text form-text text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Kabupaten/Kota</label>
+                            <select name="id_kabupaten_kota" id="id_kabupaten_kota" class="form-control" required>
+                                <option value="">-- Pilih Kabupaten/Kota --</option>
+                                @if(isset($kabupatenKota))
+                                    @foreach ($kabupatenKota as $row)
+                                    <option value="{{ $row->id_kabupaten_kota }}">{{ $row->nama_kabupaten_kota }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                            <small id="error-id_kabupaten_kota" class="error-text form-text text-danger"></small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Kecamatan</label>
+                            <select name="id_kecamatan" id="id_kecamatan" class="form-control" required>
+                                <option value="">-- Pilih Kecamatan --</option>
+                                @if(isset($kecamatan))
+                                    @foreach ($kecamatan as $row)
+                                    <option value="{{ $row->id_kecamatan }}">{{ $row->nama_kecamatan }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                            <small id="error-id_kecamatan" class="error-text form-text text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Kelurahan</label>
+                            <select name="id_kelurahan" id="id_kelurahan" class="form-control" required>
+                                <option value="">-- Pilih Kelurahan --</option>
+                                @if(isset($kelurahan))
+                                    @foreach ($kelurahan as $row)
+                                    <option value="{{ $row->id_kelurahan }}">{{ $row->nama_kelurahan }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                            <small id="error-id_kelurahan" class="error-text form-text text-danger"></small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Agama</label>
+                            <select name="agama" id="agama" class="form-control" required>
+                                <option value="">-- Pilih Agama --</option>
+                                <option value="Islam">Islam</option>
+                                <option value="Kristen">Kristen</option>
+                                <option value="Katolik">Katolik</option>
+                                <option value="Hindu">Hindu</option>
+                                <option value="Buddha">Buddha</option>
+                                <option value="Konghucu">Konghucu</option>
+                            </select>
+                            <small id="error-agama" class="error-text form-text text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Status Kepegawaian</label>
+                            <select name="status_kepegawaian" id="status_kepegawaian" class="form-control" required>
+                                <option value="">-- Pilih Status --</option>
+                                <option value="PNS">PNS</option>
+                                <option value="PPPK">PPPK</option>
+                                <option value="Honorer">Honorer</option>
+                                <option value="Kontrak">Kontrak</option>
+                            </select>
+                            <small id="error-status_kepegawaian" class="error-text form-text text-danger"></small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Foto</label>
+                    <input type="file" name="foto" id="foto" class="form-control-file" accept="image/*">
+                    <small class="form-text text-muted">Format: JPG, JPEG, PNG. Maksimal 2MB</small>
+                    <small id="error-foto" class="error-text form-text text-danger"></small>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-danger btn-sm">Batal</button>
+                <button type="submit" class="btn btn-primary btn-sm">Simpan</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+$(document).ready(function() {
+    $("#form-tambah").validate({
+        rules: {
+            nip: { required: true, minlength: 18, maxlength: 18 },
+            nama: { required: true, minlength: 2 },
+            nik: { required: true, minlength: 16, maxlength: 16 },
+            tempat_lahir: { required: true },
+            tanggal_lahir: { required: true, date: true },
+            jenis_kelamin: { required: true },
+            alamat: { required: true },
+            id_provinsi: { required: true },
+            id_kabupaten_kota: { required: true },
+            id_kecamatan: { required: true },
+            id_kelurahan: { required: true },
+            agama: { required: true },
+            status_kepegawaian: { required: true },
+            email: { email: true },
+            foto: { extension: "jpg|jpeg|png" }
+        },
+        messages: {
+            nip: {
+                required: "NIP wajib diisi",
+                minlength: "NIP harus 18 digit",
+                maxlength: "NIP harus 18 digit"
+            },
+            nama: {
+                required: "Nama wajib diisi",
+                minlength: "Nama minimal 2 karakter"
+            },
+            nik: {
+                required: "NIK wajib diisi",
+                minlength: "NIK harus 16 digit",
+                maxlength: "NIK harus 16 digit"
+            },
+            email: {
+                email: "Format email tidak valid"
+            },
+            foto: {
+                extension: "File harus berformat JPG, JPEG, atau PNG"
+            }
+        },
+        submitHandler: function(form) {
+            var formData = new FormData(form);
+
+            $.ajax({
+                url: form.action,
+                type: form.method,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.message) {
+                        $('#myModal').modal('hide');
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: response.message
+                        });
+                        dataPegawai.ajax.reload();
+                    }
+                },
+                error: function(xhr) {
+                    const res = xhr.responseJSON;
+                    $('.error-text').text('');
+                    if (res && res.errors) {
+                        $.each(res.errors, function(key, val) {
+                            $('#error-' + key).text(val[0]);
+                        });
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: res.message || 'Terjadi kesalahan saat menyimpan data.'
+                    });
+                }
+            });
+            return false;
+        },
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('.form-group').append(error);
+        },
+        highlight: function(element) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function(element) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
+    // Cascade dropdown untuk wilayah (opsional - jika diperlukan)
+    $('#id_provinsi').change(function() {
+        var provinsiId = $(this).val();
+        if (provinsiId) {
+            // AJAX call untuk load kabupaten/kota berdasarkan provinsi
+            // Implementasi sesuai kebutuhan
+        }
+    });
+
+    $('#id_kabupaten_kota').change(function() {
+        var kabupatenId = $(this).val();
+        if (kabupatenId) {
+            // AJAX call untuk load kecamatan berdasarkan kabupaten/kota
+            // Implementasi sesuai kebutuhan
+        }
+    });
+
+    $('#id_kecamatan').change(function() {
+        var kecamatanId = $(this).val();
+        if (kecamatanId) {
+            // AJAX call untuk load kelurahan berdasarkan kecamatan
+            // Implementasi sesuai kebutuhan
+        }
+    });
+});
+</script>
