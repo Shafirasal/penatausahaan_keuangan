@@ -163,7 +163,7 @@
           orderable: true,
           searchable: true,
           render: function (data, type, row) {
-            return data === 'L' ? 'Laki-laki' : 'Perempuan';
+            return data === 'laki-laki' ? 'Laki-laki' : 'Perempuan';
           }
         },
         {
