@@ -180,7 +180,8 @@
           searchable: false,
           render: function (data, type, row) {
             // Definisikan default image path (sesuaikan dengan struktur project Anda)
-            const defaultImage = '/storage/foto_profile'; // atau path yang sesuai
+          const defaultImage = '{{ asset("assets/avatar-1.png") }}';
+
             
             if (!data || data === '' || data === null) {
               return `
