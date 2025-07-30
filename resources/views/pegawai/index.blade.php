@@ -179,21 +179,24 @@
           orderable: false,
           searchable: false,
           render: function (data, type, row) {
-            if (!data) {
+            // Definisikan default image path (sesuaikan dengan struktur project Anda)
+            const defaultImage = '/storage/foto_profile'; // atau path yang sesuai
+            
+            if (!data || data === '' || data === null) {
               return `
                 <div class="avatar avatar-lg">
-                  <img alt="image" src="{{ asset('img/avatar/avatar-1.png') }}" class="rounded-circle">
+                  <img alt="image" src="${defaultImage}" class="rounded-circle">
                 </div>
               `;
             }
 
-            // Ambil nama file dari path
-            const fileName = data.split('/').pop();
-
+            // Pastikan path foto benar
+            const imagePath = data.startsWith('/') ? data : `/storage/${data}`;
+            
             return `
               <div class="avatar avatar-lg">
-                <img alt="image" src="/storage/${data}" class="rounded-circle" 
-                     onerror="this.src='{{ asset('img/avatar/avatar-1.png') }}'">
+                <img alt="image" src="${imagePath}" class="rounded-circle" 
+                    onerror="this.src='${defaultImage}'">
               </div>
             `;
           }
