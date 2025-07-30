@@ -38,8 +38,7 @@
                   <th>#</th>
                   <th>NIP</th>
                   <th>Nama</th>
-                  <th>Tempat Lahir</th>
-                  <th>Tanggal Lahir</th>
+                  <th>Tempat Tanggal Lahir</th>
                   <th>Jenis Kelamin</th>
                   <th>Email</th>
                   <th>No. HP</th>
@@ -119,27 +118,45 @@
           orderable: true,
           searchable: true
         },
+        // {
+        //   data: 'tempat_lahir',
+        //   className: '',
+        //   orderable: true,
+        //   searchable: true
+        // },
+        // {
+        //   data: 'tanggal_lahir',
+        //   className: 'text-center',
+        //   orderable: true,
+        //   searchable: true,
+        //   render: function (data, type, row) {
+        //     if (!data) return '-';
+        //     const date = new Date(data);
+        //     return date.toLocaleDateString('id-ID', {
+        //       day: '2-digit',
+        //       month: '2-digit',
+        //       year: 'numeric'
+        //     });
+        //   }
+        // },
         {
-          data: 'tempat_lahir',
+          data: 'tempat_lahir', // Gunakan tempat_lahir sebagai data utama
           className: '',
-          orderable: true,
-          searchable: true
-        },
-        {
-          data: 'tanggal_lahir',
-          className: 'text-center',
           orderable: true,
           searchable: true,
           render: function (data, type, row) {
-            if (!data) return '-';
-            const date = new Date(data);
-            return date.toLocaleDateString('id-ID', {
+            // Gabungkan Tempat Lahir dan Tanggal Lahir
+            const tempatLahir = data || '-'; // Jika tidak ada tempat lahir, tampilkan '-'
+            const tanggalLahir = row.tanggal_lahir ? new Date(row.tanggal_lahir).toLocaleDateString('id-ID', {
               day: '2-digit',
               month: '2-digit',
               year: 'numeric'
-            });
+            }) : '-'; // Format tanggal lahir jika ada, jika tidak tampilkan '-'
+
+            return `${tempatLahir}, ${tanggalLahir}`; // Gabungkan menjadi satu kolom
           }
         },
+
         {
           data: 'jenis_kelamin',
           className: 'text-center',
