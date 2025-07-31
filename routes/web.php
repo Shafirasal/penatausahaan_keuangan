@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MasterProgramController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -121,6 +122,19 @@ Route::middleware(['web', 'session.auth'])->group(function () {
     Route::get('/kecamatan/{id_kecamatan}/kelurahan', [PegawaiController::class, 'getKelurahanByKecamatan']);
     });
 
+    Route::prefix('master_program')->name('master_program.')->group(function () {
+        Route::post('/list', [MasterProgramController::class, 'list']);
+        Route::get('/', [MasterProgramController::class, 'index']);
+        Route::get('/create', [MasterProgramController::class, 'create']);
+        Route::post('/store', [MasterProgramController::class, 'store']);
+        Route::get('/{id}/show', [MasterProgramController::class, 'show']);
+        Route::get('/{id}/edit', [MasterProgramController::class, 'edit']);
+        Route::put('/{id}/update', [MasterProgramController::class, 'update']);
+        Route::get('/{id}/confirm', [MasterProgramController::class, 'confirm']);
+        Route::delete('/{id}/delete', [MasterProgramController::class, 'delete']);
+    });
+
+    
     Route::get('whoami', function () {
         return dd(Auth::user());
     })->name('whoami');
