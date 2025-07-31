@@ -145,6 +145,7 @@ public function update(Request $request, $nip)
     $pegawai = PegawaiModel::findOrFail($nip);
 
     $validator = Validator::make($request->all(), [
+        'nip'=> 'nullable|string|max:18|unique:t_pegawai,nip',
         'nama' => 'required|string|max:255',
         'gelar_depan' => 'nullable|string|max:50',
         'gelar_belakang' => 'nullable|string|max:50',
@@ -158,7 +159,7 @@ public function update(Request $request, $nip)
         'rt' => 'nullable|string|max:3',
         'rw' => 'nullable|string|max:3',
         'kode_pos' => 'nullable|string|max:5',
-        'agama' => 'required|string|max:50',
+        'agama' => 'required|in:islam,kristen,katolik,budha,hindu,konghucu',
         'status_kepegawaian' => 'required|string|max:50',
         'id_provinsi' => 'required|exists:t_provinsi,id_provinsi',
         'id_kabupaten_kota' => 'required|exists:t_kabupaten_kota,id_kabupaten_kota',
@@ -172,6 +173,7 @@ public function update(Request $request, $nip)
     }
 
     $data = $request->only([
+        'nip',
         'nama',
         'gelar_depan',
         'gelar_belakang',
@@ -235,7 +237,7 @@ public function store(Request $request)
         'rt' => 'nullable|regex:/^\d{2}$/',
         'rw' => 'nullable|regex:/^\d{2}$/',
         'kode_pos' => 'nullable|string|max:5',
-        'agama' => 'required|string|max:50',
+        'agama' => 'required|in:islam,kristen,katolik,budha,hindu,konghucu',
         'status_kepegawaian' => 'required|string|max:50',
         'id_provinsi' => 'required|exists:t_provinsi,id_provinsi',
         'id_kabupaten_kota' => 'required|exists:t_kabupaten_kota,id_kabupaten_kota',
