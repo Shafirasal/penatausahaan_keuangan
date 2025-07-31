@@ -14,14 +14,7 @@ class MasterProgramModel extends Model
 
     // Primary key
     protected $primaryKey = 'id_program';
-
-    // Apakah primary key auto increment
-    public $incrementing = true;
-
-    // Tipe data primary key
-    protected $keyType = 'int';
-
-    // Aktifkan timestamp
+    
     public $timestamps = true;
 
     // Kolom yang bisa diisi (mass assignable)
@@ -29,4 +22,28 @@ class MasterProgramModel extends Model
         'kode_program',
         'nama_program',
     ];
+
+      //Relasi ke t_master_kegiatan
+    public function kegiatan()
+    {
+        return $this->hasMany(MasterKegiatanModel::class, 'id_program', 'id_program');
+    }
+
+    // Relasi ke t_master_sub_kegiatan
+    public function subKegiatan()
+    {
+        return $this->hasMany(MasterSubKegiatanModel::class, 'id_program', 'id_program');
+    }
+
+    //Relasi ke t_rekening
+    public function rekening()
+    {
+        return $this->hasMany(RekeningModel::class, 'id_program', 'id_program');
+    }
+
+    //Relasi ke t_ssh
+    public function ssh()
+    {
+        return $this->hasMany(SshModel::class, 'id_program', 'id_program');
+    }
 }
