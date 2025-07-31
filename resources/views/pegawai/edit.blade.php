@@ -187,12 +187,12 @@
                             <label>Agama</label>
                             <select name="agama" id="agama" class="form-control" required>
                                 <option value="">-- Pilih Agama --</option>
-                                <option value="Islam" {{ $pegawai->agama == 'Islam' ? 'selected' : '' }}>Islam</option>
-                                <option value="Kristen" {{ $pegawai->agama == 'Kristen' ? 'selected' : '' }}>Kristen</option>
-                                <option value="Katolik" {{ $pegawai->agama == 'Katolik' ? 'selected' : '' }}>Katolik</option>
-                                <option value="Hindu" {{ $pegawai->agama == 'Hindu' ? 'selected' : '' }}>Hindu</option>
-                                <option value="Buddha" {{ $pegawai->agama == 'Buddha' ? 'selected' : '' }}>Buddha</option>
-                                <option value="Konghucu" {{ $pegawai->agama == 'Konghucu' ? 'selected' : '' }}>Konghucu</option>
+                                <option value="islam" {{ $pegawai->agama == 'islam' ? 'selected' : '' }}>Islam</option>
+                                <option value="kristen" {{ $pegawai->agama == 'kristen' ? 'selected' : '' }}>Kristen</option>
+                                <option value="katolik" {{ $pegawai->agama == 'katolik' ? 'selected' : '' }}>Katolik</option>
+                                <option value="hindu" {{ $pegawai->agama == 'hindu' ? 'selected' : '' }}>Hindu</option>
+                                <option value="budha" {{ $pegawai->agama == 'budha' ? 'selected' : '' }}>Buddha</option>
+                                <option value="konghucu" {{ $pegawai->agama == 'konghucu' ? 'selected' : '' }}>Konghucu</option>
                             </select>
                             <small id="error-agama" class="error-text form-text text-danger"></small>
                         </div>
