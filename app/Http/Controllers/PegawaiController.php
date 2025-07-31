@@ -151,7 +151,7 @@ public function update(Request $request, $nip)
         'nik' => 'required|string|max:16|unique:t_pegawai,nik,' . $nip . ',nip',
         'tempat_lahir' => 'required|string|max:100',
         'tanggal_lahir' => 'required|date',
-        'jenis_kelamin' => 'required|in:L,P',
+        'jenis_kelamin' => 'required|in:laki-laki,perempuan',
         'hp' => 'nullable|string|max:15',
         'email' => 'nullable|email|max:255|unique:t_pegawai,email,' . $nip . ',nip',
         'alamat' => 'required|string',
