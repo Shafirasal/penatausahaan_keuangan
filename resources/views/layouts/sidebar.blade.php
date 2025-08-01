@@ -22,11 +22,11 @@
                 <ul class="dropdown-menu">
 
                   <li><a class="nav-link" href="{{ url('/user') }}">Tambah User</a></li>
+                  <li><a class="nav-link" href="{{ url('/pegawai') }}">Daftar Pegawai</a></li>
                   <li><a class="nav-link" href="{{ url('/riwayat_pendidikan') }}">Riwayat Pendidikan</a></li>
                   <li><a class="nav-link" href="{{ url('/jabatan_fungsional') }}">Jabatan Fungsional</a></li>
                   <li><a class="nav-link" href="{{ url('/jabatan_struktural') }}">Jabatan Struktural</a></li>
                   <li><a class="nav-link" href="{{ url('/riwayat_kepegawaian') }}">Riwayat Pegawai</a></li>
-                  <li><a class="nav-link" href="{{ url('/pegawai') }}">Daftar Pegawai</a></li>
                 </ul>
               </li>
               {{-- <li class="active"><a class="nav-link" href="blank.html"><i class="far fa-square"></i> <span>Blank Page</span></a></li> --}}
