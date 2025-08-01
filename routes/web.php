@@ -11,6 +11,7 @@ use App\Http\Controllers\JabatanFungsionalController;
 use App\Http\Controllers\RiwayatPendidikanController;
 use App\Http\Controllers\RiwayatKepegawaianController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\MasterKegiatanController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -122,6 +123,7 @@ Route::middleware(['web', 'session.auth'])->group(function () {
     Route::get('/kecamatan/{id_kecamatan}/kelurahan', [PegawaiController::class, 'getKelurahanByKecamatan']);
     });
 
+    // master program
     Route::prefix('master_program')->name('master_program.')->group(function () {
         Route::post('/list', [MasterProgramController::class, 'list']);
         Route::get('/', [MasterProgramController::class, 'index']);
@@ -132,6 +134,19 @@ Route::middleware(['web', 'session.auth'])->group(function () {
         Route::put('/{id}/update', [MasterProgramController::class, 'update']);
         Route::get('/{id}/confirm', [MasterProgramController::class, 'confirm']);
         Route::delete('/{id}/delete', [MasterProgramController::class, 'delete']);
+    });
+
+// master kegiatan
+    Route::prefix('master_kegiatan')->name('master_kegiatan.')->group(function () {
+        Route::post('/list', [MasterKegiatanController::class, 'list']);
+        Route::get('/', [MasterKegiatanController::class, 'index']);
+        Route::get('/create', [MasterKegiatanController::class, 'create']);
+        Route::post('/store', [MasterKegiatanController::class, 'store']);
+        Route::get('/{id}/show', [MasterKegiatanController::class, 'show']);
+        Route::get('/{id}/edit', [MasterKegiatanController::class, 'edit']);
+        Route::put('/{id}/update', [MasterKegiatanController::class, 'update']);
+        Route::get('/{id}/confirm', [MasterKegiatanController::class, 'confirm']);
+        Route::delete('/{id}/delete', [MasterKegiatanController::class, 'delete']);
     });
 
     
