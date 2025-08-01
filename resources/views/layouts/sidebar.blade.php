@@ -34,7 +34,7 @@
                 <a href="#" class="nav-link has-dropdown"><i class="fas fa-th"></i> <span>SIPD</span></a>
                 <ul class="dropdown-menu">
                   <li><a class="nav-link" href="{{ url('/master_program') }}">Master Program</a></li>
-                  <li><a class="nav-link" href="layout-transparent.html">Master Kegiatan</a></li>
+                  <li><a class="nav-link" href="{{ url('/master_kegiatan') }}">Master Kegiatan</a></li>
                   <li><a class="nav-link" href="layout-transparent.html">Master Sub-Kegiatan</a></li>
                   <li><a class="nav-link" href="layout-transparent.html">Master Rekening</a></li>
                   <li><a class="nav-link" href="layout-transparent.html">Master SSH</a></li>
