@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MasterProgramController;
+use App\Http\Controllers\RekeningController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -149,7 +150,25 @@ Route::middleware(['web', 'session.auth'])->group(function () {
         Route::delete('/{id}/delete', [MasterKegiatanController::class, 'delete']);
     });
 
-    
+
+
+Route::prefix('master_rekening')->name('rekening.')->group(function () {
+
+    Route::post('/list', [RekeningController::class, 'list']);
+    Route::get('/', [RekeningController::class, 'index']);
+    Route::get('/create', [RekeningController::class, 'create']);
+    Route::post('/store', [RekeningController::class, 'store']);
+    Route::get('/{id}/edit', [RekeningController::class, 'edit']);
+    Route::put('/{id}/update', [RekeningController::class, 'update']);
+    Route::delete('/{id}/delete', [RekeningController::class, 'destroy']);
+
+    // Cascading select (seperti provinsi → kabupaten → dst)
+    Route::get('/program/{id_program}/kegiatan', [RekeningController::class, 'getKegiatanByProgram']);
+    Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan', [RekeningController::class, 'getSubKegiatanByKegiatan']);
+});
+
+
+
     Route::get('whoami', function () {
         return dd(Auth::user());
     })->name('whoami');
