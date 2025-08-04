@@ -35,7 +35,7 @@
                 <ul class="dropdown-menu">
                   <li><a class="nav-link" href="{{ url('/master_program') }}">Master Program</a></li>
                   <li><a class="nav-link" href="{{ url('/master_kegiatan') }}">Master Kegiatan</a></li>
-                  <li><a class="nav-link" href="layout-transparent.html">Master Sub-Kegiatan</a></li>
+                  <li><a class="nav-link" href="{{ url('/master_sub_kegiatan') }}">Master Sub-Kegiatan</a></li>
                   <li><a class="nav-link" href="{{ url('/master_rekening') }}">Master Rekening</a></li>
                   <li><a class="nav-link" href="layout-transparent.html">Master SSH</a></li>
                   <li><a class="nav-link" href="layout-transparent.html">Bagian PBJ</a></li>

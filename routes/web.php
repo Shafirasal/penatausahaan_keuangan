@@ -13,6 +13,8 @@ use App\Http\Controllers\RiwayatPendidikanController;
 use App\Http\Controllers\RiwayatKepegawaianController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\MasterKegiatanController;
+use App\Http\Controllers\MasterSubKegiatanController;
+use App\Http\Controllers\SubKegiatanController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -81,15 +83,15 @@ Route::middleware(['web', 'session.auth'])->group(function () {
     });
 
     Route::prefix('user')->name('user.')->group(function () {
-    Route::get('/', [UserController::class, 'index']);        
-    Route::post('/list', [UserController::class, 'list']);  
-    Route::get('/create', [UserController::class, 'create']);   
-    Route::post('/store', [UserController::class, 'store']); 
+    Route::get('/', [UserController::class, 'index']);
+    Route::post('/list', [UserController::class, 'list']);
+    Route::get('/create', [UserController::class, 'create']);
+    Route::post('/store', [UserController::class, 'store']);
     Route::get('/{id}/show', [UserController::class, 'show']);  // Perbaikan URL
-    Route::get('/{id}/edit', [UserController::class, 'edit']); 
+    Route::get('/{id}/edit', [UserController::class, 'edit']);
     Route::put('/{id}/update', [UserController::class, 'update']); // Perbaikan URL
-    Route::get('/{id}/confirm', [UserController::class, 'confirm']); 
-    Route::delete('/{id}/delete', [UserController::class, 'delete']); 
+    Route::get('/{id}/confirm', [UserController::class, 'confirm']);
+    Route::delete('/{id}/delete', [UserController::class, 'delete']);
     Route::get('/import', [UserController::class, 'import']);
     Route::post('/import_ajax', [UserController::class, 'import_ajax']);
     });
@@ -148,6 +150,19 @@ Route::middleware(['web', 'session.auth'])->group(function () {
         Route::put('/{id}/update', [MasterKegiatanController::class, 'update']);
         Route::get('/{id}/confirm', [MasterKegiatanController::class, 'confirm']);
         Route::delete('/{id}/delete', [MasterKegiatanController::class, 'delete']);
+    });
+// master subkegiatan
+    Route::prefix('master_sub_kegiatan')->name('master_sub_kegiatan.')->group(function () {
+        Route::post('/list', [MasterSubKegiatanController::class, 'list']);
+        Route::get('/', [MasterSubKegiatanController::class, 'index']);
+        Route::get('/create', [MasterSubKegiatanController::class, 'create']);
+        Route::post('/store', [MasterSubKegiatanController::class, 'store']);
+        Route::get('/{id}/edit', [MasterSubKegiatanController::class, 'edit']);
+        Route::put('/{id}/update', [MasterSubKegiatanController::class, 'update']);
+        Route::get('/{id}/confirm', [MasterSubKegiatanController::class, 'confirm']);
+        Route::delete('/{id}/delete', [MasterSubKegiatanController::class, 'delete']);
+
+        Route::get('/program/{id_program}/kegiatan', [MasterSubKegiatanController::class, 'getKegiatanByProgram']);
     });
 
 

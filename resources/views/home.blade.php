@@ -171,7 +171,7 @@
                         </div>
                         <div class="col-md-1 d-flex justify-content-center ">
                             <img src="{{ $pegawai->foto ? asset('storage/' . $pegawai->foto) : asset('storage/foto_profile/default_pp.jpg') }}"
-                                
+
                                 style="width: 200px; height: 200px; object-fit: cover; border: 3px solid #ddd;">
                         </div>
 
