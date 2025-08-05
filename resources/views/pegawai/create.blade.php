@@ -77,14 +77,14 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>No. HP</label>
-                            <input type="text" name="hp" id="hp" class="form-control" placeholder="Masukkan No. HP">
+                            <input type="text" name="hp" id="hp" class="form-control" placeholder="Masukkan No. HP" required>
                             <small id="error-hp" class="error-text form-text text-danger"></small>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Email</label>
-                            <input type="email" name="email" id="email" class="form-control" placeholder="Masukkan Email">
+                            <input type="email" name="email" id="email" class="form-control" placeholder="Masukkan Email" required>
                             <small id="error-email" class="error-text form-text text-danger"></small>
                         </div>
                     </div>
@@ -100,21 +100,21 @@
                     <div class="col-md-4">
                         <div class="form-group">
         <label>RT</label>
-        <input type="text" name="rt" id="rt" class="form-control" placeholder="00" maxlength="2" pattern="\d{2}">
+        <input type="text" name="rt" id="rt" class="form-control" placeholder="00" maxlength="2" pattern="\d{2}" required>
         <small id="error-rt" class="error-text form-text text-danger"></small>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
         <label>RW</label>
-        <input type="text" name="rw" id="rw" class="form-control" placeholder="00" maxlength="2" pattern="\d{2}">
+        <input type="text" name="rw" id="rw" class="form-control" placeholder="00" maxlength="2" pattern="\d{2}" required>
         <small id="error-rw" class="error-text form-text text-danger"></small>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>Kode Pos</label>
-                            <input type="text" name="kode_pos" id="kode_pos" class="form-control" placeholder="Kode Pos">
+                            <input type="text" name="kode_pos" id="kode_pos" class="form-control" placeholder="Kode Pos" required>
                             <small id="error-kode_pos" class="error-text form-text text-danger"></small>
                         </div>
                     </div>
@@ -190,7 +190,7 @@
                                 <option value="kristen">Kristen</option>
                                 <option value="katolik">Katolik</option>
                                 <option value="hindu">Hindu</option>
-                                <option value="buddha">Buddha</option>
+                                <option value="budha">Buddha</option>
                                 <option value="konghucu">Konghucu</option>
                             </select>
                             <small id="error-agama" class="error-text form-text text-danger"></small>
@@ -238,14 +238,18 @@ $(document).ready(function() {
             tempat_lahir: { required: true },
             tanggal_lahir: { required: true, date: true },
             jenis_kelamin: { required: true },
+            hp: {required: true, minlength:1},
             alamat: { required: true },
+            rt:{required: true, minlength:2,maxlength:2},
+            rw:{required: true, minlength:2,maxlength:2},
+            kode_pos:{required:true,minlength:5,maxlength:5},
             id_provinsi: { required: true },
             id_kabupaten_kota: { required: true },
             id_kecamatan: { required: true },
             id_kelurahan: { required: true },
             agama: { required: true },
             status_kepegawaian: { required: true },
-            email: { email: true },
+            email: { required: true },
             foto: { extension: "jpg|jpeg|png" }
         },
         // messages: {
