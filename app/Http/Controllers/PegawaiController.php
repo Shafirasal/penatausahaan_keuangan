@@ -145,7 +145,8 @@ public function update(Request $request, $nip)
     $pegawai = PegawaiModel::findOrFail($nip);
 
     $validator = Validator::make($request->all(), [
-        'nip'=> 'nullable|string|max:18|unique:t_pegawai,nip',
+        // 'nip'=> 'nullable|string|max:18|unique:t_pegawai,nip',
+        'nip'=> 'required|string|max:18|unique:t_pegawai,nip,' . $nip . ',nip',
         'nama' => 'required|string|max:255',
         'gelar_depan' => 'nullable|string|max:50',
         'gelar_belakang' => 'nullable|string|max:50',
