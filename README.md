@@ -8,9 +8,9 @@ Aplikasi berbasis Laravel untuk pengelolaan penatausahaan keuangan seperti pegaw
 
 | Tools        | Versi Minimal   |
 |--------------|-----------------|
-| PHP          | 7.4 atau lebih  |
-| Composer     | 2.x             |
-| MySQL        | 5.7 atau lebih  |
+| PHP          | 8.1 atau lebih  |
+| Composer     | 10.x             |
+| MySQL        | 11.8.2 atau lebih  |
 | Node.js      | 14.x atau lebih |
 | Yarn         | 1.22.x          |
 | Git          | Terinstal       |
@@ -84,6 +84,8 @@ php artisan storage:link
 ```bash
 php artisan serve
 ```
+
+---
 
 **🔐 LOGIN DEFAULT:**
 username ```12345```
