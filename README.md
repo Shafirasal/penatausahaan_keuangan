@@ -47,6 +47,7 @@ DB_PASSWORD=
 
 ```bash
 composer install
+composer require yajra/laravel-datatables-oracle
 ```
 
 **generate App Key:**
@@ -65,7 +66,8 @@ php artisan migrate --seed
 
 ```bash
 cd stisla1
-yarn install
+yarn
+yarn dist
 cd ..
 ```
 **pastikan node.js sudah teristall. jika belum instal di terminal komputer:**
