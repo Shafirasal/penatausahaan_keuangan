@@ -344,6 +344,48 @@ $(document).ready(function() {
             // Implementasi sesuai kebutuhan
         }
     });
+
+
+    //FORMAT TULISAN ISIAN FORM
+    // Function untuk mengubah ke Title Case
+    function toTitleCase(str) {
+        return str.toLowerCase().replace(/\b\w/g, function(char) {
+            return char.toUpperCase();
+        });
+    }
+
+    // Auto format Tempat Lahir saat user mengetik
+    $('#tempat_lahir').on('input', function() {
+        var currentValue = $(this).val();
+        var formattedValue = toTitleCase(currentValue);
+        $(this).val(formattedValue);
+    });
+
+    // Auto format saat blur (kehilangan fokus) untuk memastikan formatting
+    $('#tempat_lahir').on('blur', function() {
+        var currentValue = $(this).val().trim(); // Hapus spasi di awal/akhir
+        if (currentValue) {
+            var formattedValue = toTitleCase(currentValue);
+            $(this).val(formattedValue);
+        }
+    });
+
+    // Opsional: Format juga field nama agar konsisten
+    $('#nama').on('input', function() {
+        var currentValue = $(this).val();
+        var formattedValue = toTitleCase(currentValue);
+        $(this).val(formattedValue);
+    });
+
+    $('#nama').on('blur', function() {
+        var currentValue = $(this).val().trim();
+        if (currentValue) {
+            var formattedValue = toTitleCase(currentValue);
+            $(this).val(formattedValue);
+        }
+    });
+
+
 });
 
 $('#id_provinsi').change(function () {
