@@ -133,34 +133,45 @@ class RekeningController extends Controller
     public function confirm($id)
     {
         $rekening = RekeningModel::with(['program', 'kegiatan', 'subKegiatan'])->find($id);
+        
         return view('rekening.confirm', compact('rekening'));
     }
 
-    public function destroy(Request $request, $id)
+    public function delete(Request $request, $id)
     {
-        try {
-            $rekening = RekeningModel::find($id);
+        if ($request->ajax() || $request->wantsJson()) {
+            try {
+                $rekening = RekeningModel::find($id);
 
-            if ($rekening) {
-                $rekening->delete();
+                if ($rekening) {
+                    $rekening->delete();
 
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'Data berhasil dihapus.'
+                    ]);
+                } else {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Data tidak ditemukan.'
+                    ]);
+                }
+            } catch (QueryException $e) {
                 return response()->json([
-                    'status' => true,
-                    'message' => 'Data berhasil dihapus.'
+                    'status' => false,
+                    'message' => 'Data tidak dapat dihapus karena masih terkait dengan data lain.'
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage()
                 ]);
             }
-
-            return response()->json([
-                'status' => false,
-                'message' => 'Data tidak ditemukan.'
-            ]);
-        } catch (QueryException $e) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Tidak dapat menghapus data karena masih digunakan.'
-            ]);
         }
+
+        return redirect()->route('master_rekening.index');
     }
+
 
     // 🔄 AJAX: Get Kegiatan berdasarkan Program
     public function getKegiatanByProgram($id_program)
