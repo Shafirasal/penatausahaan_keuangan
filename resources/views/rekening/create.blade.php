@@ -1,4 +1,4 @@
-<form action="{{ url('/master_rekening/store') }}" method="POST" id="form-rekening">
+<form action="{{ url('/master_rekening/store') }}" method="POST" id="form-tambah">
     @csrf
     <div id="modal-rekening" class="modal-dialog modal-md" role="document">
         <div class="modal-content">
@@ -8,8 +8,8 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-
             <div class="modal-body">
+
                 <div class="form-group">
                     <label>Kode Rekening</label>
                     <input type="text" name="kode_rekening" id="kode_rekening" class="form-control" required>
@@ -22,19 +22,19 @@
                     <small id="error-nama_rekening" class="error-text text-danger"></small>
                 </div>
 
-                <div class="form-row align-items-end">
-                    <div class="form-group col-md-4">
+                <div class="modal-body">
+                    <div class="form-group">
                         <label>Program</label>
                         <select name="id_program" id="id_program" class="form-control" required>
                             <option value="">-- Pilih Program --</option>
-                            @foreach ($masterProgram as $row)
-                                <option value="{{ $row->id_program }}">{{ $row->nama_program }}</option>
+                            @foreach ($masterProgram as $p)
+                                <option value="{{ $p->id_program }}">{{ $p->nama_program }}</option>
                             @endforeach
                         </select>
                         <small id="error-id_program" class="error-text form-text text-danger"></small>
                     </div>
 
-                    <div class="form-group col-md-4">
+                    <div class="form-group">
                         <label>Kegiatan</label>
                         <select name="id_kegiatan" id="id_kegiatan" class="form-control" required>
                             <option value="">-- Pilih Kegiatan --</option>
@@ -42,7 +42,7 @@
                         <small id="error-id_kegiatan" class="error-text form-text text-danger"></small>
                     </div>
 
-                    <div class="form-group col-md-4">
+                    <div class="form-group">
                         <label>Sub Kegiatan</label>
                         <select name="id_sub_kegiatan" id="id_sub_kegiatan" class="form-control" required>
                             <option value="">-- Pilih Sub Kegiatan --</option>
@@ -186,7 +186,7 @@ $(document).ready(function() {
 <script>
 $(document).ready(function () {
     // FORM VALIDATION
-    $('#form-rekening').validate({
+    $('#form-tambah').validate({
         rules: {
             kode_rekening: { required: true, maxlength: 10 },
             nama_rekening: { required: true, maxlength: 200 },
@@ -201,7 +201,7 @@ $(document).ready(function () {
                 data: $(form).serialize(),
                 success: function (response) {
                     if (response.status) {
-                        $('#modal-rekening').modal('hide');
+                        $('#myModal').modal('hide');
                         Swal.fire('Berhasil', response.message, 'success');
                         dataMasterRekening.ajax.reload();
                     }
