@@ -65,7 +65,7 @@
                 kode_sub_kegiatan: {
                     required: true,
                     maxlength: 12,
-                    minlength: 1
+                    minlength: 12
                 },
                 nama_sub_kegiatan: {
                     required: true,
