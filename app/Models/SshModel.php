@@ -29,7 +29,7 @@ class SshModel extends Model
     ];
 
   // Relasi ke master program
-   
+
     public function program()
     {
         return $this->belongsTo(MasterProgramModel::class, 'id_program', 'id_program');
@@ -43,14 +43,14 @@ class SshModel extends Model
     }
 
   // Relasi ke master sub kegiatan
-    
-    public function subKegiatan()
+
+    public function sub_kegiatan()
     {
         return $this->belongsTo(MasterSubKegiatanModel::class, 'id_sub_kegiatan', 'id_sub_kegiatan');
     }
 
 // Relasi ke rekening
- 
+
     public function rekening()
     {
         return $this->belongsTo(RekeningModel::class, 'id_rekening', 'id_rekening');

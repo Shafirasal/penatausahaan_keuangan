@@ -14,6 +14,7 @@ use App\Http\Controllers\RiwayatKepegawaianController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\MasterKegiatanController;
 use App\Http\Controllers\MasterSubKegiatanController;
+use App\Http\Controllers\SSHController;
 use App\Http\Controllers\SubKegiatanController;
 use Illuminate\Support\Facades\Auth;
 
@@ -182,6 +183,25 @@ Route::prefix('master_rekening')->name('rekening.')->group(function () {
     Route::get('/program/{id_program}/kegiatan', [RekeningController::class, 'getKegiatanByProgram']);
     Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan', [RekeningController::class, 'getSubKegiatanByKegiatan']);
 });
+
+Route::prefix('ssh')->name('ssh.')->group(function () {
+
+        Route::post('/list', [SSHController::class, 'list']);
+        Route::get('/', [SSHController::class, 'index']);
+        Route::get('/create', [SSHController::class, 'create']);
+        Route::post('/store', [SSHController::class, 'store']);
+        Route::get('/{id}/edit', [SSHController::class, 'edit']);
+        Route::put('/{id}/update', [SSHController::class, 'update']);
+        Route::get('/{id}/confirm', [SSHController::class, 'confirm']);
+        Route::delete('/{id}/delete', [SSHController::class, 'delete']);
+
+        // Cascading select (seperti provinsi → kabupaten → dst)
+        Route::get('/program/{id_program}/kegiatan', [SSHController::class, 'getKegiatanByProgram']);
+        Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan', [SSHController::class, 'getSubKegiatanByKegiatan']);
+        Route::get('/sub_kegiatan/{id_sub_kegiatan}/rekening', [SSHController::class, 'getRekeningBySubKegiatan']);
+    });
+
+
 
 
 

@@ -37,7 +37,7 @@
                   <li><a class="nav-link" href="{{ url('/master_kegiatan') }}">Master Kegiatan</a></li>
                   <li><a class="nav-link" href="{{ url('/master_sub_kegiatan') }}">Master Sub-Kegiatan</a></li>
                   <li><a class="nav-link" href="{{ url('/master_rekening') }}">Master Rekening</a></li>
-                  <li><a class="nav-link" href="layout-transparent.html">Master SSH</a></li>
+                  <li><a class="nav-link" href="{{ url('/ssh') }}">Master SSH</a></li>
                   <li><a class="nav-link" href="layout-transparent.html">Bagian PBJ</a></li>
                   <li><a class="nav-link" href="bootstrap-badge.html">Bagian LPSE</a></li>
                   <li><a class="nav-link" href="bootstrap-breadcrumb.html">Bagian Pembinaan</a></li>
