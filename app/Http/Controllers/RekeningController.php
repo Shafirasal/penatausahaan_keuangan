@@ -80,7 +80,9 @@ class RekeningController extends Controller
     {
         $rekening = RekeningModel::find($id);
         $masterProgram = MasterProgramModel::select('id_program', 'nama_program')->get();
-        return view('rekening.edit', compact('rekening', 'masterProgram'));
+        $kegiatan = MasterKegiatanModel::select('id_kegiatan', 'nama_kegiatan')->get(); // semua kegiatan
+        $sub_kegiatan = MasterSubKegiatanModel::select('id_sub_kegiatan', 'nama_sub_kegiatan')->get();
+        return view('rekening.edit', compact('rekening', 'masterProgram', 'kegiatan', 'sub_kegiatan'));
     }
 
     public function update(Request $request, $id)
