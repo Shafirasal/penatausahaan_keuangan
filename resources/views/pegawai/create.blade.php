@@ -248,28 +248,28 @@ $(document).ready(function() {
             email: { email: true },
             foto: { extension: "jpg|jpeg|png" }
         },
-        messages: {
-            nip: {
-                required: "NIP wajib diisi",
-                minlength: "NIP harus 18 digit",
-                maxlength: "NIP harus 18 digit"
-            },
-            nama: {
-                required: "Nama wajib diisi",
-                minlength: "Nama minimal 2 karakter"
-            },
-            nik: {
-                required: "NIK wajib diisi",
-                minlength: "NIK harus 16 digit",
-                maxlength: "NIK harus 16 digit"
-            },
-            email: {
-                email: "Format email tidak valid"
-            },
-            foto: {
-                extension: "File harus berformat JPG, JPEG, atau PNG"
-            }
-        },
+        // messages: {
+        //     nip: {
+        //         required: "NIP wajib diisi",
+        //         minlength: "NIP harus 18 digit",
+        //         maxlength: "NIP harus 18 digit"
+        //     },
+        //     nama: {
+        //         required: "Nama wajib diisi",
+        //         minlength: "Nama minimal 2 karakter"
+        //     },
+        //     nik: {
+        //         required: "NIK wajib diisi",
+        //         minlength: "NIK harus 16 digit",
+        //         maxlength: "NIK harus 16 digit"
+        //     },
+        //     email: {
+        //         email: "Format email tidak valid"
+        //     },
+        //     foto: {
+        //         extension: "File harus berformat JPG, JPEG, atau PNG"
+        //     }
+        // },
         submitHandler: function(form) {
             var formData = new FormData(form);
 
