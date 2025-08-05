@@ -30,10 +30,10 @@
                 <tr>
                   <th>#</th>
                   <th>Kode Rekening</th>
-                  <th>Nama Rekening</th>
                   <th>Program</th>
                   <th>Kegiatan</th>
                   <th>Sub Kegiatan</th>
+                  <th>Nama Rekening</th>
                   <th>Aksi</th>
                 </tr>
               </thead>
@@ -82,10 +82,10 @@
       columns: [
         { data: 'DT_RowIndex', className: 'text-center', orderable: false, searchable: false },
         { data: 'kode_rekening', className: '', orderable: true, searchable: true },
-        { data: 'nama_rekening', className: '', orderable: true, searchable: true },
         { data: 'program.nama_program', className: '', orderable: true, searchable: true },
         { data: 'kegiatan.nama_kegiatan', className: '', orderable: true, searchable: true },
         { data: 'sub_kegiatan.nama_sub_kegiatan', className: '', orderable: true, searchable: true },
+        { data: 'nama_rekening', className: '', orderable: true, searchable: true },
         { data: 'aksi', className: 'text-center', orderable: false, searchable: false }
       ]
     });

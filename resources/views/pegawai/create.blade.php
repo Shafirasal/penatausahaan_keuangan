@@ -186,12 +186,12 @@
                             <label>Agama</label>
                             <select name="agama" id="agama" class="form-control" required>
                                 <option value="">-- Pilih Agama --</option>
-                                <option value="Islam">Islam</option>
-                                <option value="Kristen">Kristen</option>
-                                <option value="Katolik">Katolik</option>
-                                <option value="Hindu">Hindu</option>
-                                <option value="Buddha">Buddha</option>
-                                <option value="Konghucu">Konghucu</option>
+                                <option value="islam">Islam</option>
+                                <option value="kristen">Kristen</option>
+                                <option value="katolik">Katolik</option>
+                                <option value="hindu">Hindu</option>
+                                <option value="buddha">Buddha</option>
+                                <option value="konghucu">Konghucu</option>
                             </select>
                             <small id="error-agama" class="error-text form-text text-danger"></small>
                         </div>
@@ -248,28 +248,28 @@ $(document).ready(function() {
             email: { email: true },
             foto: { extension: "jpg|jpeg|png" }
         },
-        messages: {
-            nip: {
-                required: "NIP wajib diisi",
-                minlength: "NIP harus 18 digit",
-                maxlength: "NIP harus 18 digit"
-            },
-            nama: {
-                required: "Nama wajib diisi",
-                minlength: "Nama minimal 2 karakter"
-            },
-            nik: {
-                required: "NIK wajib diisi",
-                minlength: "NIK harus 16 digit",
-                maxlength: "NIK harus 16 digit"
-            },
-            email: {
-                email: "Format email tidak valid"
-            },
-            foto: {
-                extension: "File harus berformat JPG, JPEG, atau PNG"
-            }
-        },
+        // messages: {
+        //     nip: {
+        //         required: "NIP wajib diisi",
+        //         minlength: "NIP harus 18 digit",
+        //         maxlength: "NIP harus 18 digit"
+        //     },
+        //     nama: {
+        //         required: "Nama wajib diisi",
+        //         minlength: "Nama minimal 2 karakter"
+        //     },
+        //     nik: {
+        //         required: "NIK wajib diisi",
+        //         minlength: "NIK harus 16 digit",
+        //         maxlength: "NIK harus 16 digit"
+        //     },
+        //     email: {
+        //         email: "Format email tidak valid"
+        //     },
+        //     foto: {
+        //         extension: "File harus berformat JPG, JPEG, atau PNG"
+        //     }
+        // },
         submitHandler: function(form) {
             var formData = new FormData(form);
 
@@ -344,6 +344,48 @@ $(document).ready(function() {
             // Implementasi sesuai kebutuhan
         }
     });
+
+
+    //FORMAT TULISAN ISIAN FORM
+    // Function untuk mengubah ke Title Case
+    function toTitleCase(str) {
+        return str.toLowerCase().replace(/\b\w/g, function(char) {
+            return char.toUpperCase();
+        });
+    }
+
+    // Auto format Tempat Lahir saat user mengetik
+    $('#tempat_lahir').on('input', function() {
+        var currentValue = $(this).val();
+        var formattedValue = toTitleCase(currentValue);
+        $(this).val(formattedValue);
+    });
+
+    // Auto format saat blur (kehilangan fokus) untuk memastikan formatting
+    $('#tempat_lahir').on('blur', function() {
+        var currentValue = $(this).val().trim(); // Hapus spasi di awal/akhir
+        if (currentValue) {
+            var formattedValue = toTitleCase(currentValue);
+            $(this).val(formattedValue);
+        }
+    });
+
+    // Opsional: Format juga field nama agar konsisten
+    $('#nama').on('input', function() {
+        var currentValue = $(this).val();
+        var formattedValue = toTitleCase(currentValue);
+        $(this).val(formattedValue);
+    });
+
+    $('#nama').on('blur', function() {
+        var currentValue = $(this).val().trim();
+        if (currentValue) {
+            var formattedValue = toTitleCase(currentValue);
+            $(this).val(formattedValue);
+        }
+    });
+
+
 });
 
 $('#id_provinsi').change(function () {

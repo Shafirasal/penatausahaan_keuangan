@@ -175,7 +175,8 @@ Route::prefix('master_rekening')->name('rekening.')->group(function () {
     Route::post('/store', [RekeningController::class, 'store']);
     Route::get('/{id}/edit', [RekeningController::class, 'edit']);
     Route::put('/{id}/update', [RekeningController::class, 'update']);
-    Route::delete('/{id}/delete', [RekeningController::class, 'destroy']);
+    Route::delete('/{id}/delete', [RekeningController::class, 'delete']);
+    Route::get('/{id}/confirm', [RekeningController::class, 'confirm']);
 
     // Cascading select (seperti provinsi → kabupaten → dst)
     Route::get('/program/{id_program}/kegiatan', [RekeningController::class, 'getKegiatanByProgram']);
