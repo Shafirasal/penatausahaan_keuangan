@@ -22,17 +22,16 @@
                     <small id="error-nama_rekening" class="error-text text-danger"></small>
                 </div>
 
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Program</label>
-                        <select name="id_program" id="id_program" class="form-control" required>
-                            <option value="">-- Pilih Program --</option>
-                            @foreach ($masterProgram as $p)
-                                <option value="{{ $p->id_program }}">{{ $p->nama_program }}</option>
-                            @endforeach
+                <div class="form-group">
+                    <label>Program</label>
+                    <select name="id_program" id="id_program" class="form-control" required>
+                        <option value="">-- Pilih Program --</option>
+                        @foreach ($masterProgram as $p)
+                            <option value="{{ $p->id_program }}">{{ $p->nama_program }}</option>
+                        @endforeach
                         </select>
                         <small id="error-id_program" class="error-text form-text text-danger"></small>
-                    </div>
+                </div>
 
                     <div class="form-group">
                         <label>Kegiatan</label>
@@ -49,7 +48,7 @@
                         </select>
                         <small id="error-id_sub_kegiatan" class="error-text form-text text-danger"></small>
                     </div>
-                </div>
+           
 
 
             <div class="modal-footer">
