@@ -50,7 +50,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Tempat Lahir</label>
-                            <span class="badge" style="background-color:#6c757d; color:#fff;border-radius: 6px;">Wajib diisi</span>
+                            <span class="badge" style="background-color:#6c757d; color:#fff; font-size: 11px; padding: 2px 6px; border-radius: 4px;">Wajib diisi</span>
                             <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control" placeholder="Masukkan Tempat Lahir" required>
                             <small id="error-tempat_lahir" class="error-text form-text text-danger"></small>
                         </div>
