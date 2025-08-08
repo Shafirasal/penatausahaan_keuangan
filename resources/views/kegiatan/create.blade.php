@@ -8,14 +8,8 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-
+ 
             <div class="modal-body">
-                <div class="form-group">
-                    <label>Kode Kegiatan</label>
-                    <input type="text" name="kode_kegiatan" id="kode_kegiatan" class="form-control" required>
-                    <small id="error-kode_kegiatan" class="error-text form-text text-danger"></small>
-                </div>
-
                 <div class="form-group">
                     <label>Program</label>
                     <select name="id_program" id="id_program" class="form-control" required>
@@ -25,6 +19,11 @@
                         @endforeach
                     </select>
                     <small id="error-id_program" class="error-text form-text text-danger"></small>
+                </div>
+                <div class="form-group">
+                    <label>Kode Kegiatan</label>
+                    <input type="text" name="kode_kegiatan" id="kode_kegiatan" class="form-control" required>
+                    <small id="error-kode_kegiatan" class="error-text form-text text-danger"></small>
                 </div>
 
                 <div class="form-group">

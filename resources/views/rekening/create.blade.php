@@ -9,19 +9,6 @@
                 </button>
             </div>
             <div class="modal-body">
-
-                <div class="form-group">
-                    <label>Kode Rekening</label>
-                    <input type="text" name="kode_rekening" id="kode_rekening" class="form-control" required>
-                    <small id="error-kode_rekening" class="error-text text-danger"></small>
-                </div>
-
-                <div class="form-group">
-                    <label>Nama Rekening</label>
-                    <input type="text" name="nama_rekening" id="nama_rekening" class="form-control" required>
-                    <small id="error-nama_rekening" class="error-text text-danger"></small>
-                </div>
-
                 <div class="form-group">
                     <label>Program</label>
                     <select name="id_program" id="id_program" class="form-control" required>
@@ -48,7 +35,17 @@
                         </select>
                         <small id="error-id_sub_kegiatan" class="error-text form-text text-danger"></small>
                     </div>
-           
+                    <div class="form-group">
+                        <label>Kode Rekening</label>
+                        <input type="text" name="kode_rekening" id="kode_rekening" class="form-control" required>
+                        <small id="error-kode_rekening" class="error-text text-danger"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nama Rekening</label>
+                        <input type="text" name="nama_rekening" id="nama_rekening" class="form-control" required>
+                        <small id="error-nama_rekening" class="error-text text-danger"></small>
+                    </div>
 
 
             <div class="modal-footer">
