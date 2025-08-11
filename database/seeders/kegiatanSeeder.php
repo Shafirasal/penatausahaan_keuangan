@@ -15,7 +15,7 @@ class KegiatanSeeder extends Seeder
                 ['kode_kegiatan' => '40101102', 'nama_kegiatan' => 'Administrasi Keuangan Perangkat Daerah'],
                 ['kode_kegiatan' => '40101103', 'nama_kegiatan' => 'Administrasi Barang Milik Daerah pada Perangkat Daerah'],
                 ['kode_kegiatan' => '40101105', 'nama_kegiatan' => 'Administrasi Kepegawaian Perangkat Daerah'],
-                ['kode_kegiatan' => '40101106', 'nama_kegiatan' => 'Administrasi Umum Perangkat Daerah'],
+                ['kode_kegiatan' => '40101106', 'nama_kegiatan' => 'Administrasi Umum Perangkat Daerah'], 
                 ['kode_kegiatan' => '40101107', 'nama_kegiatan' => 'Pengadaan Barang Milik Daerah Penunjang Urusan Pemerintahan Daerah'],
                 ['kode_kegiatan' => '40101108', 'nama_kegiatan' => 'Penyediaan Jasa Penunjang Urusan Pemerintahan Daerah'],
                 ['kode_kegiatan' => '40101109', 'nama_kegiatan' => 'Pemeliharaan Barang Milik Daerah Penunjang Urusan Pemerintahan Daerah'],
