@@ -18,11 +18,19 @@ class DatabaseSeeder extends Seeder
             GolonganSeeder::class,
             JenisKenaikanPangkatSeeder::class,
             UnitKerjaSeeder::class,
-            UserSeeder::class,
-            PendidikanSeeder::class,
-            RiwayatKepegawaianSeeder::class,
+            // UserSeeder::class,
+            // PendidikanSeeder::class,
+            // RiwayatKepegawaianSeeder::class,
             JabatanFungsionalSeeder::class,
             JabatanStrukturalSeeder::class,
+            ProvinsiSeeder::class,
+            KabupatenKotaSeeder::class,
+            KecamatanSeeder::class,
+            KelurahanSeeder::class,
+            PegawaiSeeder::class,
+            UserLoginSeeder::class,
+            ProgramSeeder::class,
+            KegiatanSeeder::class,
         ]);
     }
 }
