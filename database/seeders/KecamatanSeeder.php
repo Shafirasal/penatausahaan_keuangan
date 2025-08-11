@@ -10,8 +10,9 @@ class KecamatanSeeder extends Seeder
     public function run(): void
     {
         $kabId = DB::table('t_kabupaten_kota')
-            ->where('nama_kabupaten_kota', 'Surabaya')
-            ->value('id');
+            ->where('nama_kabupaten_kota', 'Kota Surabaya')
+            ->value('id_kabupaten_kota');
+
 
         $kecamatanList = [
             'Asemrowo',
@@ -52,8 +53,8 @@ class KecamatanSeeder extends Seeder
             DB::table('t_kecamatan')->insert([
                 'nama_kecamatan' => $namaKecamatan,
                 'id_kabupaten_kota' => $kabId,
-                'created_at' => now(),
-                'updated_at' => now(),
+                // 'created_at' => now(),
+                // 'updated_at' => now(),
             ]);
         }
     }

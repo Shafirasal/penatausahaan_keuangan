@@ -9,13 +9,13 @@ class KelurahanSeeder extends Seeder
 {
     public function run(): void
     {
-        $provId = DB::table('t_provinsi')
-            ->where('nama_provinsi', 'Jawa Timur')
-            ->value('id');
+        // $provId = DB::table('t_provinsi')
+        //     ->where('nama_provinsi', 'Jawa Timur')
+        //     ->value('id_provinsi');
 
-        $kabId = DB::table('t_kabupaten_kota')
-            ->where('nama_kabupaten_kota', 'Surabaya')
-            ->value('id');
+        // $kabId = DB::table('t_kabupaten_kota')
+        //     ->where('nama_kabupaten_kota', 'Kota Surabaya')
+        //     ->value('id_kabupaten_kota');
 
         $kelurahanByKecamatan = [
             'Asemrowo' => ['Asemrowo', 'Genting Kalianak', 'Tambak Sarioso'],
@@ -54,17 +54,16 @@ class KelurahanSeeder extends Seeder
         foreach ($kelurahanByKecamatan as $namaKec => $kelList) {
             $kecId = DB::table('t_kecamatan')
                 ->where('nama_kecamatan', $namaKec)
-                ->value('id');
+                ->value('id_kecamatan');
 
             foreach ($kelList as $kel) {
-                DB::table('t_kelurahan')->insert([
-                    'nama_kelurahan' => $kel,
-                    'id_kecamatan' => $kecId,
-                    'id_kabupaten_kota' => $kabId,
-                    'id_provinsi' => $provId,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
+            DB::table('t_kelurahan')->insert([
+                'nama_kelurahan' => $kel,
+                'id_kecamatan' => $kecId,
+                // 'created_at' => now(),
+                // 'updated_at' => now(),
+            ]);
+
             }
         }
     }

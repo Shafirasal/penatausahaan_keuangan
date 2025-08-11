@@ -9,10 +9,10 @@ class PegawaiSeeder extends Seeder
 {
     public function run(): void
     {
-        $provId = DB::table('t_provinsi')->where('nama_provinsi', 'Jawa Timur')->value('id');
-        $kabId = DB::table('t_kabupaten_kota')->where('nama_kabupaten_kota', 'Surabaya')->value('id');
-        $kecId = DB::table('t_kecamatan')->where('nama_kecamatan', 'Bubutan')->value('id');
-        $kelId = DB::table('t_kelurahan')->where('nama_kelurahan', 'Alun-Alun Contong')->value('id');
+        $provId = DB::table('t_provinsi')->where('nama_provinsi', 'Jawa Timur')->value('id_provinsi');
+        $kabId = DB::table('t_kabupaten_kota')->where('nama_kabupaten_kota', 'Kota Surabaya')->value('id_kabupaten_kota');
+        $kecId = DB::table('t_kecamatan')->where('nama_kecamatan', 'Bubutan')->value('id_kecamatan');
+        $kelId = DB::table('t_kelurahan')->where('nama_kelurahan', 'Alun-Alun Contong')->value('id_kelurahan');
 
         DB::table('t_pegawai')->insert([
             'nip' => '678901234567890123',

@@ -10,12 +10,15 @@ class UserLoginSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('t_user')->insert([
-            'nip' => '678901234567890123',
+    DB::table('t_user')->updateOrInsert(
+        ['nip' => '678901234567890123'],
+        [
             'level' => 'admin',
             'password' => Hash::make('67890'),
             'created_at' => now(),
             'updated_at' => now(),
-        ]);
+        ]
+    );
+
     }
 }

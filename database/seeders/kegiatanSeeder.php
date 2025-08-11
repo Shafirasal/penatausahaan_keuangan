@@ -32,7 +32,7 @@ class KegiatanSeeder extends Seeder
         foreach ($kegiatanPerProgram as $kodeProgram => $listKegiatan) {
             $programId = DB::table('t_master_program')
                 ->where('kode_program', $kodeProgram)
-                ->value('id');
+                ->value('id_program');
 
             if (!$programId) {
                 continue; // skip kalau program belum ada
