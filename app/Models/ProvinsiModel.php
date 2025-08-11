@@ -11,7 +11,7 @@ class ProvinsiModel extends Model
 
     protected $table = 't_provinsi';
     protected $primaryKey = 'id_provinsi';
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = ['nama_provinsi'];
 
