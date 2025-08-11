@@ -14,7 +14,7 @@ class JabatanFungsionalSeeder extends Seeder
     public function run(): void
     {
         DB::table('t_jabatan_fungsional')->insert([
-            'nip' => '12345',
+            'nip' => '678901234567890123',
             'nama_jabatan' => 'Analis Data',
             'instansi' => 'Dinas Komunikasi dan Informatika',
             'tmt_jabatan' => '2020-01-01',

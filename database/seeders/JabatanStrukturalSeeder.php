@@ -13,7 +13,7 @@ class JabatanStrukturalSeeder extends Seeder
     public function run(): void
     {
         DB::table('t_jabatan_struktural')->insert([
-            'nip' => '12345',
+            'nip' => '678901234567890123',
             'nama_jabatan' => 'Kepala Seksi',
             'jenis_pelantikan' => 'definitif',
             'id_unit_kerja' => 1,
