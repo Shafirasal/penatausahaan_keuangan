@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             UserLoginSeeder::class,
             ProgramSeeder::class,
             KegiatanSeeder::class,
+            MasterSubKegiatanSeeder::class,
         ]);
     }
 }
