@@ -11,58 +11,73 @@ class PendidikanSeeder extends Seeder
     /**
      * Run the database seeds.
      */
+    // public function run(): void
+    // {
+    //      DB::table('t_pendidikan')->insert([
+    // [
+    //     'nip' => '678901234567890123',
+    //     'nama_sekolah' => 'sd negeri 1 surabaya',
+    //     'tingkat' => 'sd',
+    //     'prodi_jurusan' => '',
+    //     'tahun_lulus' => '1997-06-01',
+    //     'aktif' => 'tidak',
+    //     'created_at' => now(),
+    //     'updated_at' => now(),
+    // ],
+    // [
+    //     'nip' => '12345',
+    //     'nama_sekolah' => 'smp negeri 2 surabaya',
+    //     'tingkat' => 'smp',
+    //     'prodi_jurusan' => '',
+    //     'tahun_lulus' => '2000-06-01',
+    //     'aktif' => 'tidak',
+    //     'created_at' => now(),
+    //     'updated_at' => now(),
+    // ],
+    // [
+    //     'nip' => '12345',
+    //     'nama_sekolah' => 'sma negeri 3 surabaya',
+    //     'tingkat' => 'sma/smk',
+    //     'prodi_jurusan' => 'ipa',
+    //     'tahun_lulus' => '2003-06-01',
+    //     'aktif' => 'tidak',
+    //     'created_at' => now(),
+    //     'updated_at' => now(),
+    // ],
+    // [
+    //     'nip' => '12345',
+    //     'nama_sekolah' => 'universitas airlangga',
+    //     'tingkat' => 's1',
+    //     'prodi_jurusan' => 'ilmu komputer',
+    //     'tahun_lulus' => '2008-06-01',
+    //     'aktif' => 'tidak',
+    //     'created_at' => now(),
+    //     'updated_at' => now(),
+    // ],
+    // [
+    //     'nip' => '12345',
+    //     'nama_sekolah' => 'institut teknologi bandung',
+    //     'tingkat' => 's3',
+    //     'prodi_jurusan' => 'sistem informasi',
+    //     'tahun_lulus' => '2018-06-01',
+    //     'aktif' => 'ya',
+    //     'created_at' => now(),
+    //     'updated_at' => now(),
+    // ]   ]);
+    // }
     public function run(): void
     {
-         DB::table('t_pendidikan')->insert([
-    [
-        'nip' => '12345',
-        'nama_sekolah' => 'sd negeri 1 surabaya',
-        'tingkat' => 'sd',
-        'prodi_jurusan' => '',
-        'tahun_lulus' => '1997-06-01',
-        'aktif' => 'tidak',
-        'created_at' => now(),
-        'updated_at' => now(),
-    ],
-    [
-        'nip' => '12345',
-        'nama_sekolah' => 'smp negeri 2 surabaya',
-        'tingkat' => 'smp',
-        'prodi_jurusan' => '',
-        'tahun_lulus' => '2000-06-01',
-        'aktif' => 'tidak',
-        'created_at' => now(),
-        'updated_at' => now(),
-    ],
-    [
-        'nip' => '12345',
-        'nama_sekolah' => 'sma negeri 3 surabaya',
-        'tingkat' => 'sma/smk',
-        'prodi_jurusan' => 'ipa',
-        'tahun_lulus' => '2003-06-01',
-        'aktif' => 'tidak',
-        'created_at' => now(),
-        'updated_at' => now(),
-    ],
-    [
-        'nip' => '12345',
-        'nama_sekolah' => 'universitas airlangga',
-        'tingkat' => 's1',
-        'prodi_jurusan' => 'ilmu komputer',
-        'tahun_lulus' => '2008-06-01',
-        'aktif' => 'tidak',
-        'created_at' => now(),
-        'updated_at' => now(),
-    ],
-    [
-        'nip' => '12345',
-        'nama_sekolah' => 'institut teknologi bandung',
-        'tingkat' => 's3',
-        'prodi_jurusan' => 'sistem informasi',
-        'tahun_lulus' => '2018-06-01',
-        'aktif' => 'ya',
-        'created_at' => now(),
-        'updated_at' => now(),
-    ]   ]);
+        DB::table('t_pendidikan')->insert([
+            [
+                'nip' => '678901234567890123',
+                'nama_sekolah' => 'sd negeri 1 surabaya',
+                'tingkat' => 'sd',
+                'prodi_jurusan' => '',
+                'tahun_lulus' => '1997-06-01',
+                'aktif' => 'tidak',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
     }
 }

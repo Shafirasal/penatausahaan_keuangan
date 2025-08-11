@@ -14,12 +14,10 @@ class RiwayatKepegawaianSeeder extends Seeder
     public function run(): void
     {
         DB::table('t_riwayat_kepegawaian')->insert([
-            'nip' => '12345',
+            'nip' => '678901234567890123',
             'file' => 'dokumen_kenaikan.pdf',
             'id_golongan' => 1,
             'id_jenis_kp' => 1,
-            'masa_kerja_tahun' => 15,
-            'masa_kerja_bulan' => 6,
             'tmt_pangkat' => '2023-01-01',
             'keterangan' => 'Kenaikan pangkat reguler',
             'aktif' => 'ya',
