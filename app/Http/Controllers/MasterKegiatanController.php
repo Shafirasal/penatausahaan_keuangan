@@ -23,8 +23,9 @@ class MasterKegiatanController extends Controller
         ];
 
         $activeMenu = 'kegiatan';
+        $listProgram = MasterProgramModel::select('id_program', 'nama_program')->get();
 
-        return view('kegiatan.index', compact('breadcrumb', 'page', 'activeMenu'));
+        return view('kegiatan.index', compact('breadcrumb', 'page', 'activeMenu', 'listProgram'));
     }
 
     public function list(Request $request)
@@ -36,16 +37,28 @@ class MasterKegiatanController extends Controller
             'nama_kegiatan'
         )->with('program:id_program,nama_program');
 
+        // Tambahkan filter kalau ada pilihan program
+        if ($request->program_nama) {
+            $data->whereHas('program', function ($q) use ($request) {
+                $q->where('nama_program', $request->program_nama);
+            });
+        }
+
         return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('program_nama', function ($row) {
                 return $row->program ? $row->program->nama_program : '-';
             })
             ->addColumn('aksi', function ($row) {
-                // $btn = '<button onclick="modalAction(\'' . url('/master_kegiatan/' . $row->id_kegiatan . '/show') . '\')" class="btn btn-info btn-sm">Detail</button> ';
                 $btn = '<button onclick="modalAction(\'' . url('/master_kegiatan/' . $row->id_kegiatan . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/master_kegiatan/' . $row->id_kegiatan . '/confirm') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
                 return $btn;
+            })
+            ->editColumn('kode_kegiatan', function ($row) {
+                // Misal kode_kegiatan = 40101106
+                $kode = $row->kode_kegiatan;
+                // Pecah sesuai format 4.01.01.1.06
+                return '[' . substr($kode, 0, 1) . '.' . substr($kode, 1, 2) . '.' . substr($kode, 3, 2) . '.' . substr($kode, 5, 1) . '.' . substr($kode, 6, 2) . ']';
             })
             ->rawColumns(['aksi'])
             ->toJson();
