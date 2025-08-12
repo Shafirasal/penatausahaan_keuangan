@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
+use function formatKode;
 
 class SSHController extends Controller
 {
@@ -27,8 +28,15 @@ class SSHController extends Controller
         ];
 
         $activeMenu = 'ssh';
+        $listProgram = MasterProgramModel::select('id_program', 'nama_program', 'kode_program')->get()->map(function ($program) {
+            $program->kode_program = formatKode($program->kode_program, 'program');
+            return $program;
+        });
+        $listKegiatan = MasterKegiatanModel::select('id_kegiatan', 'nama_kegiatan', 'kode_kegiatan')->get();
+        $listSubKegiatan = MasterSubKegiatanModel::select('id_sub_kegiatan', 'nama_sub_kegiatan', 'kode_sub_kegiatan')->get();
+        $listRekening = RekeningModel::select('id_rekening', 'nama_rekening', 'kode_rekening')->get();
 
-        return view('ssh.index', compact('breadcrumb', 'page', 'activeMenu'));
+        return view('ssh.index', compact('breadcrumb', 'page', 'activeMenu', 'listProgram', 'listKegiatan', 'listSubKegiatan', 'listRekening'));
     }
 
     public function list(Request $request)
@@ -44,28 +52,48 @@ class SSHController extends Controller
             'pagu',
             'periode',
             DB::raw('YEAR(tahun) as tahun'),
-        )->with('program:id_program,nama_program', 'kegiatan:id_kegiatan,nama_kegiatan',
-            'sub_kegiatan:id_sub_kegiatan,nama_sub_kegiatan', 'rekening:id_rekening,nama_rekening');
+        )->with(
+            'program:id_program,nama_program,kode_program',
+            'kegiatan:id_kegiatan,nama_kegiatan,kode_kegiatan',
+            'sub_kegiatan:id_sub_kegiatan,nama_sub_kegiatan,kode_sub_kegiatan',
+            'rekening:id_rekening,nama_rekening,kode_rekening'
+        );
+
+        // Filter Program
+        if ($request->id_program) {
+            $data->where('id_program', $request->id_program);
+        }
+
+        // Filter Kegiatan
+        if ($request->id_kegiatan) {
+            $data->where('id_kegiatan', $request->id_kegiatan);
+        }
+
+        // Filter Sub Kegiatan
+        if ($request->id_sub_kegiatan) {
+            $data->where('id_sub_kegiatan', $request->id_sub_kegiatan);
+        }
+
+        // Filter Rekening
+        if ($request->id_rekening) {
+            $data->where('id_rekening', $request->id_rekening);
+        }
 
         return DataTables::of($data)
             ->addIndexColumn()
-            ->addColumn('program_nama', function ($row) {
-                return $row->program ? $row->program->nama_program : '-';
-            })
-            ->addColumn('kegiatan_nama', function ($row) {
-                return $row->kegiatan ? $row->kegiatan->nama_kegiatan : '-';
-            })
-            ->addColumn('nama_sub_kegiatan', function ($row) {
-                return $row->sub_kegiatan ? $row->sub_kegiatan->nama_sub_kegiatan : '-';
-            })
-            ->addColumn('nama_rekening', function ($row) {
-                return $row->rekening ? $row->rekening->nama_rekening : '-';
-            })
+            // ->addColumn('program_nama', fn($row) => $row->program->nama_program ?? '-')
+            // ->addColumn('kegiatan_nama', fn($row) => $row->kegiatan->nama_kegiatan ?? '-')
+            // ->addColumn('nama_sub_kegiatan', fn($row) => $row->sub_kegiatan->nama_sub_kegiatan ?? '-')
+            // ->addColumn('nama_rekening', fn($row) => $row->rekening->nama_rekening ?? '-')
             ->addColumn('aksi', function ($row) {
                 $btn = '<button onclick="modalAction(\'' . url('/ssh/' . $row->id_ssh . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/ssh/' . $row->id_ssh . '/confirm') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
                 return $btn;
             })
+            ->editColumn('kode_ssh', function ($row) {
+                return formatKode($row->kode_ssh, 'ssh');
+            })
+
             ->rawColumns(['aksi'])
             ->toJson();
     }
@@ -208,24 +236,37 @@ class SSHController extends Controller
     public function getKegiatanByProgram($id_program)
     {
         $kegiatan = MasterKegiatanModel::where('id_program', $id_program)
-            ->select('id_kegiatan', 'nama_kegiatan')
-            ->get();
+            ->select('id_kegiatan', 'nama_kegiatan', 'kode_kegiatan')
+            ->get()
+            ->map(function ($item) {
+                $item->kode_kegiatan = formatKode($item->kode_kegiatan, 'kegiatan');
+                return $item;
+            });
 
         return response()->json($kegiatan);
     }
     public function getSubKegiatanByKegiatan($id_kegiatan)
     {
         $sub_kegiatan = MasterSubKegiatanModel::where('id_kegiatan', $id_kegiatan)
-            ->select('id_sub_kegiatan', 'nama_sub_kegiatan')
-            ->get();
+            ->select('id_sub_kegiatan', 'nama_sub_kegiatan', 'kode_sub_kegiatan')
+            ->get()
+            ->map(function ($item) {
+                $item->kode_sub_kegiatan = formatKode($item->kode_sub_kegiatan, 'sub_kegiatan');
+                return $item;
+            });
 
         return response()->json($sub_kegiatan);
     }
+
     public function getRekeningBySubKegiatan($id_sub_kegiatan)
     {
         $rekening = RekeningModel::where('id_sub_kegiatan', $id_sub_kegiatan)
-            ->select('id_rekening', 'nama_rekening')
-            ->get();
+            ->select('id_rekening', 'nama_rekening', 'kode_rekening')
+            ->get()
+            ->map(function ($item) {
+                $item->kode_rekening = formatKode($item->kode_rekening, 'rekening');
+                return $item;
+            });
 
         return response()->json($rekening);
     }
