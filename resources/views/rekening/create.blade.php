@@ -56,7 +56,7 @@
     </div>
 </form>
 
-{{-- 
+{{--
 <script>
 $(document).ready(function() {
     // FORM VALIDATION
@@ -184,7 +184,7 @@ $(document).ready(function () {
     // FORM VALIDATION
     $('#form-tambah').validate({
         rules: {
-            kode_rekening: { required: true, maxlength: 10 },
+            kode_rekening: { required: true, maxlength: 12 },
             nama_rekening: { required: true, maxlength: 200 },
             id_program: { required: true },
             id_kegiatan: { required: true },
