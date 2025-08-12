@@ -25,11 +25,11 @@
 
                     <div class="card-body">
                         <div class="form-group d-flex align-items-center mb-0">
-                            <label for="program_nama" class="mb-0 mr-2"><strong>Nama Program:</strong></label>
+                            <label for="program_nama" class="mb-0 mr-2" style="width: 160px;"><strong>Nama Program:</strong></label>
                             <select id="program_nama" class="form-control form-control-sm" style="width: 100px;">
                                 <option value="">-- Pilih Program --</option>
                                 @foreach ($listProgram as $program)
-                                    <option value="{{ $program->nama_program }}">{{ $program->nama_program }}</option>
+                                    <option value="{{ $program->nama_program }}">{{$program->kode_program}} - {{ $program->nama_program }}</option>
                                 @endforeach
                             </select>
                         </div>

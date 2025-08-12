@@ -23,7 +23,10 @@ class MasterKegiatanController extends Controller
         ];
 
         $activeMenu = 'kegiatan';
-        $listProgram = MasterProgramModel::select('id_program', 'nama_program')->get();
+        $listProgram = MasterProgramModel::select('id_program', 'nama_program', 'kode_program')->get()->map(function ($program) {
+            $program->kode_program = formatKode($program->kode_program, 'program');
+            return $program;
+        });
 
         return view('kegiatan.index', compact('breadcrumb', 'page', 'activeMenu', 'listProgram'));
     }
@@ -46,9 +49,9 @@ class MasterKegiatanController extends Controller
 
         return DataTables::of($data)
             ->addIndexColumn()
-            ->addColumn('program_nama', function ($row) {
-                return $row->program ? $row->program->nama_program : '-';
-            })
+            // ->addColumn('program_nama', function ($row) {
+            //     return $row->program ? $row->program->nama_program : '-';
+            // })
             ->addColumn('aksi', function ($row) {
                 $btn = '<button onclick="modalAction(\'' . url('/master_kegiatan/' . $row->id_kegiatan . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/master_kegiatan/' . $row->id_kegiatan . '/confirm') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
@@ -56,9 +59,7 @@ class MasterKegiatanController extends Controller
             })
             ->editColumn('kode_kegiatan', function ($row) {
                 // Misal kode_kegiatan = 40101106
-                $kode = $row->kode_kegiatan;
-                // Pecah sesuai format 4.01.01.1.06
-                return '[' . substr($kode, 0, 1) . '.' . substr($kode, 1, 2) . '.' . substr($kode, 3, 2) . '.' . substr($kode, 5, 1) . '.' . substr($kode, 6, 2) . ']';
+                return formatKode($row->kode_kegiatan, 'kegiatan');
             })
             ->rawColumns(['aksi'])
             ->toJson();
