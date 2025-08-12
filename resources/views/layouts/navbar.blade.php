@@ -221,7 +221,7 @@ assets/img/avatar/avatar-5.png"
                       <img alt="image"
                           src="{{ Auth::user()->pegawai && Auth::user()->pegawai->foto
                               ? asset('storage/' . Auth::user()->pegawai->foto)
-                              : asset('storage/foto_profile/default_pp.jpg') }}"
+                              : asset('assets/avatar-1.png') }}"
                           class="rounded-circle mr-1">
                       <div class="d-sm-none d-lg-inline-block">
                           Hi, {{ Auth::user()?->pegawai?->nama ?? 'Nama Tidak Ditemukan' }}
