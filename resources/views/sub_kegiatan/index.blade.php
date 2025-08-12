@@ -24,14 +24,37 @@
         </div>
 
         <div class="card-body">
+          <!-- Filter Section -->
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="program_filter"><strong>Nama Program:</strong></label>
+                <select id="program_filter" class="form-control">
+                  <option value="">-- Pilih Program --</option>
+                  @foreach ($listProgram as $program)
+                    <option value="{{ $program->id_program }}">{{ $program->nama_program }}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="kegiatan_filter"><strong>Nama Kegiatan:</strong></label>
+                <select id="kegiatan_filter" class="form-control" disabled>
+                  <option value="">-- Pilih Kegiatan --</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
           <div class="table-responsive">
             <table class="table table-bordered table-hover table-striped dt-responsive nowrap" id="table_master_sub_kegiatan" style="width:100%">
               <thead class="thead-light">
                 <tr>
                   <th>#</th>
                   <th>Kode Sub Kegiatan</th>
-                  <th>Nama Program</th>
-                  <th>Nama Kegiatan</th>
+                  {{-- <th>Nama Program</th>
+                  <th>Nama Kegiatan</th> --}}
                   <th>Nama Sub Kegiatan</th>
                   <th>Aksi</th>
                 </tr>
@@ -68,25 +91,79 @@
     });
   }
 
-   var dataMasterSubKegiatan;
+  var dataMasterSubKegiatan;
   $(document).ready(function () {
-  dataMasterSubKegiatan =$('#table_master_sub_kegiatan').DataTable({
+    
+    // Inisialisasi Select2
+    $('#program_filter').select2({
+      placeholder: "-- Pilih Program --",
+      allowClear: true,
+      width: '100%'
+    });
+
+    $('#kegiatan_filter').select2({
+      placeholder: "-- Pilih Kegiatan --",
+      allowClear: true,
+      width: '100%'
+    });
+
+    // Inisialisasi DataTable
+    dataMasterSubKegiatan = $('#table_master_sub_kegiatan').DataTable({
       processing: true,
       serverSide: true,
       responsive: true,
       ajax: {
         url: "{{ url('/master_sub_kegiatan/list') }}",
-        type: "POST"
+        type: "POST",
+        data: function(d) {
+          d.id_program = $('#program_filter').val();
+          d.id_kegiatan = $('#kegiatan_filter').val();
+        }
       },
       columns: [
         { data: 'DT_RowIndex', className: 'text-center', orderable: false, searchable: false },
-        { data: 'kode_sub_kegiatan', className: '', orderable: true, searchable: true },
-        { data: 'program_nama', className: '', orderable: true, searchable: true },
-        { data: 'kegiatan_nama', className: '', orderable: true, searchable: true },
+        { data: 'kode_sub_kegiatan', orderable: true, searchable: true },
+        // { data: 'program_nama', className: '', orderable: true, searchable: true },
+        // { data: 'kegiatan_nama', className: '', orderable: true, searchable: true },
         { data: 'nama_sub_kegiatan', className: '', orderable: true, searchable: true },
         { data: 'aksi', className: 'text-center', orderable: false, searchable: false }
       ]
     });
+
+    // Event handler untuk filter Program
+    $('#program_filter').on('change', function() {
+      var programId = $(this).val();
+      
+      // Reset dan disable kegiatan filter
+      $('#kegiatan_filter').empty().append('<option value="">-- Pilih Kegiatan --</option>').prop('disabled', true).trigger('change');
+      
+      if (programId) {
+        // Load kegiatan berdasarkan program yang dipilih
+        $.ajax({
+          url: "{{ url('/master_sub_kegiatan/program') }}/" + programId + "/kegiatan",
+          type: 'GET',
+          dataType: 'json',
+          success: function(data) {
+            $('#kegiatan_filter').prop('disabled', false);
+            $.each(data, function(index, kegiatan) {
+              $('#kegiatan_filter').append('<option value="' + kegiatan.id_kegiatan + '">' + kegiatan.nama_kegiatan + '</option>');
+            });
+          },
+          error: function() {
+            alert('Gagal memuat data kegiatan');
+          }
+        });
+      }
+      
+      // Reload DataTable
+      dataMasterSubKegiatan.ajax.reload();
+    });
+
+    // Event handler untuk filter Kegiatan
+    $('#kegiatan_filter').on('change', function() {
+      dataMasterSubKegiatan.ajax.reload();
+    });
+
   });
 </script>
 @endpush

@@ -24,37 +24,51 @@ class MasterSubKegiatanController extends Controller
         ];
 
         $activeMenu = 'sub_kegiatan';
+        $listProgram = MasterProgramModel::select('id_program', 'nama_program')->get();
 
-        return view('sub_kegiatan.index', compact('breadcrumb', 'page', 'activeMenu'));
+        return view('sub_kegiatan.index', compact('breadcrumb', 'page', 'activeMenu', 'listProgram'));
     }
 
-    public function list(Request $request)
-    {
-        $data = MasterSubKegiatanModel::select(
-            'id_sub_kegiatan',
-            'kode_sub_kegiatan',
-            'id_kegiatan',
-            'id_program',
-            'nama_sub_kegiatan'
-        )->with('program:id_program,nama_program', 'kegiatan:id_kegiatan,nama_kegiatan');
+public function list(Request $request)
+{
+    $data = MasterSubKegiatanModel::select(
+        'id_sub_kegiatan',
+        'kode_sub_kegiatan',
+        'id_kegiatan',
+        'id_program',
+        'nama_sub_kegiatan'
+    )->with('program:id_program,nama_program', 'kegiatan:id_kegiatan,nama_kegiatan');
 
-        return DataTables::of($data)
-            ->addIndexColumn()
-            ->addColumn('program_nama', function ($row) {
-                return $row->program ? $row->program->nama_program : '-';
-            })
-            ->addColumn('kegiatan_nama', function ($row) {
-                return $row->kegiatan ? $row->kegiatan->nama_kegiatan : '-';
-            })
-            ->addColumn('aksi', function ($row) {
-                // $btn = '<button onclick="modalAction(\'' . url('/master_sub_kegiatan/' . $row->id_kegiatan . '/show') . '\')" class="btn btn-info btn-sm">Detail</button> ';
-                $btn = '<button onclick="modalAction(\'' . url('/master_sub_kegiatan/' . $row->id_sub_kegiatan . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('/master_sub_kegiatan/' . $row->id_sub_kegiatan . '/confirm') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
-                return $btn;
-            })
-            ->rawColumns(['aksi'])
-            ->toJson();
+    // Filter berdasarkan Program (gunakan ID bukan nama)
+    if ($request->id_program) {
+        $data->where('id_program', $request->id_program);
     }
+
+    // Filter berdasarkan Kegiatan
+    if ($request->id_kegiatan) {
+        $data->where('id_kegiatan', $request->id_kegiatan);
+    }
+
+    return DataTables::of($data)
+        ->addIndexColumn()
+        ->addColumn('program_nama', function ($row) {
+            return $row->program ? $row->program->nama_program : '-';
+        })
+        ->addColumn('kegiatan_nama', function ($row) {
+            return $row->kegiatan ? $row->kegiatan->nama_kegiatan : '-';
+        })
+        ->addColumn('aksi', function ($row) {
+            $btn = '<button onclick="modalAction(\'' . url('/master_sub_kegiatan/' . $row->id_sub_kegiatan . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
+            $btn .= '<button onclick="modalAction(\'' . url('/master_sub_kegiatan/' . $row->id_sub_kegiatan . '/confirm') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
+            return $btn;
+        })
+        ->editColumn('kode_sub_kegiatan', function ($row) {
+            $kode = $row->kode_sub_kegiatan;
+            return '[' . substr($kode, 0, 1) . '.' . substr($kode, 1, 2) . '.' . substr($kode, 3, 2) . '.' . substr($kode, 5, 1) . '.' . substr($kode, 6, 2) . ']';
+        })
+        ->rawColumns(['aksi'])
+        ->toJson();
+}
 
     public function create()
     {
@@ -187,4 +201,5 @@ class MasterSubKegiatanController extends Controller
 
         return response()->json($kegiatan);
     }
+    
 }
