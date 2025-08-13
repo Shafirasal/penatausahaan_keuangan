@@ -32,11 +32,7 @@
                 <select id="program_filter" class="form-control">
                   <option value="">-- Pilih Program --</option>
                   @foreach ($listProgram as $program)
-                    @php
-                      $kode = $program->kode_program;
-                      $formatted_kode = '[' . substr($kode, 0, 1) . '.' . substr($kode, 1, 2) . '.' . substr($kode, 3, 2) . ']';
-                    @endphp
-                    <option value="{{ $program->id_program }}">{{ $formatted_kode }} {{ $program->nama_program }}</option>
+                    <option value="{{ $program->id_program }}">{{ formatKode($program->kode_program, 'program') }} - {{ $program->nama_program }}</option>
                   @endforeach
                 </select>
               </div>
