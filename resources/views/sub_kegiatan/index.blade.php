@@ -32,7 +32,8 @@
                 <select id="program_filter" class="form-control">
                   <option value="">-- Pilih Program --</option>
                   @foreach ($listProgram as $program)
-                    <option value="{{ $program->id_program }}">{{ $program->nama_program }}</option>
+                    {{-- ✅ TAMBAHAN: Tampilkan kode_program yang sudah diformat --}}
+                    <option value="{{ $program->id_program }}">{{ $program->kode_program }} - {{ $program->nama_program }}</option>
                   @endforeach
                 </select>
               </div>
@@ -53,8 +54,6 @@
                 <tr>
                   <th>#</th>
                   <th>Kode Sub Kegiatan</th>
-                  {{-- <th>Nama Program</th>
-                  <th>Nama Kegiatan</th> --}}
                   <th>Nama Sub Kegiatan</th>
                   <th>Aksi</th>
                 </tr>
@@ -123,8 +122,6 @@
       columns: [
         { data: 'DT_RowIndex', className: 'text-center', orderable: false, searchable: false },
         { data: 'kode_sub_kegiatan', orderable: true, searchable: true },
-        // { data: 'program_nama', className: '', orderable: true, searchable: true },
-        // { data: 'kegiatan_nama', className: '', orderable: true, searchable: true },
         { data: 'nama_sub_kegiatan', className: '', orderable: true, searchable: true },
         { data: 'aksi', className: 'text-center', orderable: false, searchable: false }
       ]
@@ -146,7 +143,8 @@
           success: function(data) {
             $('#kegiatan_filter').prop('disabled', false);
             $.each(data, function(index, kegiatan) {
-              $('#kegiatan_filter').append('<option value="' + kegiatan.id_kegiatan + '">' + kegiatan.nama_kegiatan + '</option>');
+              // ✅ TAMBAHAN: Tampilkan kode_kegiatan yang sudah diformat dari controller
+              $('#kegiatan_filter').append('<option value="' + kegiatan.id_kegiatan + '">' + kegiatan.kode_kegiatan + ' - ' + kegiatan.nama_kegiatan + '</option>');
             });
           },
           error: function() {

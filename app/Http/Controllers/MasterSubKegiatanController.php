@@ -9,6 +9,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
+use function formatKode;
 
 class MasterSubKegiatanController extends Controller
 {
@@ -24,8 +25,12 @@ class MasterSubKegiatanController extends Controller
         ];
 
         $activeMenu = 'sub_kegiatan';
-        $listProgram = MasterProgramModel::select('id_program', 'nama_program')->get();
-
+        // $listProgram = MasterProgramModel::select('id_program', 'nama_program')->get();
+        //TAMBAHKAN format kode program + kode_program field
+        $listProgram = MasterProgramModel::select('id_program', 'nama_program', 'kode_program')->get()->map(function ($program) {
+            $program->kode_program = formatKode($program->kode_program, 'program');
+            return $program;
+        });
         return view('sub_kegiatan.index', compact('breadcrumb', 'page', 'activeMenu', 'listProgram'));
     }
 
@@ -62,9 +67,12 @@ public function list(Request $request)
             $btn .= '<button onclick="modalAction(\'' . url('/master_sub_kegiatan/' . $row->id_sub_kegiatan . '/confirm') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
             return $btn;
         })
+        // ->editColumn('kode_sub_kegiatan', function ($row) {
+        //     $kode = $row->kode_sub_kegiatan;
+        //     return '[' . substr($kode, 0, 1) . '.' . substr($kode, 1, 2) . '.' . substr($kode, 3, 2) . '.' . substr($kode, 5, 1) . '.' . substr($kode, 6, 2) . ']';
+        // })
         ->editColumn('kode_sub_kegiatan', function ($row) {
-            $kode = $row->kode_sub_kegiatan;
-            return '[' . substr($kode, 0, 1) . '.' . substr($kode, 1, 2) . '.' . substr($kode, 3, 2) . '.' . substr($kode, 5, 1) . '.' . substr($kode, 6, 2) . ']';
+            return formatKode($row->kode_sub_kegiatan, 'sub_kegiatan'); // ✅ GANTI dengan helper
         })
         ->rawColumns(['aksi'])
         ->toJson();
@@ -196,10 +204,16 @@ public function list(Request $request)
     public function getKegiatanByProgram($id_program)
     {
         $kegiatan = MasterKegiatanModel::where('id_program', $id_program)
-            ->select('id_kegiatan', 'nama_kegiatan')
-            ->get();
+            ->select('id_kegiatan', 'nama_kegiatan', 'kode_kegiatan')
+            ->get()
+            ->map(function ($item) {
+            $item->kode_kegiatan = formatKode($item->kode_kegiatan, 'kegiatan'); // ✅ TAMBAHKAN format
+            return $item;
+        });
 
         return response()->json($kegiatan);
+
+        
     }
     
 }
