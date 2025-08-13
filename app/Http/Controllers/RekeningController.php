@@ -25,28 +25,60 @@ class RekeningController extends Controller
         ];
 
         $activeMenu = 'rekening';
+        $listProgram = MasterProgramModel::select('id_program', 'kode_program', 'nama_program')->get();
 
-        return view('rekening.index', compact('breadcrumb', 'page', 'activeMenu'));
+        return view('rekening.index', compact('breadcrumb', 'page', 'activeMenu', 'listProgram'));
     }
 
     public function list(Request $request)
     {
-        $data = RekeningModel::with([
+        $data = RekeningModel::select(
+            'id_rekening',
+            'kode_rekening',
+            'id_program',
+            'id_kegiatan',
+            'id_sub_kegiatan',
+            'nama_rekening'
+        )->with([
             'program:id_program,nama_program',
             'kegiatan:id_kegiatan,nama_kegiatan',
             'subKegiatan:id_sub_kegiatan,nama_sub_kegiatan'
         ]);
 
+        // Filter berdasarkan Program (gunakan ID bukan nama)
+        if ($request->id_program) {
+            $data->where('id_program', $request->id_program);
+        }
+
+        // Filter berdasarkan Kegiatan
+        if ($request->id_kegiatan) {
+            $data->where('id_kegiatan', $request->id_kegiatan);
+        }
+
+        // Filter berdasarkan Sub Kegiatan
+        if ($request->id_sub_kegiatan) {
+            $data->where('id_sub_kegiatan', $request->id_sub_kegiatan);
+        }
+
         return DataTables::of($data)
             ->addIndexColumn()
-            ->addColumn('program_nama', fn($row) => $row->program->nama_program ?? '-')
-            ->addColumn('kegiatan_nama', fn($row) => $row->kegiatan->nama_kegiatan ?? '-')
-            ->addColumn('sub_kegiatan_nama', fn($row) => $row->subKegiatan->nama_sub_kegiatan ?? '-')
-
+            ->addColumn('program_nama', function ($row) {
+                return $row->program ? $row->program->nama_program : '-';
+            })
+            ->addColumn('kegiatan_nama', function ($row) {
+                return $row->kegiatan ? $row->kegiatan->nama_kegiatan : '-';
+            })
+            ->addColumn('sub_kegiatan_nama', function ($row) {
+                return $row->subKegiatan ? $row->subKegiatan->nama_sub_kegiatan : '-';
+            })
             ->addColumn('aksi', function ($row) {
                 $btn = '<button onclick="modalAction(\'' . url('/master_rekening/' . $row->id_rekening . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/master_rekening/' . $row->id_rekening . '/confirm') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
                 return $btn;
+            })
+            ->editColumn('kode_rekening', function ($row) {
+                $kode = $row->kode_rekening;
+                return '[' . substr($kode, 0, 1) . '.' . substr($kode, 1, 1) . '.' . substr($kode, 2, 2) . '.' . substr($kode, 4, 2) . '.' . substr($kode, 6, 2) . '.' . substr($kode, 8, 4) . ']';
             })
             ->rawColumns(['aksi'])
             ->toJson();
@@ -87,47 +119,51 @@ class RekeningController extends Controller
 
     public function update(Request $request, $id)
     {
-        $rules = [
-            'kode_rekening' => 'required|string|max:12|unique:t_rekening,kode_rekening,' . $id . ',id_rekening',
-            'id_program' => 'required|integer|exists:t_master_program,id_program',
-            'id_kegiatan' => 'required|integer|exists:t_master_kegiatan,id_kegiatan',
-            'id_sub_kegiatan' => 'required|integer|exists:t_master_sub_kegiatan,id_sub_kegiatan',
-            'nama_rekening' => 'required|string|max:200',
-        ];
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'kode_rekening' => 'required|string|max:12|unique:t_rekening,kode_rekening,' . $id . ',id_rekening',
+                'id_program' => 'required|integer|exists:t_master_program,id_program',
+                'id_kegiatan' => 'required|integer|exists:t_master_kegiatan,id_kegiatan',
+                'id_sub_kegiatan' => 'required|integer|exists:t_master_sub_kegiatan,id_sub_kegiatan',
+                'nama_rekening' => 'required|string|max:200',
+            ];
 
-        $validator = Validator::make($request->all(), $rules);
+            $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Validasi gagal.',
-                'msgField' => $validator->errors()
-            ]);
-        }
-
-        $rekening = RekeningModel::find($id);
-        if ($rekening) {
-            $rekening->fill($request->except(['_token', '_method']));
-
-            if (!$rekening->isDirty()) {
+            if ($validator->fails()) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Tidak ada perubahan data.'
+                    'message' => 'Validasi gagal.',
+                    'msgField' => $validator->errors()
                 ]);
             }
 
-            $rekening->save();
+            $rekening = RekeningModel::find($id);
+            if ($rekening) {
+                $rekening->fill($request->except(['_token', '_method']));
 
-            return response()->json([
-                'status' => true,
-                'message' => 'Data berhasil diupdate.'
-            ]);
+                if (!$rekening->isDirty()) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Tidak ada perubahan data yang dilakukan.'
+                    ]);
+                }
+
+                $rekening->save();
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Data berhasil diupdate'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Data tidak ditemukan'
+                ]);
+            }
         }
 
-        return response()->json([
-            'status' => false,
-            'message' => 'Data tidak ditemukan.'
-        ]);
+        return redirect('/');
     }
 
     public function confirm($id)
@@ -172,12 +208,11 @@ class RekeningController extends Controller
         return redirect()->route('master_rekening.index');
     }
 
-
     // 🔄 AJAX: Get Kegiatan berdasarkan Program
     public function getKegiatanByProgram($id_program)
     {
         $kegiatan = MasterKegiatanModel::where('id_program', $id_program)
-                        ->select('id_kegiatan', 'nama_kegiatan')
+                        ->select('id_kegiatan', 'kode_kegiatan', 'nama_kegiatan')
                         ->get();
 
         return response()->json($kegiatan);
@@ -187,7 +222,7 @@ class RekeningController extends Controller
     public function getSubKegiatanByKegiatan($id_kegiatan)
     {
         $subKegiatan = MasterSubKegiatanModel::where('id_kegiatan', $id_kegiatan)
-                            ->select('id_sub_kegiatan', 'nama_sub_kegiatan')
+                            ->select('id_sub_kegiatan', 'kode_sub_kegiatan', 'nama_sub_kegiatan')
                             ->get();
 
         return response()->json($subKegiatan);
