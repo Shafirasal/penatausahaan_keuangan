@@ -32,7 +32,7 @@
                 <select id="program_filter" class="form-control">
                   <option value="">-- Pilih Program --</option>
                   @foreach ($listProgram as $program)
-                    {{-- ✅ TAMBAHAN: Tampilkan kode_program yang sudah diformat --}}
+                    {{-- TAMBAHAN: Tampilkan kode_program yang sudah diformat --}}
                     <option value="{{ $program->id_program }}">{{ $program->kode_program }} - {{ $program->nama_program }}</option>
                   @endforeach
                 </select>

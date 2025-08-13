@@ -116,7 +116,8 @@ class RekeningController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
-                'kode_rekening' => 'required|string|max:12|unique:t_rekening,kode_rekening,' . $id . ',id_rekening',
+                // 'kode_rekening' => 'required|string|max:12|min:1|unique:t_rekening,kode_rekening,' . $id . ',id_rekening',
+                'kode_rekening' => 'required|string|max:12|min:1|',
                 'id_program' => 'required|integer|exists:t_master_program,id_program',
                 'id_kegiatan' => 'required|integer|exists:t_master_kegiatan,id_kegiatan',
                 'id_sub_kegiatan' => 'required|integer|exists:t_master_sub_kegiatan,id_sub_kegiatan',
