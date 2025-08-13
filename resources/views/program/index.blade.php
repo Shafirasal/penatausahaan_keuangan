@@ -24,6 +24,25 @@
         </div>
 
         <div class="card-body">
+          <!-- Filter Section -->
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="program_filter"><strong>Nama Program:</strong></label>
+                <select id="program_filter" class="form-control">
+                  <option value="">-- Pilih Program --</option>
+                  @foreach ($listProgram as $program)
+                    @php
+                      $kode = $program->kode_program;
+                      $formatted_kode = '[' . substr($kode, 0, 1) . '.' . substr($kode, 1, 2) . '.' . substr($kode, 3, 2) . ']';
+                    @endphp
+                    <option value="{{ $program->id_program }}">{{ $formatted_kode }} {{ $program->nama_program }}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
+          </div>
+
           <div class="table-responsive">
             <table class="table table-bordered table-hover table-striped dt-responsive nowrap" id="table_master_program" style="width:100%">
               <thead class="thead-light">
@@ -66,15 +85,27 @@
     });
   }
 
-   var dataMasterProgram;
+  var dataMasterProgram;
   $(document).ready(function () {
-  dataMasterProgram =$('#table_master_program').DataTable({
+    
+    // Inisialisasi Select2
+    $('#program_filter').select2({
+      placeholder: "-- Pilih Program --",
+      allowClear: true,
+      width: '100%'
+    });
+
+    // Inisialisasi DataTable
+    dataMasterProgram = $('#table_master_program').DataTable({
       processing: true,
       serverSide: true,
       responsive: true,
       ajax: {
         url: "{{ url('/master_program/list') }}",
-        type: "POST"
+        type: "POST",
+        data: function(d) {
+          d.id_program = $('#program_filter').val();
+        }
       },
       columns: [
         { data: 'DT_RowIndex', className: 'text-center', orderable: false, searchable: false },
@@ -83,6 +114,13 @@
         { data: 'aksi', className: 'text-center', orderable: false, searchable: false }
       ]
     });
+
+    // Event handler untuk filter Program
+    $('#program_filter').on('change', function() {
+      // Reload DataTable
+      dataMasterProgram.ajax.reload();
+    });
+
   });
 </script>
 @endpush

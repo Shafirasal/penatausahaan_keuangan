@@ -22,8 +22,9 @@ class MasterProgramController extends Controller
         ];
 
         $activeMenu = 'program';
+        $listProgram = MasterProgramModel::select('id_program', 'kode_program', 'nama_program')->get();
 
-        return view('program.index', compact('breadcrumb', 'page', 'activeMenu'));
+        return view('program.index', compact('breadcrumb', 'page', 'activeMenu', 'listProgram'));
     }
 
     public function list(Request $request)
@@ -34,6 +35,11 @@ class MasterProgramController extends Controller
             'nama_program'
         );
 
+        // Filter berdasarkan Program (gunakan ID bukan nama)
+        if ($request->id_program) {
+            $data->where('id_program', $request->id_program);
+        }
+
         return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('aksi', function ($row) {
@@ -41,6 +47,10 @@ class MasterProgramController extends Controller
                 $btn = '<button onclick="modalAction(\'' . url('/master_program/' . $row->id_program . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/master_program/' . $row->id_program . '/confirm') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
                 return $btn;
+            })
+            ->editColumn('kode_program', function ($row) {
+                $kode = $row->kode_program;
+                return '[' . substr($kode, 0, 1) . '.' . substr($kode, 1, 2) . '.' . substr($kode, 3, 2) . ']';
             })
             ->rawColumns(['aksi'])
             ->toJson();
