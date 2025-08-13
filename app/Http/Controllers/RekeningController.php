@@ -39,13 +39,9 @@ class RekeningController extends Controller
             'id_kegiatan',
             'id_sub_kegiatan',
             'nama_rekening'
-        )->with([
-            'program:id_program,nama_program',
-            'kegiatan:id_kegiatan,nama_kegiatan',
-            'subKegiatan:id_sub_kegiatan,nama_sub_kegiatan'
-        ]);
+        );
 
-        // Filter berdasarkan Program (gunakan ID bukan nama)
+        // Filter berdasarkan Program
         if ($request->id_program) {
             $data->where('id_program', $request->id_program);
         }
@@ -62,22 +58,12 @@ class RekeningController extends Controller
 
         return DataTables::of($data)
             ->addIndexColumn()
-            ->addColumn('program_nama', function ($row) {
-                return $row->program ? $row->program->nama_program : '-';
-            })
-            ->addColumn('kegiatan_nama', function ($row) {
-                return $row->kegiatan ? $row->kegiatan->nama_kegiatan : '-';
-            })
-            ->addColumn('sub_kegiatan_nama', function ($row) {
-                return $row->subKegiatan ? $row->subKegiatan->nama_sub_kegiatan : '-';
-            })
             ->addColumn('aksi', function ($row) {
                 $btn = '<button onclick="modalAction(\'' . url('/master_rekening/' . $row->id_rekening . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/master_rekening/' . $row->id_rekening . '/confirm') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
                 return $btn;
             })
             ->editColumn('kode_rekening', function ($row) {
-                $kode = $row->kode_rekening;
                 return formatKode($row->kode_rekening, 'rekening');
             })
             ->rawColumns(['aksi'])
@@ -86,7 +72,7 @@ class RekeningController extends Controller
 
     public function create()
     {
-        $masterProgram = MasterProgramModel::select('id_program', 'nama_program')->get();
+        $masterProgram = MasterProgramModel::select('id_program', 'kode_program', 'nama_program')->get();
         return view('rekening.create', compact('masterProgram'));
     }
 
@@ -110,10 +96,19 @@ class RekeningController extends Controller
 
     public function edit($id)
     {
-        $rekening = RekeningModel::find($id);
-        $masterProgram = MasterProgramModel::select('id_program', 'nama_program')->get();
-        $kegiatan = MasterKegiatanModel::select('id_kegiatan', 'nama_kegiatan')->get(); // semua kegiatan
-        $sub_kegiatan = MasterSubKegiatanModel::select('id_sub_kegiatan', 'nama_sub_kegiatan')->get();
+        $rekening = RekeningModel::with(['program', 'kegiatan', 'subKegiatan'])->find($id);
+        $masterProgram = MasterProgramModel::select('id_program', 'kode_program', 'nama_program')->get();
+        
+        // Load kegiatan berdasarkan program yang dipilih
+        $kegiatan = MasterKegiatanModel::where('id_program', $rekening->id_program)
+                        ->select('id_kegiatan', 'kode_kegiatan', 'nama_kegiatan')
+                        ->get();
+        
+        // Load sub kegiatan berdasarkan kegiatan yang dipilih                
+        $sub_kegiatan = MasterSubKegiatanModel::where('id_kegiatan', $rekening->id_kegiatan)
+                            ->select('id_sub_kegiatan', 'kode_sub_kegiatan', 'nama_sub_kegiatan')
+                            ->get();
+                            
         return view('rekening.edit', compact('rekening', 'masterProgram', 'kegiatan', 'sub_kegiatan'));
     }
 
