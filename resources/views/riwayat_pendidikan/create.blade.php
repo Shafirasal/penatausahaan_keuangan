@@ -248,7 +248,7 @@
 
                 <div class="form-group">
                     <label>Prodi/Jurusan</label>
-                    <input type="text" name="prodi_jurusan" id="prodi_jurusan" class="form-control" required>
+                    <input type="text" name="prodi_jurusan" id="prodi_jurusan" class="form-control">
                     <small id="error-prodi_jurusan" class="error-text form-text text-danger"></small>
                 </div>
 
@@ -285,11 +285,15 @@
                 nip: { required: true },
                 nama_sekolah: { required: true },
                 tingkat: { required: true },
-                prodi_jurusan: { required: true },
+                prodi_jurusan: { required: false },
                 tahun_lulus: { required: true, date: true },
                 aktif: { required: true }
             },
             submitHandler: function(form) {
+                            // Check if prodi_jurusan is empty and set it to "-"
+            if ($('#prodi_jurusan').val() === "") {
+                $('#prodi_jurusan').val('-');
+            }
                 $.ajax({
                     url: form.action,
                     type: form.method,
