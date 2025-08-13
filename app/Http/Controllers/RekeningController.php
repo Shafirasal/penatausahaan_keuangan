@@ -78,7 +78,7 @@ class RekeningController extends Controller
             })
             ->editColumn('kode_rekening', function ($row) {
                 $kode = $row->kode_rekening;
-                return '[' . substr($kode, 0, 1) . '.' . substr($kode, 1, 1) . '.' . substr($kode, 2, 2) . '.' . substr($kode, 4, 2) . '.' . substr($kode, 6, 2) . '.' . substr($kode, 8, 4) . ']';
+                return formatKode($row->kode_rekening, 'rekening');
             })
             ->rawColumns(['aksi'])
             ->toJson();
