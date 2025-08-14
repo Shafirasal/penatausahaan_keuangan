@@ -32,11 +32,7 @@ class SSHController extends Controller
             $program->kode_program = formatKode($program->kode_program, 'program');
             return $program;
         });
-        $listKegiatan = MasterKegiatanModel::select('id_kegiatan', 'nama_kegiatan', 'kode_kegiatan')->get();
-        $listSubKegiatan = MasterSubKegiatanModel::select('id_sub_kegiatan', 'nama_sub_kegiatan', 'kode_sub_kegiatan')->get();
-        $listRekening = RekeningModel::select('id_rekening', 'nama_rekening', 'kode_rekening')->get();
-
-        return view('ssh.index', compact('breadcrumb', 'page', 'activeMenu', 'listProgram', 'listKegiatan', 'listSubKegiatan', 'listRekening'));
+        return view('ssh.index', compact('breadcrumb', 'page', 'activeMenu', 'listProgram'));
     }
 
     public function list(Request $request)
@@ -49,7 +45,7 @@ class SSHController extends Controller
             'id_sub_kegiatan',
             'id_rekening',
             'nama_ssh',
-            'pagu',
+            DB::raw("CONCAT('Rp ', FORMAT(pagu, 0, 'id_ID')) as pagu"),
             'periode',
             DB::raw('YEAR(tahun) as tahun'),
         )->with(
@@ -81,10 +77,6 @@ class SSHController extends Controller
 
         return DataTables::of($data)
             ->addIndexColumn()
-            // ->addColumn('program_nama', fn($row) => $row->program->nama_program ?? '-')
-            // ->addColumn('kegiatan_nama', fn($row) => $row->kegiatan->nama_kegiatan ?? '-')
-            // ->addColumn('nama_sub_kegiatan', fn($row) => $row->sub_kegiatan->nama_sub_kegiatan ?? '-')
-            // ->addColumn('nama_rekening', fn($row) => $row->rekening->nama_rekening ?? '-')
             ->addColumn('aksi', function ($row) {
                 $btn = '<button onclick="modalAction(\'' . url('/ssh/' . $row->id_ssh . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/ssh/' . $row->id_ssh . '/confirm') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
@@ -100,7 +92,7 @@ class SSHController extends Controller
 
     public function create()
     {
-        $program = MasterProgramModel::select('id_program', 'nama_program')->get();
+        $program = MasterProgramModel::select('id_program', 'nama_program', 'kode_program')->get();
         return view('ssh.create', compact('program'));
     }
 

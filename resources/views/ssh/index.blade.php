@@ -24,38 +24,45 @@
                     </div>
 
                     <div class="card-body">
-                        <div class="form-group d-flex align-items-center mb-0">
-                            <label for="id_program" class="mb-0 mr-2" style="width: 160px;"><strong>Nama
-                                    Program:</strong></label>
-                            <select id="id_program" class="form-control form-control-sm">
-                                <option value="">-- Pilih Program --</option>
-                                @foreach ($listProgram as $program)
-                                    <option value="{{ $program->id_program }}">
-                                        {{ $program->kode_program }} - {{ $program->nama_program }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group d-flex align-items-center mb-0">
-                            <label for="id_kegiatan" class="mb-0 mr-2" style="width: 160px;"><strong>Nama
-                                    Kegiatan:</strong></label>
-                            <select id="id_kegiatan" class="form-control form-control-sm" disabled>
-                                <option value="">-- Pilih Kegiatan --</option>
-                            </select>
-                        </div>
-                        <div class="form-group d-flex align-items-center mb-0">
-                            <label for="id_sub_kegiatan" class="mb-0 mr-2" style="width: 160px;"><strong>Nama Sub
-                                    Kegiatan:</strong></label>
-                            <select id="id_sub_kegiatan" class="form-control form-control-sm" disabled>
-                                <option value="">-- Pilih Sub Kegiatan --</option>
-                            </select>
-                        </div>
-                        <div class="form-group d-flex align-items-center mb-0">
-                            <label for="id_rekening" class="mb-0 mr-2" style="width: 160px;"><strong>Nama
-                                    Rekening:</strong></label>
-                            <select id="id_rekening" class="form-control form-control-sm" disabled>
-                                <option value="">-- Pilih Rekening --</option>
-                            </select>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="program_filter"><strong>Nama Program:</strong></label>
+                                    <select id="program_filter" class="form-control">
+                                        <option value="">-- Pilih Program --</option>
+                                        @foreach ($listProgram as $program)
+                                            {{-- ✅ TAMBAHAN: Tampilkan kode_program yang sudah diformat --}}
+                                            <option value="{{ $program->id_program }}">{{ $program->kode_program }} -
+                                                {{ $program->nama_program }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="kegiatan_filter"><strong>Nama Kegiatan:</strong></label>
+                                    <select id="kegiatan_filter" class="form-control" disabled>
+                                        <option value="">-- Pilih Kegiatan --</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="sub_kegiatan_filter"><strong>Nama Sub Kegiatan:</strong></label>
+                                    <select id="sub_kegiatan_filter" class="form-control" disabled>
+                                        <option value="">-- Pilih Sub Kegiatan --</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="rekening_filter"><strong>Nama Rekening:</strong></label>
+                                    <select id="rekening_filter" class="form-control" disabled>
+                                        <option value="">-- Pilih Rekening --</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
 
 
@@ -68,10 +75,6 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Kode SSH</th>
-                                        {{-- <th>Nama Program</th>
-                                        <th>Nama Kegiatan</th>
-                                        <th>Nama Sub Kegiatan</th>
-                                        <th>Nama Rekening</th> --}}
                                         <th>Nama SSH</th>
                                         <th>Pagu</th>
                                         <th>Periode</th>
@@ -113,145 +116,184 @@
 
         var dataSSH;
         $(document).ready(function() {
-            $('#id_program, #id_kegiatan, #id_sub_kegiatan, #id_rekening').select2({
-                placeholder: "-- Pilih --",
+            // Inisialisasi Select2
+            $('#program_filter').select2({
+                placeholder: "-- Pilih Program --",
                 allowClear: true,
-                width: '100%',
-                minimumResultsForSearch: 0
+                width: '100%'
             });
 
-            // Awal disable dropdown selain program
-            // $('#kegiatan_nama, #nama_sub_kegiatan, #rekening').prop('disabled', true);
+            $('#kegiatan_filter').select2({
+                placeholder: "-- Pilih Kegiatan --",
+                allowClear: true,
+                width: '100%'
+            });
 
-            // Program -> Kegiatan
-            $('#id_program').on('change', function() {
-                let programId = $(this).val();
-                $('#id_kegiatan').prop('disabled', true).html(
-                    '<option value="">-- Pilih Kegiatan --</option>');
-                $('#id_sub_kegiatan').prop('disabled', true).html(
-                    '<option value="">-- Pilih Sub Kegiatan --</option>');
-                $('#id_rekening').prop('disabled', true).html(
-                    '<option value="">-- Pilih Rekening --</option>');
+            $('#sub_kegiatan_filter').select2({
+                placeholder: "-- Pilih Sub Kegiatan --",
+                allowClear: true,
+                width: '100%'
+            });
+
+            $('#rekening_filter').select2({
+                placeholder: "-- Pilih Rekening --",
+                allowClear: true,
+                width: '100%'
+            });
+
+            // Event handler untuk filter Program
+
+            // Datatables
+            dataSSH = $('#table_ssh').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                ajax: {
+                    url: "{{ url('/ssh/list') }}",
+                    type: "POST",
+                    data: function(d) {
+                        d.id_program = $('#program_filter').val();
+                        d.id_kegiatan = $('#kegiatan_filter').val();
+                        d.id_sub_kegiatan = $('#sub_kegiatan_filter').val();
+                        d.id_rekening = $('#rekening_filter').val();
+                    }
+                },
+                columns: [{
+                        data: 'DT_RowIndex',
+                        className: 'text-center',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'kode_ssh'
+                    },
+                    {
+                        data: 'nama_ssh'
+                    },
+                    {
+                        data: 'pagu',
+                    },
+                    {
+                        data: 'periode'
+                    },
+                    {
+                        data: 'tahun'
+                    },
+                    {
+                        data: 'aksi',
+                        className: 'text-center',
+                        orderable: false,
+                        searchable: false
+                    }
+                ]
+            });
+            // Reload tabel ketika filter berubah
+            $('#program_filter').on('change', function() {
+                var programId = $(this).val();
+
+                // Reset dan disable kegiatan filter
+                $('#kegiatan_filter').empty().append('<option value="">-- Pilih Kegiatan --</option>').prop(
+                    'disabled', true).trigger('change');
 
                 if (programId) {
-                    $.get(`/ssh/program/${programId}/kegiatan`, function(data) {
-                        data.forEach(function(item) {
-                            $('#id_kegiatan').append(
-                                `<option value="${item.id_kegiatan}">${item.kode_kegiatan} - ${item.nama_kegiatan}</option>`
-                            );
-                        });
-                        $('#id_kegiatan').prop('disabled', false);
-                        dataSSH.ajax.reload();
+                    // Load kegiatan berdasarkan program yang dipilih
+                    $.ajax({
+                        url: "{{ url('/ssh/program') }}/" + programId + "/kegiatan",
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            $('#kegiatan_filter').prop('disabled', false);
+                            $.each(data, function(index, kegiatan) {
+                                // ✅ TAMBAHAN: Tampilkan kode_kegiatan yang sudah diformat dari controller
+                                $('#kegiatan_filter').append('<option value="' +
+                                    kegiatan.id_kegiatan + '">' + kegiatan
+                                    .kode_kegiatan + ' - ' + kegiatan
+                                    .nama_kegiatan + '</option>');
+                            });
+                        },
+                        error: function() {
+                            alert('Gagal memuat data kegiatan');
+                        }
                     });
                 }
+
+                // Reload DataTable
+                dataSSH.ajax.reload();
             });
 
-            // Kegiatan -> Sub Kegiatan
-            $('#id_kegiatan').on('change', function() {
-                let kegiatanId = $(this).val();
-                $('#id_sub_kegiatan').prop('disabled', true).html(
-                    '<option value="">-- Pilih Sub Kegiatan --</option>');
-                $('#id_rekening').prop('disabled', true).html(
-                    '<option value="">-- Pilih Rekening --</option>');
+            // Reload tabel ketika filter berubah
+            $('#kegiatan_filter').on('change', function() {
+                var kegiatanId = $(this).val();
+
+                // Reset dan disable kegiatan filter
+                $('#sub_kegiatan_filter').empty().append(
+                    '<option value="">-- Pilih Sub Kegiatan --</option>').prop(
+                    'disabled', true).trigger('change');
 
                 if (kegiatanId) {
-                    $.get(`/ssh/kegiatan/${kegiatanId}/sub_kegiatan`, function(data) {
-                        data.forEach(function(item) {
-                            $('#id_sub_kegiatan').append(
-                                `<option value="${item.id_sub_kegiatan}">${item.kode_sub_kegiatan} - ${item.nama_sub_kegiatan}</option>`
-                            );
-                        });
-                        $('#id_sub_kegiatan').prop('disabled', false);
-                        dataSSH.ajax.reload();
+                    // Load kegiatan berdasarkan program yang dipilih
+                    $.ajax({
+                        url: "{{ url('/ssh/kegiatan') }}/" + kegiatanId + "/sub_kegiatan",
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            $('#sub_kegiatan_filter').prop('disabled', false);
+                            $.each(data, function(index, sub_kegiatan) {
+                                // ✅ TAMBAHAN: Tampilkan kode_kegiatan yang sudah diformat dari controller
+                                $('#sub_kegiatan_filter').append('<option value="' +
+                                    sub_kegiatan.id_sub_kegiatan + '">' +
+                                    sub_kegiatan
+                                    .kode_sub_kegiatan + ' - ' + sub_kegiatan
+                                    .nama_sub_kegiatan + '</option>');
+                            });
+                        },
+                        error: function() {
+                            alert('Gagal memuat data sub kegiatan');
+                        }
                     });
                 }
-            });
 
-            // Sub Kegiatan -> Rekening
-            $('#id_sub_kegiatan').on('change', function() {
-                let subKegiatanId = $(this).val();
-                $('#id_rekening').prop('disabled', true).html(
-                    '<option value="">-- Pilih Rekening --</option>');
+                // Reload DataTable
+                dataSSH.ajax.reload();
+            });
+            // Reload tabel ketika filter berubah
+            $('#sub_kegiatan_filter').on('change', function() {
+                var subKegiatanId = $(this).val();
+
+                // Reset dan disable kegiatan filter
+                $('#rekening_filter').empty().append('<option value="">-- Pilih Rekening --</option>').prop(
+                    'disabled', true).trigger('change');
 
                 if (subKegiatanId) {
-                    $.get(`/ssh/sub_kegiatan/${subKegiatanId}/rekening`, function(data) {
-                        data.forEach(function(item) {
-                            $('#id_rekening').append(
-                                `<option value="${item.id_rekening}">${item.kode_rekening} - ${item.nama_rekening}</option>`
-                            );
-                        });
-                        $('#id_rekening').prop('disabled', false);
-                        dataSSH.ajax.reload();
+                    // Load kegiatan berdasarkan program yang dipilih
+                    $.ajax({
+                        url: "{{ url('/ssh/sub_kegiatan') }}/" + subKegiatanId + "/rekening",
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            $('#rekening_filter').prop('disabled', false);
+                            $.each(data, function(index, rekening) {
+                                // ✅ TAMBAHAN: Tampilkan kode_kegiatan yang sudah diformat dari controller
+                                $('#rekening_filter').append('<option value="' +
+                                    rekening.id_rekening + '">' + rekening
+                                    .kode_rekening + ' - ' + rekening
+                                    .nama_rekening + '</option>');
+                            });
+                        },
+                        error: function() {
+                            alert('Gagal memuat data rekening');
+                        }
                     });
                 }
+
+                // Reload DataTable
+                dataSSH.ajax.reload();
             });
 
-        });
-
-        // REKENING → reload tabel
-        $('#id_rekening').change(function() {
-            dataSSH.ajax.reload();
-        });
-
-        // Datatables
-        dataSSH = $('#table_ssh').DataTable({
-            processing: true,
-            serverSide: true,
-            responsive: true,
-            ajax: {
-                url: "{{ url('/ssh/list') }}",
-                type: "POST",
-                data: function(d) {
-                    d.id_program = $('#id_program').val();
-                    d.id_kegiatan = $('#id_kegiatan').val();
-                    d.id_sub_kegiatan = $('#id_sub_kegiatan').val();
-                    d.id_rekening = $('#id_rekening').val();
-                }
-            },
-            columns: [{
-                    data: 'DT_RowIndex',
-                    className: 'text-center',
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: 'kode_ssh'
-                },
-                // {
-                //     data: 'program_nama'
-                // },
-                // {
-                //     data: 'kegiatan_nama'
-                // },
-                // {
-                //     data: 'nama_sub_kegiatan'
-                // },
-                // {
-                //     data: 'nama_rekening'
-                // },
-                {
-                    data: 'nama_ssh'
-                },
-                {
-                    data: 'pagu'
-                },
-                {
-                    data: 'periode'
-                },
-                {
-                    data: 'tahun'
-                },
-                {
-                    data: 'aksi',
-                    className: 'text-center',
-                    orderable: false,
-                    searchable: false
-                }
-            ]
-        });
-        // Reload tabel ketika filter berubah
-        $('#id_program, #id_kegiatan, #id_sub_kegiatan, #id_rekening').on('change', function() {
-            dataSSH.ajax.reload();
+            // Event handler untuk filter Kegiatan
+            $('#rekening_filter').on('change', function() {
+                dataSSH.ajax.reload();
+            });
         });
     </script>
 @endpush
