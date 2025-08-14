@@ -9,15 +9,13 @@
                 </button>
             </div>
 
-
-
             <div class="modal-body">
                 <div class="form-group">
                     <label>Program</label>
-                    <select name="id_program" id="id_program" class="form-control" required>
+                    <select name="id_program" id="id_program" class="form-control" required style="width: 100%;">
                         <option value="">Pilih Program</option>
                         @foreach ($program as $p)
-                            <option value="{{ $p->id_program }}">{{ $p->nama_program }}</option>
+                            <option value="{{ $p->id_program }}">{{ $p->kode_program }} - {{ $p->nama_program }}</option>
                         @endforeach
                     </select>
                     <small id="error-id_program" class="error-text form-text text-danger"></small>
@@ -25,17 +23,17 @@
 
                 <div class="form-group">
                     <label>Kegiatan</label>
-                    <select name="id_kegiatan" id="id_kegiatan" class="form-control" required>
+                    <select name="id_kegiatan" id="id_kegiatan" class="form-control" required style="width: 100%;">
                         <option value="">Pilih Kegiatan</option>
                     </select>
                     <small id="error-id_kegiatan" class="error-text form-text text-danger"></small>
                 </div>
+                
                 <div class="form-group">
                     <label>Kode Sub Kegiatan</label>
                     <input type="text" name="kode_sub_kegiatan" id="kode_sub_kegiatan" class="form-control" required>
                     <small id="error-kode_sub_kegiatan" class="error-text form-text text-danger"></small>
                 </div>
-
 
                 <div class="form-group">
                     <label>Nama Sub Kegiatan</label>
@@ -54,6 +52,22 @@
 
 <script>
     $(document).ready(function() {
+        // Inisialisasi Select2 untuk Program
+        $('#id_program').select2({
+            placeholder: "Pilih Program",
+            allowClear: true,
+            width: '100%',
+            dropdownParent: $('#myModal')
+        });
+
+        // Inisialisasi Select2 untuk Kegiatan (disabled dulu)
+        $('#id_kegiatan').select2({
+            placeholder: "Pilih Kegiatan", // ← FIX: Placeholder yang benar
+            allowClear: true,
+            width: '100%',
+            dropdownParent: $('#myModal')
+        }).prop('disabled', true);
+
         $("#form-tambah").validate({
             rules: {
                 id_program: {
@@ -130,23 +144,69 @@
             $('#error-' + id).text('');
         });
 
-        // CASCADING: PROGRAM → KEGIATAN
-        $('#id_program').change(function() {
-            const programId = $(this).val();
-            $('#id_kegiatan').html('<option value="">Loading...</option>').prop('disabled', true);
+        // Hapus error untuk select2
+        $('#id_program, #id_kegiatan').on('select2:select select2:clear', function() {
+            const id = $(this).attr('id');
+            $('#error-' + id).text('');
+        });
 
-            if (programId) {
+        // FIX: Menggunakan Select2 events untuk cascading
+        $('#id_program').on('select2:select select2:clear', function(e) {
+            const programId = $(this).val();
+            
+            if (e.type === 'select2:select' && programId) {
+                // Tampilkan Loading di Select2
+                $('#id_kegiatan').empty().append('<option value="">Loading...</option>');
+                $('#id_kegiatan').prop('disabled', true).trigger('change');
+                
+                // Update placeholder Select2 ke Loading
+                $('#id_kegiatan').select2('destroy').select2({
+                    placeholder: "Loading...",
+                    allowClear: true,
+                    width: '100%',
+                    dropdownParent: $('#myModal')
+                }).prop('disabled', true);
+
                 $.get(`/master_sub_kegiatan/program/${programId}/kegiatan`, function(data) {
-                    let options = '<option value="">-- Pilih Kegiatan --</option>';
+                    // Clear options dan tambah default
+                    $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
+                    
+                    // Tambah data kegiatan
                     data.forEach(item => {
-                        options +=
-                            `<option value="${item.id_kegiatan}">${item.nama_kegiatan}</option>`;
+                        let optionText = item.kode_kegiatan ? 
+                            `${item.kode_kegiatan} - ${item.nama_kegiatan}` : 
+                            item.nama_kegiatan;
+                        $('#id_kegiatan').append(new Option(optionText, item.id_kegiatan));
                     });
-                    $('#id_kegiatan').html(options).prop('disabled', false);
+                    
+                    // Reinitialize Select2 dengan placeholder normal
+                    $('#id_kegiatan').select2('destroy').select2({
+                        placeholder: "-- Pilih Kegiatan --",
+                        allowClear: true,
+                        width: '100%',
+                        dropdownParent: $('#myModal')
+                    }).prop('disabled', false);
+                    
+                }).fail(function() {
+                    alert('Gagal memuat data kegiatan');
+                    $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
+                    $('#id_kegiatan').select2('destroy').select2({
+                        placeholder: "-- Pilih Kegiatan --",
+                        allowClear: true,
+                        width: '100%',
+                        dropdownParent: $('#myModal')
+                    }).prop('disabled', true);
                 });
+                
             } else {
-                $('#id_kegiatan').html('<option value="">-- Pilih Kegiatan --</option>').prop(
-                    'disabled', true);
+                // Reset kegiatan saat program di-clear
+                $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
+                $('#id_kegiatan').select2('destroy').select2({
+                    placeholder: "Pilih Kegiatan",
+                    allowClear: true,
+                    width: '100%',
+                    dropdownParent: $('#myModal')
+                }).prop('disabled', true);
             }
         });
 
@@ -156,14 +216,25 @@
 
         if (selectedProgram) {
             $.get(`/master_sub_kegiatan/program/${selectedProgram}/kegiatan`, function(data) {
-                let kegiatanOptions = '<option value="">-- Pilih Kegiatan --</option>';
+                $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
+                
                 data.forEach(item => {
-                    const selected = item.id_kegiatan == selectedKegiatan ? 'selected' : '';
-                    kegiatanOptions +=
-                        `<option value="${item.id_kegiatan}" ${selected}>${item.nama_kegiatan}</option>`;
+                    let optionText = item.kode_kegiatan ? 
+                        `${item.kode_kegiatan} - ${item.nama_kegiatan}` : 
+                        item.nama_kegiatan;
+                    const selected = item.id_kegiatan == selectedKegiatan;
+                    $('#id_kegiatan').append(new Option(optionText, item.id_kegiatan, false, selected));
                 });
-                $('#id_kegiatan').html(kegiatanOptions).prop('disabled', false);
+                
+                $('#id_kegiatan').select2('destroy').select2({
+                    placeholder: "-- Pilih Kegiatan --",
+                    allowClear: true,
+                    width: '100%',
+                    dropdownParent: $('#myModal')
+                }).prop('disabled', false);
             });
         }
     });
 </script>
+
+

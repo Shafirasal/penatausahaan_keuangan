@@ -80,8 +80,17 @@ public function list(Request $request)
 
     public function create()
     {
-        $program = MasterProgramModel::select('id_program', 'nama_program')->get();
-        return view('sub_kegiatan.create', compact('program'));
+        // $program = MasterProgramModel::select('id_program', 'nama_program', 'kode_program')->get();
+        // return view('sub_kegiatan.create', compact('program'));
+
+        $program = MasterProgramModel::select('id_program', 'nama_program', 'kode_program')
+        ->get()
+        ->map(function ($p) {
+            $p->kode_program = formatKode($p->kode_program, 'program');
+            return $p;
+        });
+        
+    return view('sub_kegiatan.create', compact('program'));
     }
 
     public function store(Request $request)
