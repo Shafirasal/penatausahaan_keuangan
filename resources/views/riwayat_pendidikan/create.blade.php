@@ -232,16 +232,16 @@
                     <label>Jenjang</label>
                     <select name="tingkat" id="tingkat" class="form-control" required>
                         <option value="">-- Pilih Jenjang --</option>
-                        <option value="sd">SD</option>
-                        <option value="smp">SMP</option>
-                        <option value="sma/smk">SMA/SMK</option>
-                        <option value="d1">D1</option>
-                        <option value="d2">D2</option>
-                        <option value="d3">D3</option>
-                        <option value="d4">D4</option>
-                        <option value="s1">S1</option>
-                        <option value="s2">S2</option>
-                        <option value="s3">S3</option>
+                        <option value="SD">SD</option>
+                        <option value="SMP">SMP</option>
+                        <option value="SMA/SMK">SMA/SMK</option>
+                        <option value="D1">D1</option>
+                        <option value="D2">D2</option>
+                        <option value="D3">D3</option>
+                        <option value="D4">D4</option>
+                        <option value="S1">S1</option>
+                        <option value="S2">S2</option>
+                        <option value="S3">S3</option>
                     </select>
                     <small id="error-tingkat" class="error-text form-text text-danger"></small>
                 </div>
