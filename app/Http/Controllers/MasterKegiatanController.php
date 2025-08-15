@@ -67,7 +67,11 @@ class MasterKegiatanController extends Controller
 
     public function create()
     {
-        $program = MasterProgramModel::select('id_program', 'nama_program')->get();
+        $program = MasterProgramModel::select('id_program', 'nama_program', 'kode_program')->get()
+        ->map(function ($p) {
+            $p->kode_program = formatKode($p->kode_program, 'program');
+            return $p;
+        });
         return view('kegiatan.create', compact('program'));
     }
 

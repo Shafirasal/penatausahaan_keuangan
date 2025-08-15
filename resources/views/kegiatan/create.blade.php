@@ -15,7 +15,7 @@
                     <select name="id_program" id="id_program" class="form-control" required>
                         <option value="">Pilih Program</option>
                         @foreach($program as $p)
-                            <option value="{{ $p->id_program }}">{{ $p->nama_program }}</option>
+                            <option value="{{ $p->id_program }}">{{ $p->kode_program }} - {{ $p->nama_program }}</option>
                         @endforeach
                     </select>
                     <small id="error-id_program" class="error-text form-text text-danger"></small>
