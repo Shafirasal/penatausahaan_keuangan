@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\QueryException;
 use Yajra\DataTables\Facades\DataTables;
 
+use function PHPSTORM_META\map;
+
 class RekeningController extends Controller
 {
     public function index()
@@ -72,7 +74,12 @@ class RekeningController extends Controller
 
     public function create()
     {
-        $masterProgram = MasterProgramModel::select('id_program', 'kode_program', 'nama_program')->get();
+        $masterProgram = MasterProgramModel::select('id_program', 'kode_program', 'nama_program')
+        ->get()
+        ->map(function($p){
+            $p->kode_program = formatKode($p -> kode_program, 'program');
+            return $p;
+        });
         return view('rekening.create', compact('masterProgram'));
     }
 
