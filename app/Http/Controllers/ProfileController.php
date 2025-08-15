@@ -36,7 +36,7 @@ class ProfileController extends Controller
                     'email',
                     Rule::unique('t_pegawai', 'email')->ignore($pegawai->nip, 'nip'),
                 ],
-             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:10000',
             ];
 
             $validator = Validator::make($request->all(), $rules);
