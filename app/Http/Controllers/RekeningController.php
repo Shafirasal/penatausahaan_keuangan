@@ -27,8 +27,12 @@ class RekeningController extends Controller
         ];
 
         $activeMenu = 'rekening';
-        $listProgram = MasterProgramModel::select('id_program', 'kode_program', 'nama_program')->get();
-
+        $listProgram = MasterProgramModel::select('id_program', 'kode_program', 'nama_program')
+            ->get()
+            ->map(function ($program) {
+                $program->kode_program = formatKode($program->kode_program, 'program');
+                return $program;
+            });
         return view('rekening.index', compact('breadcrumb', 'page', 'activeMenu', 'listProgram'));
     }
 
@@ -66,7 +70,7 @@ class RekeningController extends Controller
                 return $btn;
             })
             ->editColumn('kode_rekening', function ($row) {
-                return formatKode($row->kode_rekening, 'rekening');
+                return formatKode($row->kode_rekening, 'rekening'); // Gunakan helper formatKode
             })
             ->rawColumns(['aksi'])
             ->toJson();
@@ -217,8 +221,8 @@ class RekeningController extends Controller
         $kegiatan = MasterKegiatanModel::where('id_program', $id_program)
                         ->select('id_kegiatan', 'kode_kegiatan', 'nama_kegiatan')
                         ->get()
-                        ->map(function($item) {
-                            $item->formatted_kode = formatKode($item->kode_kegiatan, 'kegiatan');
+                        ->map(function ($item) {
+                            $item->kode_kegiatan = formatKode($item->kode_kegiatan, 'kegiatan');
                             return $item;
                         });
 
@@ -231,8 +235,8 @@ class RekeningController extends Controller
         $subKegiatan = MasterSubKegiatanModel::where('id_kegiatan', $id_kegiatan)
                             ->select('id_sub_kegiatan', 'kode_sub_kegiatan', 'nama_sub_kegiatan')
                             ->get()
-                            ->map(function($item) {
-                                $item->formatted_kode = formatKode($item->kode_sub_kegiatan, 'sub_kegiatan');
+                            ->map(function ($item) {
+                                $item->kode_sub_kegiatan = formatKode($item->kode_sub_kegiatan, 'sub_kegiatan');
                                 return $item;
                             });
 

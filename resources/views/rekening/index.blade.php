@@ -32,7 +32,7 @@
                 <select id="program_filter" class="form-control">
                   <option value="">-- Pilih Program --</option>
                   @foreach ($listProgram as $program)
-                    <option value="{{ $program->id_program }}">{{ formatKode($program->kode_program, 'program') }} {{ $program->nama_program }}</option>
+                    <option value="{{ $program->id_program }}">{{ $program->kode_program }} - {{ $program->nama_program }}</option>
                   @endforeach
                 </select>
               </div>
@@ -61,9 +61,6 @@
                 <tr>
                   <th>#</th>
                   <th>Kode Rekening</th>
-                  {{-- <th>Program</th>
-                  <th>Kegiatan</th>
-                  <th>Sub Kegiatan</th> --}}
                   <th>Nama Rekening</th>
                   <th>Aksi</th>
                 </tr>
@@ -98,25 +95,6 @@
     $('#myModal').load(url, function () {
       $('#myModal').modal('show');
     });
-  }
-
-  // Helper function untuk format kode di JavaScript
-  function formatKode(kode, jenis) {
-    if (!kode) return '';
-    
-    switch (jenis) {
-      case 'program':
-        return '[' + kode.substr(0, 1) + '.' + kode.substr(1, 2) + '.' + kode.substr(3, 2) + ']';
-      
-      case 'kegiatan':
-        return '[' + kode.substr(0, 1) + '.' + kode.substr(1, 2) + '.' + kode.substr(3, 2) + '.' + kode.substr(5, 1) + '.' + kode.substr(6, 2) + ']';
-      
-      case 'sub_kegiatan':
-        return '[' + kode.substr(0, 1) + '.' + kode.substr(1, 2) + '.' + kode.substr(3, 2) + '.' + kode.substr(5, 1) + '.' + kode.substr(6, 2) + '.' + kode.substr(8, 4) + ']';
-      
-      default:
-        return kode;
-    }
   }
 
   var dataMasterRekening;
@@ -158,9 +136,6 @@
       columns: [
         { data: 'DT_RowIndex', className: 'text-center', orderable: false, searchable: false },
         { data: 'kode_rekening', className: '', orderable: true, searchable: true },
-        //{ data: 'program_nama', className: '', orderable: true, searchable: true },
-        //{ data: 'kegiatan_nama', className: '', orderable: true, searchable: true },
-        //{ data: 'sub_kegiatan_nama', className: '', orderable: true, searchable: true },
         { data: 'nama_rekening', className: '', orderable: true, searchable: true },
         { data: 'aksi', className: 'text-center', orderable: false, searchable: false }
       ]
@@ -175,32 +150,20 @@
       $('#sub_kegiatan_filter').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>').prop('disabled', true).trigger('change');
       
       if (programId) {
-        // Show loading state
-        $('#kegiatan_filter').append('<option value="">Memuat...</option>');
-        
         // Load kegiatan berdasarkan program yang dipilih
         $.ajax({
           url: "{{ url('/master_rekening/program') }}/" + programId + "/kegiatan",
           type: 'GET',
           dataType: 'json',
           success: function(data) {
-            // Clear loading state
-            $('#kegiatan_filter').empty().append('<option value="">-- Pilih Kegiatan --</option>');
             $('#kegiatan_filter').prop('disabled', false);
-            
             $.each(data, function(index, kegiatan) {
-              let displayText = kegiatan.nama_kegiatan;
-              if (kegiatan.kode_kegiatan) {
-                let formattedKode = formatKode(kegiatan.kode_kegiatan, 'kegiatan');
-                displayText = formattedKode + ' ' + kegiatan.nama_kegiatan;
-              }
-              $('#kegiatan_filter').append('<option value="' + kegiatan.id_kegiatan + '">' + displayText + '</option>');
+              // Tampilkan kode kegiatan yang sudah diformat dari controller
+              $('#kegiatan_filter').append('<option value="' + kegiatan.id_kegiatan + '">' + kegiatan.kode_kegiatan + ' - ' + kegiatan.nama_kegiatan + '</option>');
             });
           },
-          error: function(xhr, status, error) {
-            console.error('Error loading kegiatan:', error);
-            $('#kegiatan_filter').empty().append('<option value="">-- Pilih Kegiatan --</option>');
-            alert('Gagal memuat data kegiatan. Silakan coba lagi.');
+          error: function() {
+            alert('Gagal memuat data kegiatan');
           }
         });
       }
@@ -217,32 +180,20 @@
       $('#sub_kegiatan_filter').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>').prop('disabled', true).trigger('change');
       
       if (kegiatanId) {
-        // Show loading state
-        $('#sub_kegiatan_filter').append('<option value="">Memuat...</option>');
-        
         // Load sub kegiatan berdasarkan kegiatan yang dipilih
         $.ajax({
           url: "{{ url('/master_rekening/kegiatan') }}/" + kegiatanId + "/sub_kegiatan",
           type: 'GET',
           dataType: 'json',
           success: function(data) {
-            // Clear loading state
-            $('#sub_kegiatan_filter').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
             $('#sub_kegiatan_filter').prop('disabled', false);
-            
             $.each(data, function(index, subKegiatan) {
-              let displayText = subKegiatan.nama_sub_kegiatan;
-              if (subKegiatan.kode_sub_kegiatan) {
-                let formattedKode = formatKode(subKegiatan.kode_sub_kegiatan, 'sub_kegiatan');
-                displayText = formattedKode + ' ' + subKegiatan.nama_sub_kegiatan;
-              }
-              $('#sub_kegiatan_filter').append('<option value="' + subKegiatan.id_sub_kegiatan + '">' + displayText + '</option>');
+              // Tampilkan kode sub kegiatan yang sudah diformat dari controller
+              $('#sub_kegiatan_filter').append('<option value="' + subKegiatan.id_sub_kegiatan + '">' + subKegiatan.kode_sub_kegiatan + ' - ' + subKegiatan.nama_sub_kegiatan + '</option>');
             });
           },
-          error: function(xhr, status, error) {
-            console.error('Error loading sub kegiatan:', error);
-            $('#sub_kegiatan_filter').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
-            alert('Gagal memuat data sub kegiatan. Silakan coba lagi.');
+          error: function() {
+            alert('Gagal memuat data sub kegiatan');
           }
         });
       }
