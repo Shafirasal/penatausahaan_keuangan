@@ -317,5 +317,28 @@ public function getKelurahanByKecamatan($id_kecamatan)
     return response()->json($kelurahan);
 }
 
+public function checkNip(Request $request)
+{
+    $nip = $request->input('nip');
+    $currentNip = $request->input('current_nip'); // untuk edit mode
+    
+    if (empty($nip)) {
+        return response()->json(['available' => true]);
+    }
+    
+    $query = PegawaiModel::where('nip', $nip);
+    
+    // Jika dalam mode edit, exclude NIP yang sedang diedit
+    if ($currentNip) {
+        $query->where('nip', '!=', $currentNip);
+    }
+    
+    $exists = $query->exists();
+    
+    return response()->json([
+        'available' => !$exists,
+        'message' => $exists ? 'NIP is already in use' : 'NIP is available'
+    ]);
+}
 
 }

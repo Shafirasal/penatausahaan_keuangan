@@ -116,6 +116,7 @@ Route::middleware(['web', 'session.auth'])->group(function () {
         Route::get('/', [PegawaiController::class, 'index']);
         Route::get('/create', [PegawaiController::class, 'create']);
         Route::post('/store', [PegawaiController::class, 'store']);
+        Route::post('/check_nip', [PegawaiController::class, 'checkNip']);
         Route::get('/{nip}/show', [PegawaiController::class, 'show']);
         Route::get('/{nip}/edit', [PegawaiController::class, 'edit']);
         Route::put('/{nip}/update', [PegawaiController::class, 'update']);
