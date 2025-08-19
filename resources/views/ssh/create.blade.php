@@ -138,7 +138,7 @@
                 kode_ssh: {
                     required: true,
                     maxlength: 17,
-                    minlength: 1
+                    minlength: 17
                 },
                 nama_ssh: {
                     required: true,
