@@ -11,12 +11,12 @@
 
             <div class="modal-body">
 
-                {{-- <div class="form-group">
+                <div class="form-group">
                     <label>NIP</label>
                     <input type="text" name="nip" id="nip" class="form-control" placeholder="Masukkan NIP" required>
                     <small id="error-nip" class="error-text form-text text-danger"></small>
-                </div> --}}
-                <div class="form-group">
+                </div>
+                {{-- <div class="form-group">
                     <label>NIP</label>
                     <input type="text" name="nip" id="nip" class="form-control" placeholder="Masukkan NIP" required>
                     <small id="error-nip" class="error-text form-text text-danger"></small>
@@ -24,7 +24,7 @@
                     <div id="nip-spinner" class="spinner-border spinner-border-sm text-primary" role="status" style="display: none;">
                         <span class="sr-only">Loading...</span>
                     </div>
-                </div>
+                </div> --}}
 
                 <div class="form-group">
                     <label>Nama</label>
@@ -109,16 +109,16 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-        <label>RT</label>
-        <input type="text" name="rt" id="rt" class="form-control" placeholder="00" maxlength="2" pattern="\d{2}" required>
-        <small id="error-rt" class="error-text form-text text-danger"></small>
+                            <label>RT</label>
+                            <input type="text" name="rt" id="rt" class="form-control" placeholder="00" maxlength="2" pattern="\d{2}" required>
+                            <small id="error-rt" class="error-text form-text text-danger"></small>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-        <label>RW</label>
-        <input type="text" name="rw" id="rw" class="form-control" placeholder="00" maxlength="2" pattern="\d{2}" required>
-        <small id="error-rw" class="error-text form-text text-danger"></small>
+                            <label>RW</label>
+                            <input type="text" name="rw" id="rw" class="form-control" placeholder="00" maxlength="2" pattern="\d{2}" required>
+                            <small id="error-rw" class="error-text form-text text-danger"></small>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -232,7 +232,7 @@
 
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-danger btn-sm">Batal</button>
-                <button type="submit" class="btn btn-primary btn-sm"id="btn-submit">Simpan</button>
+                <button type="submit" class="btn btn-primary btn-sm">Simpan</button>
             </div>
         </div>
     </div>
@@ -241,73 +241,140 @@
 <script>
 $(document).ready(function() {
 
-    let nipCheckTimeout;
-    
-    // Variabel untuk menyimpan status validasi NIP
-    let nipValid = false;
+    // let nipCheckTimeout;
+    // // Variabel untuk menyimpan status validasi NIP
+    // let nipValid = false;
 
-        // Event handler untuk real-time check NIP
-    $('#nip').on('input', function() {
-        var nipValue = $(this).val();
-        var currentNip = $('input[name="current_nip"]').val(); // untuk mode edit
+    //     // Event handler untuk real-time check NIP
+    // $('#nip').on('input', function() {
+    //     var nipValue = $(this).val();
+    //     var currentNip = $('input[name="current_nip"]').val(); // untuk mode edit
         
-        // Clear timeout sebelumnya
-        clearTimeout(nipCheckTimeout);
+    //     // Clear timeout sebelumnya
+    //     clearTimeout(nipCheckTimeout);
         
-        // Reset state
-        $('#error-nip').text('');
-        $('#nip').removeClass('is-invalid is-valid');
-        $('#nip-spinner').hide();
-        nipValid = false;
+    //     // Reset state
+    //     $('#error-nip').text('');
+    //     $('#nip').removeClass('is-invalid is-valid');
+    //     $('#nip-spinner').hide();
+    //     nipValid = false;
         
-        if (nipValue.length >= 3) { // Mulai check setelah 3 karakter
-            $('#nip-spinner').show();
+    //     if (nipValue.length >= 3) { // Mulai check setelah 3 karakter
+    //         $('#nip-spinner').show();
             
-            nipCheckTimeout = setTimeout(function() {
-                $.ajax({
-                    url: '/pegawai/check_nip',
-                    type: 'POST',
-                    data: {
-                        _token: $('meta[name="csrf-token"]').attr('content'),
-                        nip: nipValue,
-                        current_nip: currentNip
-                    },
-                    success: function(response) {
-                        $('#nip-spinner').hide();
+    //         nipCheckTimeout = setTimeout(function() {
+    //             $.ajax({
+    //                 url: '/pegawai/check_nip',
+    //                 type: 'POST',
+    //                 data: {
+    //                     _token: $('meta[name="csrf-token"]').attr('content'),
+    //                     nip: nipValue,
+    //                     current_nip: currentNip
+    //                 },
+    //                 success: function(response) {
+    //                     $('#nip-spinner').hide();
                         
-                        if (response.available) {
-                            $('#nip').addClass('is-valid').removeClass('is-invalid');
-                            $('#error-nip').text('').removeClass('text-danger').addClass('text-success');
-                            nipValid = true;
-                        } else {
-                            $('#nip').addClass('is-invalid').removeClass('is-valid');
-                            $('#error-nip').text(response.message).removeClass('text-success').addClass('text-danger');
-                            nipValid = false;
-                        }
+    //                     if (response.available) {
+    //                         $('#nip').addClass('is-valid').removeClass('is-invalid');
+    //                         $('#error-nip').text('').removeClass('text-danger').addClass('text-success');
+    //                         nipValid = true;
+    //                     } else {
+    //                         $('#nip').addClass('is-invalid').removeClass('is-valid');
+    //                         $('#error-nip').text(response.message).removeClass('text-success').addClass('text-danger');
+    //                         nipValid = false;
+    //                     }
                         
-                        // Update status submit button
-                        updateSubmitButton();
-                    },
-                    error: function() {
-                        $('#nip-spinner').hide();
-                        $('#nip').addClass('is-invalid').removeClass('is-valid');
-                        $('#error-nip').text('Terjadi kesalahan saat memeriksa NIP').removeClass('text-success').addClass('text-danger');
-                        nipValid = false;
-                        updateSubmitButton();
-                    }
-                });
-            }, 500); // Delay 500ms untuk mengurangi request
-        }
-    });
+    //                     // Update status submit button
+    //                     updateSubmitButton();
+    //                 },
+    //                 error: function() {
+    //                     $('#nip-spinner').hide();
+    //                     $('#nip').addClass('is-invalid').removeClass('is-valid');
+    //                     $('#error-nip').text('Terjadi kesalahan saat memeriksa NIP').removeClass('text-success').addClass('text-danger');
+    //                     nipValid = false;
+    //                     updateSubmitButton();
+    //                 }
+    //             });
+    //         }, 500); // Delay 500ms untuk mengurangi request
+    //     }
+    // });
     
-    function updateSubmitButton() {
-        const submitBtn = $('#btn-submit');
-        if (nipValid || $('#nip').val().length < 3) {
-            submitBtn.prop('disabled', false);
-        } else {
-            submitBtn.prop('disabled', true);
-        }
+    // function updateSubmitButton() {
+    //     const submitBtn = $('#btn-submit');
+    //     if (nipValid || $('#nip').val().length < 3) {
+    //         submitBtn.prop('disabled', false);
+    //     } else {
+    //         submitBtn.prop('disabled', true);
+    //     }
+    // }
+
+    
+let nipCheckTimeout;     // Variabel untuk menyimpan status validasi NIP
+let nipValid = false;         // Event handler untuk real-time check NIP
+
+$('#nip').on('input', function() {
+    var nipValue = $(this).val();
+    var currentNip = $('input[name="current_nip"]').val(); // untuk mode edit
+    
+    // Clear timeout sebelumnya
+    clearTimeout(nipCheckTimeout);
+    
+    // Reset state
+    $('#error-nip').text('');
+    $('#nip').removeClass('is-invalid is-valid');
+    $('#nip-spinner').hide();
+    nipValid = false;
+    
+    if (nipValue.length >= 3) { // Mulai check setelah 3 karakter
+        $('#nip-spinner').show();
+        
+        nipCheckTimeout = setTimeout(function() {
+            $.ajax({
+                url: '/pegawai/check_nip',
+                type: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    nip: nipValue,
+                    current_nip: currentNip
+                },
+                success: function(response) {
+                    $('#nip-spinner').hide();
+                    
+                    if (response.available) {
+                        // Tidak menambahkan class 'is-valid' untuk menghilangkan icon centang hijau
+                        $('#nip').removeClass('is-invalid');
+                        $('#error-nip').text('').removeClass('text-danger');
+                        nipValid = true;
+                    } else {
+                        $('#nip').addClass('is-invalid').removeClass('is-valid');
+                        $('#error-nip').text(response.message).removeClass('text-success').addClass('text-danger');
+                        nipValid = false;
+                    }
+                    
+                    // Update status submit button
+                    updateSubmitButton();
+                },
+                error: function() {
+                    $('#nip-spinner').hide();
+                    $('#nip').addClass('is-invalid').removeClass('is-valid');
+                    $('#error-nip').text('Terjadi kesalahan saat memeriksa NIP').removeClass('text-success').addClass('text-danger');
+                    nipValid = false;
+                    updateSubmitButton();
+                }
+            });
+        }, 500); // Delay 500ms untuk mengurangi request
     }
+});
+
+function updateSubmitButton() {
+    const submitBtn = $('#btn-submit');
+    if (nipValid || $('#nip').val().length < 3) {
+        submitBtn.prop('disabled', false);
+    } else {
+        submitBtn.prop('disabled', true);
+    }
+}
+
     $("#form-tambah").validate({
         rules: {
             nip: { required: true, minlength: 18, maxlength: 18 },
