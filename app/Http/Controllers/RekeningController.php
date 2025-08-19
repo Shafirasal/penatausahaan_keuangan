@@ -216,7 +216,11 @@ class RekeningController extends Controller
     {
         $kegiatan = MasterKegiatanModel::where('id_program', $id_program)
                         ->select('id_kegiatan', 'kode_kegiatan', 'nama_kegiatan')
-                        ->get();
+                        ->get()
+                        ->map(function($item) {
+                            $item->formatted_kode = formatKode($item->kode_kegiatan, 'kegiatan');
+                            return $item;
+                        });
 
         return response()->json($kegiatan);
     }
@@ -226,8 +230,32 @@ class RekeningController extends Controller
     {
         $subKegiatan = MasterSubKegiatanModel::where('id_kegiatan', $id_kegiatan)
                             ->select('id_sub_kegiatan', 'kode_sub_kegiatan', 'nama_sub_kegiatan')
-                            ->get();
+                            ->get()
+                            ->map(function($item) {
+                                $item->formatted_kode = formatKode($item->kode_sub_kegiatan, 'sub_kegiatan');
+                                return $item;
+                            });
 
         return response()->json($subKegiatan);
     }
+
+    // // 🔄 AJAX: Get Kegiatan berdasarkan Program
+    // public function getKegiatanByProgram($id_program)
+    // {
+    //     $kegiatan = MasterKegiatanModel::where('id_program', $id_program)
+    //                     ->select('id_kegiatan', 'kode_kegiatan', 'nama_kegiatan')
+    //                     ->get();
+
+    //     return response()->json($kegiatan);
+    // }
+
+    // // 🔄 AJAX: Get Sub Kegiatan berdasarkan Kegiatan
+    // public function getSubKegiatanByKegiatan($id_kegiatan)
+    // {
+    //     $subKegiatan = MasterSubKegiatanModel::where('id_kegiatan', $id_kegiatan)
+    //                         ->select('id_sub_kegiatan', 'kode_sub_kegiatan', 'nama_sub_kegiatan')
+    //                         ->get();
+
+    //     return response()->json($subKegiatan);
+    // }
 }
