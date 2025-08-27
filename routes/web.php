@@ -15,7 +15,9 @@ use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\MasterKegiatanController;
 use App\Http\Controllers\MasterSubKegiatanController;
 use App\Http\Controllers\SSHController;
+use App\Http\Controllers\SshTreeController;
 use App\Http\Controllers\SubKegiatanController;
+use App\Http\Controllers\TreeViewController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -203,6 +205,14 @@ Route::prefix('ssh')->name('ssh.')->group(function () {
     });
 
 
+
+Route::prefix('tree_view')->group(function () {
+    Route::get('/', [TreeViewController::class, 'index']);
+    Route::post('/list-rekening', [TreeViewController::class, 'listRekening']);
+    Route::get('/{id_rekening}/ssh', [TreeViewController::class, 'listSshByRekening']);
+    Route::get('/program/{id_program}/kegiatan', [TreeViewController::class, 'getKegiatanByProgram']);
+    Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan', [TreeViewController::class, 'getSubKegiatanByKegiatan']);
+});
 
 
 
