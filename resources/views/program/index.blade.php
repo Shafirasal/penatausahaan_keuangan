@@ -83,7 +83,7 @@
 
   var dataMasterProgram;
   $(document).ready(function () {
-    
+
     // Inisialisasi Select2
     $('#program_filter').select2({
       placeholder: "-- Pilih Program --",
@@ -93,7 +93,7 @@
 
     // Inisialisasi DataTable
     dataMasterProgram = $('#table_master_program').DataTable({
-      processing: true,
+      processing: false,
       serverSide: true,
       responsive: true,
       ajax: {

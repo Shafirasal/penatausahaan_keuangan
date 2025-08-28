@@ -145,7 +145,7 @@
 
             // Datatables
             dataSSH = $('#table_ssh').DataTable({
-                processing: true,
+                processing: false,
                 serverSide: true,
                 responsive: true,
                 ajax: {
