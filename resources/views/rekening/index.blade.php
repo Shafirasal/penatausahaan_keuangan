@@ -99,7 +99,7 @@
 
   var dataMasterRekening;
   $(document).ready(function () {
-    
+
     // Inisialisasi Select2
     $('#program_filter').select2({
       placeholder: "-- Pilih Program --",
@@ -121,7 +121,7 @@
 
     // Inisialisasi DataTable
     dataMasterRekening = $('#table_master_rekening').DataTable({
-      processing: true,
+      processing: false,
       serverSide: true,
       responsive: true,
       ajax: {
@@ -144,11 +144,11 @@
     // Event handler untuk filter Program
     $('#program_filter').on('change', function() {
       var programId = $(this).val();
-      
+
       // Reset dan disable kegiatan dan sub kegiatan filter
       $('#kegiatan_filter').empty().append('<option value="">-- Pilih Kegiatan --</option>').prop('disabled', true).trigger('change');
       $('#sub_kegiatan_filter').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>').prop('disabled', true).trigger('change');
-      
+
       if (programId) {
         // Load kegiatan berdasarkan program yang dipilih
         $.ajax({
@@ -167,7 +167,7 @@
           }
         });
       }
-      
+
       // Reload DataTable
       dataMasterRekening.ajax.reload();
     });
@@ -175,10 +175,10 @@
     // Event handler untuk filter Kegiatan
     $('#kegiatan_filter').on('change', function() {
       var kegiatanId = $(this).val();
-      
+
       // Reset dan disable sub kegiatan filter
       $('#sub_kegiatan_filter').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>').prop('disabled', true).trigger('change');
-      
+
       if (kegiatanId) {
         // Load sub kegiatan berdasarkan kegiatan yang dipilih
         $.ajax({
@@ -197,7 +197,7 @@
           }
         });
       }
-      
+
       // Reload DataTable
       dataMasterRekening.ajax.reload();
     });

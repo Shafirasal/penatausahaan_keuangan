@@ -92,7 +92,7 @@
 
   var dataMasterSubKegiatan;
   $(document).ready(function () {
-    
+
     // Inisialisasi Select2
     $('#program_filter').select2({
       placeholder: "-- Pilih Program --",
@@ -108,7 +108,7 @@
 
     // Inisialisasi DataTable
     dataMasterSubKegiatan = $('#table_master_sub_kegiatan').DataTable({
-      processing: true,
+      processing: false,
       serverSide: true,
       responsive: true,
       ajax: {
@@ -130,10 +130,10 @@
     // Event handler untuk filter Program
     $('#program_filter').on('change', function() {
       var programId = $(this).val();
-      
+
       // Reset dan disable kegiatan filter
       $('#kegiatan_filter').empty().append('<option value="">-- Pilih Kegiatan --</option>').prop('disabled', true).trigger('change');
-      
+
       if (programId) {
         // Load kegiatan berdasarkan program yang dipilih
         $.ajax({
@@ -152,7 +152,7 @@
           }
         });
       }
-      
+
       // Reload DataTable
       dataMasterSubKegiatan.ajax.reload();
     });

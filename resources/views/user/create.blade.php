@@ -65,7 +65,7 @@
     togglePassword.addEventListener('click', function () {
         const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordField.setAttribute('type', type);
-        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye');   
         this.classList.toggle('fa-eye-slash');
     });
 </script>
@@ -159,11 +159,13 @@
 
                 <div class="form-group">
                     <label>Password</label>
-                    <div style="position: relative;">
-                        <input type="password" name="password" id="password-field" class="form-control" placeholder="Masukkan Password" required>
-                        <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">
-                            <i class="fa fa-eye" id="toggle-password"></i>
-                        </span>
+                    <div class="input-group">
+                        <input type="password" name="password" id="password-field" class="form-control" placeholder="Masukkan Password" required autocomplete="new-password">
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-eye toggle-password" data-target="password-field" style="cursor: pointer;"></i>
+                            </span>
+                        </div>
                     </div>
                     <small id="error-password" class="error-text form-text text-danger"></small>
                 </div>
@@ -176,7 +178,7 @@
         </div>
     </div>
 </form>
-<script>
+{{-- <script>
     const passwordField = document.getElementById('password-field');
     const togglePassword = document.getElementById('toggle-password');
 
@@ -185,6 +187,21 @@
         passwordField.setAttribute('type', type);
         this.classList.toggle('fa-eye');
         this.classList.toggle('fa-eye-slash');
+    });
+</script> --}}
+
+<script>
+    document.querySelectorAll('.toggle-password').forEach(function(toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const passwordField = document.getElementById(targetId);
+            
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
     });
 </script>
 

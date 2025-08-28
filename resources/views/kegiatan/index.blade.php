@@ -95,7 +95,7 @@
             });
 
             dataMasterKegiatan = $('#table_master_kegiatan').DataTable({
-                processing: true,
+                processing: false,
                 serverSide: true,
                 responsive: true,
                 ajax: {
