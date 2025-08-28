@@ -160,14 +160,14 @@ $(document).ready(function () {
     // FIX: Cascading Program → Kegiatan (sama seperti sub_kegiatan)
     $('#id_program').on('select2:select select2:clear', function (e) {
         const programId = $(this).val();
-
+        
         if (e.type === 'select2:select' && programId) {
             // Tampilkan Loading di Select2
             $('#id_kegiatan').empty().append('<option value="">Loading...</option>');
             $('#id_kegiatan').prop('disabled', true).trigger('change');
             $('#id_sub_kegiatan').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
             $('#id_sub_kegiatan').prop('disabled', true).trigger('change');
-
+            
             // Update placeholder Select2 ke Loading
             $('#id_kegiatan').select2('destroy').select2({
                 placeholder: "Loading...",
@@ -187,15 +187,15 @@ $(document).ready(function () {
             $.get(`/master_rekening/program/${programId}/kegiatan`, function (data) {
                 // Clear options dan tambah default
                 $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
-
+                
                 // Tambah data kegiatan
                 data.forEach(item => {
-                    let optionText = item.kode_kegiatan ?
-                        `${item.kode_kegiatan} - ${item.nama_kegiatan}` :
+                    let optionText = item.kode_kegiatan ? 
+                        `${item.kode_kegiatan} - ${item.nama_kegiatan}` : 
                         item.nama_kegiatan;
                     $('#id_kegiatan').append(new Option(optionText, item.id_kegiatan));
                 });
-
+                
                 // Reinitialize Select2 dengan placeholder normal
                 $('#id_kegiatan').select2('destroy').select2({
                     placeholder: "-- Pilih Kegiatan --",
@@ -203,7 +203,7 @@ $(document).ready(function () {
                     width: '100%',
                     dropdownParent: $('#myModal')
                 }).prop('disabled', false);
-
+                
             }).fail(function () {
                 alert('Gagal memuat data kegiatan');
                 $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
@@ -214,7 +214,7 @@ $(document).ready(function () {
                     dropdownParent: $('#myModal')
                 }).prop('disabled', true);
             });
-
+            
         } else {
             // Reset kegiatan dan sub kegiatan saat program di-clear
             $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
@@ -224,7 +224,7 @@ $(document).ready(function () {
                 width: '100%',
                 dropdownParent: $('#myModal')
             }).prop('disabled', true);
-
+            
             $('#id_sub_kegiatan').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
             $('#id_sub_kegiatan').select2('destroy').select2({
                 placeholder: "Pilih Sub Kegiatan",
@@ -235,93 +235,93 @@ $(document).ready(function () {
         }
     });
 
-// // FIX: Cascading Program → Kegiatan (menggunakan formatted_kode)
-// $('#id_program').on('select2:select select2:clear', function (e) {
-//     const programId = $(this).val();
+// FIX: Cascading Program → Kegiatan (menggunakan formatted_kode)
+$('#id_program').on('select2:select select2:clear', function (e) {
+    const programId = $(this).val();
+    
+    if (e.type === 'select2:select' && programId) {
+        // Tampilkan Loading di Select2
+        $('#id_kegiatan').empty().append('<option value="">Loading...</option>');
+        $('#id_kegiatan').prop('disabled', true).trigger('change');
+        $('#id_sub_kegiatan').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
+        $('#id_sub_kegiatan').prop('disabled', true).trigger('change');
+        
+        // Update placeholder Select2 ke Loading
+        $('#id_kegiatan').select2('destroy').select2({
+            placeholder: "Loading...",
+            allowClear: true,
+            width: '100%',
+            dropdownParent: $('#myModal')
+        }).prop('disabled', true);
 
-//     if (e.type === 'select2:select' && programId) {
-//         // Tampilkan Loading di Select2
-//         $('#id_kegiatan').empty().append('<option value="">Loading...</option>');
-//         $('#id_kegiatan').prop('disabled', true).trigger('change');
-//         $('#id_sub_kegiatan').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
-//         $('#id_sub_kegiatan').prop('disabled', true).trigger('change');
+        // Reset sub kegiatan dengan placeholder normal
+        $('#id_sub_kegiatan').select2('destroy').select2({
+            placeholder: "Pilih Sub Kegiatan",
+            allowClear: true,
+            width: '100%',
+            dropdownParent: $('#myModal')
+        }).prop('disabled', true);
 
-//         // Update placeholder Select2 ke Loading
-//         $('#id_kegiatan').select2('destroy').select2({
-//             placeholder: "Loading...",
-//             allowClear: true,
-//             width: '100%',
-//             dropdownParent: $('#myModal')
-//         }).prop('disabled', true);
-
-//         // Reset sub kegiatan dengan placeholder normal
-//         $('#id_sub_kegiatan').select2('destroy').select2({
-//             placeholder: "Pilih Sub Kegiatan",
-//             allowClear: true,
-//             width: '100%',
-//             dropdownParent: $('#myModal')
-//         }).prop('disabled', true);
-
-//         $.get(`/master_rekening/program/${programId}/kegiatan`, function (data) {
-//             // Clear options dan tambah default
-//             $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
-
-//             // Tambah data kegiatan - GUNAKAN formatted_kode dari backend
-//             data.forEach(item => {
-//                 let optionText = item.formatted_kode ?
-//                     `${item.formatted_kode} - ${item.nama_kegiatan}` :
-//                     item.nama_kegiatan;
-//                 $('#id_kegiatan').append(new Option(optionText, item.id_kegiatan));
-//             });
-
-//             // Reinitialize Select2 dengan placeholder normal
-//             $('#id_kegiatan').select2('destroy').select2({
-//                 placeholder: "-- Pilih Kegiatan --",
-//                 allowClear: true,
-//                 width: '100%',
-//                 dropdownParent: $('#myModal')
-//             }).prop('disabled', false);
-
-//         }).fail(function () {
-//             alert('Gagal memuat data kegiatan');
-//             $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
-//             $('#id_kegiatan').select2('destroy').select2({
-//                 placeholder: "-- Pilih Kegiatan --",
-//                 allowClear: true,
-//                 width: '100%',
-//                 dropdownParent: $('#myModal')
-//             }).prop('disabled', true);
-//         });
-
-//     } else {
-//         // Reset kegiatan dan sub kegiatan saat program di-clear
-//         $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
-//         $('#id_kegiatan').select2('destroy').select2({
-//             placeholder: "Pilih Kegiatan",
-//             allowClear: true,
-//             width: '100%',
-//             dropdownParent: $('#myModal')
-//         }).prop('disabled', true);
-
-//         $('#id_sub_kegiatan').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
-//         $('#id_sub_kegiatan').select2('destroy').select2({
-//             placeholder: "Pilih Sub Kegiatan",
-//             allowClear: true,
-//             width: '100%',
-//             dropdownParent: $('#myModal')
-//         }).prop('disabled', true);
-//     }
-// });
+        $.get(`/master_rekening/program/${programId}/kegiatan`, function (data) {
+            // Clear options dan tambah default
+            $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
+            
+            // Tambah data kegiatan - GUNAKAN formatted_kode dari backend
+            data.forEach(item => {
+                let optionText = item.formatted_kode ? 
+                    `${item.formatted_kode} - ${item.nama_kegiatan}` : 
+                    item.nama_kegiatan;
+                $('#id_kegiatan').append(new Option(optionText, item.id_kegiatan));
+            });
+            
+            // Reinitialize Select2 dengan placeholder normal
+            $('#id_kegiatan').select2('destroy').select2({
+                placeholder: "-- Pilih Kegiatan --",
+                allowClear: true,
+                width: '100%',
+                dropdownParent: $('#myModal')
+            }).prop('disabled', false);
+            
+        }).fail(function () {
+            alert('Gagal memuat data kegiatan');
+            $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
+            $('#id_kegiatan').select2('destroy').select2({
+                placeholder: "-- Pilih Kegiatan --",
+                allowClear: true,
+                width: '100%',
+                dropdownParent: $('#myModal')
+            }).prop('disabled', true);
+        });
+        
+    } else {
+        // Reset kegiatan dan sub kegiatan saat program di-clear
+        $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
+        $('#id_kegiatan').select2('destroy').select2({
+            placeholder: "Pilih Kegiatan",
+            allowClear: true,
+            width: '100%',
+            dropdownParent: $('#myModal')
+        }).prop('disabled', true);
+        
+        $('#id_sub_kegiatan').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
+        $('#id_sub_kegiatan').select2('destroy').select2({
+            placeholder: "Pilih Sub Kegiatan",
+            allowClear: true,
+            width: '100%',
+            dropdownParent: $('#myModal')
+        }).prop('disabled', true);
+    }
+});
 
 // FIX: Cascading Kegiatan → Sub Kegiatan (menggunakan formatted_kode)
 $('#id_kegiatan').on('select2:select select2:clear', function (e) {
     const kegiatanId = $(this).val();
-
+    
     if (e.type === 'select2:select' && kegiatanId) {
         // Tampilkan Loading di Select2
         $('#id_sub_kegiatan').empty().append('<option value="">Loading...</option>');
         $('#id_sub_kegiatan').prop('disabled', true).trigger('change');
-
+        
         // Update placeholder Select2 ke Loading
         $('#id_sub_kegiatan').select2('destroy').select2({
             placeholder: "Loading...",
@@ -333,15 +333,15 @@ $('#id_kegiatan').on('select2:select select2:clear', function (e) {
         $.get(`/master_rekening/kegiatan/${kegiatanId}/sub_kegiatan`, function (data) {
             // Clear options dan tambah default
             $('#id_sub_kegiatan').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
-
+            
             // Tambah data sub kegiatan - GUNAKAN formatted_kode dari backend
             data.forEach(item => {
-                let optionText = item.kode_sub_kegiatan ?
-                    `${item.kode_sub_kegiatan} - ${item.nama_sub_kegiatan}` :
+                let optionText = item.formatted_kode ? 
+                    `${item.formatted_kode} - ${item.nama_sub_kegiatan}` : 
                     item.nama_sub_kegiatan;
                 $('#id_sub_kegiatan').append(new Option(optionText, item.id_sub_kegiatan));
             });
-
+            
             // Reinitialize Select2 dengan placeholder normal
             $('#id_sub_kegiatan').select2('destroy').select2({
                 placeholder: "-- Pilih Sub Kegiatan --",
@@ -349,7 +349,7 @@ $('#id_kegiatan').on('select2:select select2:clear', function (e) {
                 width: '100%',
                 dropdownParent: $('#myModal')
             }).prop('disabled', false);
-
+            
         }).fail(function () {
             alert('Gagal memuat data sub kegiatan');
             $('#id_sub_kegiatan').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
@@ -360,7 +360,7 @@ $('#id_kegiatan').on('select2:select select2:clear', function (e) {
                 dropdownParent: $('#myModal')
             }).prop('disabled', true);
         });
-
+        
     } else {
         // Reset sub kegiatan saat kegiatan di-clear
         $('#id_sub_kegiatan').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
@@ -381,15 +381,15 @@ const selectedSubKegiatan = $('#id_sub_kegiatan').data('selected');
 if (selectedProgram) {
     $.get(`/master_rekening/program/${selectedProgram}/kegiatan`, function (data) {
         $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
-
+        
         data.forEach(item => {
-            let optionText = item.formatted_kode ?
-                `${item.formatted_kode} - ${item.nama_kegiatan}` :
+            let optionText = item.formatted_kode ? 
+                `${item.formatted_kode} - ${item.nama_kegiatan}` : 
                 item.nama_kegiatan;
             const selected = item.id_kegiatan == selectedKegiatan;
             $('#id_kegiatan').append(new Option(optionText, item.id_kegiatan, false, selected));
         });
-
+        
         $('#id_kegiatan').select2('destroy').select2({
             placeholder: "-- Pilih Kegiatan --",
             allowClear: true,
@@ -400,15 +400,15 @@ if (selectedProgram) {
         if (selectedKegiatan) {
             $.get(`/master_rekening/kegiatan/${selectedKegiatan}/sub_kegiatan`, function (data) {
                 $('#id_sub_kegiatan').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
-
+                
                 data.forEach(item => {
-                    let optionText = item.formatted_kode ?
-                        `${item.formatted_kode} - ${item.nama_sub_kegiatan}` :
+                    let optionText = item.formatted_kode ? 
+                        `${item.formatted_kode} - ${item.nama_sub_kegiatan}` : 
                         item.nama_sub_kegiatan;
                     const selected = item.id_sub_kegiatan == selectedSubKegiatan;
                     $('#id_sub_kegiatan').append(new Option(optionText, item.id_sub_kegiatan, false, selected));
                 });
-
+                
                 $('#id_sub_kegiatan').select2('destroy').select2({
                     placeholder: "-- Pilih Sub Kegiatan --",
                     allowClear: true,
@@ -423,7 +423,7 @@ if (selectedProgram) {
 </script>
 
 
-{{--
+{{-- 
 
 //rekening
 <script>

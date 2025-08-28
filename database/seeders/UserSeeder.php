@@ -34,7 +34,73 @@ class UserSeeder extends Seeder
             'id_kecamatan' => $kecId,
         ]);
 
-        // Tambah pegawai kedua
+        // Tambah data pegawai
+        // DB::table('t_pegawai')->insert([
+        //     'nip' => '12345',
+        //     'nama' => 'atmin',
+        //     'gelar_depan' => 'Dr.',
+        //     'gelar_belakang' => 'M.Kom',
+        //     'nik' => '3512345678900003',
+        //     'tempat_lahir' => 'Surabaya',
+        //     'tanggal_lahir' => '1985-01-01',
+        //     'jenis_kelamin' => 'laki-laki',
+        //     'hp' => '08123422349',
+        //     'email' => 'pegawai2@example.com',
+        //     'alamat' => 'Jl. Contoh No.1',
+        //     'rt' => 1,
+        //     'rw' => 2,
+        //     'kode_pos' => '60261',
+        //     'agama' => 'islam',
+        //     'status_kepegawaian' => 'pppk',
+        //     'id_provinsi' => $provId,
+        //     'id_kabupaten_kota' => $kabId,
+        //     'id_kecamatan' => $kecId,
+        //     'id_kelurahan' => $kelId,
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        // ]);
+
+        // // Tambah user login
+        // DB::table('t_user')->insert([
+        //     'nip' => '12345',
+        //     'level' => 'admin',
+        //     'password' => Hash::make('12345'),
+        // ]);
+
+        // // Tambah pegawai kedua
+        // DB::table('t_pegawai')->insert([
+        //     'nip' => '67890',
+        //     'nama' => 'admin1',
+        //     'gelar_depan' => 'Ir.',
+        //     'gelar_belakang' => 'S.T',
+        //     'nik' => '3512345678900004',
+        //     'tempat_lahir' => 'Malang',
+        //     'tanggal_lahir' => '1990-05-10',
+        //     'jenis_kelamin' => 'perempuan',
+        //     'hp' => '08123456789',
+        //     'email' => 'user2@example.com',
+        //     'alamat' => 'Jl. Kedua No.2',
+        //     'rt' => 5,
+        //     'rw' => 6,
+        //     'kode_pos' => '65123',
+        //     'agama' => 'islam',
+        //     'status_kepegawaian' => 'pppk',
+        //     'id_provinsi' => $provId,
+        //     'id_kabupaten_kota' => $kabId,
+        //     'id_kecamatan' => $kecId,
+        //     'id_kelurahan' => $kelId,
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        // ]);
+
+        // // Tambah user login kedua
+        // DB::table('t_user')->insert([
+        //     'nip' => '67890',
+        //     'level' => 'admin',
+        //     'password' => Hash::make('67890'),
+        // ]);
+
+                // Tambah pegawai kedua
         DB::table('t_pegawai')->insert([
             'nip' => '23456',
             'nama' => 'kuroo',

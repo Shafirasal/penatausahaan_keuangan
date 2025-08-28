@@ -6,7 +6,7 @@ if (!function_exists('formatKode')) {
         switch ($jenis) {
             case 'program':
                 return sprintf(
-                    '%s.%s.%s',
+                    '[%s.%s.%s]',
                     substr($kode, 0, 1),
                     substr($kode, 1, 2),
                     substr($kode, 3, 2)
@@ -14,7 +14,7 @@ if (!function_exists('formatKode')) {
 
             case 'kegiatan':
                 return sprintf(
-                    '%s.%s.%s.%s.%s',
+                    '[%s.%s.%s.%s.%s]',
                     substr($kode, 0, 1),
                     substr($kode, 1, 2),
                     substr($kode, 3, 2),
@@ -24,7 +24,7 @@ if (!function_exists('formatKode')) {
 
             case 'sub_kegiatan':
                 return sprintf(
-                    '%s.%s.%s.%s.%s.%s',
+                    '[%s.%s.%s.%s.%s.%s]',
                     substr($kode, 0, 1),
                     substr($kode, 1, 2),
                     substr($kode, 3, 2),
@@ -35,7 +35,7 @@ if (!function_exists('formatKode')) {
 
             case 'rekening':
                 return sprintf(
-                    '%s.%s.%s.%s.%s.%s',
+                    '[%s.%s.%s.%s.%s.%s]',
                     substr($kode, 0, 1),
                     substr($kode, 1, 1),
                     substr($kode, 2, 2),
@@ -46,7 +46,7 @@ if (!function_exists('formatKode')) {
 
             case 'ssh':
                 return sprintf(
-                    '%s.%s.%s.%s.%s.%s.%s',
+                    '[%s.%s.%s.%s.%s.%s.%s]',
                     substr($kode, 0, 1),
                     substr($kode, 1, 1),
                     substr($kode, 2, 2),
