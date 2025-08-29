@@ -112,7 +112,7 @@ class TreeViewController extends Controller
             ->addColumn(
                 'uraian',
                 fn($row) =>
-                '<span class="px-2 py-1" style="background-color:#ffe5b4; color:#663c00; border-radius:4px;">
+                '<span class="px-2 py-1" style="background-color: #ffA500; color:#663c00; border-radius:4px;">
         ' . e($row->nama_sub_kegiatan) . '
     </span>'
             )
