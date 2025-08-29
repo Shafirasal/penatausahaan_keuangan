@@ -208,7 +208,9 @@ Route::prefix('ssh')->name('ssh.')->group(function () {
 
 Route::prefix('tree_view')->group(function () {
     Route::get('/', [TreeViewController::class, 'index']);
-    Route::post('/list-rekening', [TreeViewController::class, 'listRekening']);
+    Route::post('/list-sub_kegiatan', [TreeViewController::class, 'listSubKegiatan']);
+    // Route::post('/list-rekening', [TreeViewController::class, 'listRekening']);
+    Route::get('/{id_sub_kegiatan}/rekening', [TreeViewController::class, 'listRekeningBySubKegiatan']);
     Route::get('/{id_rekening}/ssh', [TreeViewController::class, 'listSshByRekening']);
     Route::get('/program/{id_program}/kegiatan', [TreeViewController::class, 'getKegiatanByProgram']);
     Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan', [TreeViewController::class, 'getSubKegiatanByKegiatan']);

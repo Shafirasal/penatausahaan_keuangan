@@ -87,7 +87,7 @@
   // Inisialisasi saat dokumen siap
   $(document).ready(function () {
     dataJabatanFungsional = $('#table_jabatan_fungsional').DataTable({
-      processing: true,
+      processing: false,
       serverSide: true,
       responsive: true,
       ajax: {

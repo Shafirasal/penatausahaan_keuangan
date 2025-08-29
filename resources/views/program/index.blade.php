@@ -93,7 +93,7 @@
 
     // Inisialisasi DataTable
     dataMasterProgram = $('#table_master_program').DataTable({
-      processing: true,
+      processing: false,
       serverSide: true,
       responsive: true,
       ajax: {

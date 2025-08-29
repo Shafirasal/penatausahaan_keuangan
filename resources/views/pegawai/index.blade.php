@@ -92,7 +92,7 @@
 
   $(document).ready(function () {
     dataPegawai = $('#table_pegawai').DataTable({
-      processing: true,
+      processing: false,
       serverSide: true,
       responsive: true,
       ajax: {

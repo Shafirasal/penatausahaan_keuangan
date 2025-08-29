@@ -121,7 +121,7 @@
 
     // Inisialisasi DataTable
     dataMasterRekening = $('#table_master_rekening').DataTable({
-      processing: true,
+      processing: false,
       serverSide: true,
       responsive: true,
       ajax: {

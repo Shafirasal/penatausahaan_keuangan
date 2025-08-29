@@ -108,7 +108,7 @@
 
     // Inisialisasi DataTable
     dataMasterSubKegiatan = $('#table_master_sub_kegiatan').DataTable({
-      processing: true,
+      processing: false,
       serverSide: true,
       responsive: true,
       ajax: {

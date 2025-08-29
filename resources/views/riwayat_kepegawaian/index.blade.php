@@ -83,7 +83,7 @@
 
   $(document).ready(function () {
     dataRiwayatKepegawaian = $('#table_riwayat').DataTable({
-      processing: true,
+      processing: false,
       serverSide: true,
       responsive: true,
       ajax: {

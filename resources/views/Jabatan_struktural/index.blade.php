@@ -82,7 +82,7 @@
 
   $(document).ready(function () {
     dataJabatanStruktural = $('#table_jabatan').DataTable({
-      processing: true,
+      processing: false,
       serverSide: true,
       responsive: true,
       ajax: {

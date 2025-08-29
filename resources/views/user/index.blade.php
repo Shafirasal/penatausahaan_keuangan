@@ -69,7 +69,7 @@
   var dataUser;
   $(document).ready(function () {
 dataUser = $('#table_user').DataTable({
-      processing: true,
+      processing: false,
       serverSide: true,
       responsive: true,
       ajax: {

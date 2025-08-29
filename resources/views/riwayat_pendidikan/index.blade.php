@@ -383,7 +383,7 @@
   // Inisialisasi saat dokumen siap
   $(document).ready(function () {
     dataRiwayatPendidikan = $('#table_pendidikan').DataTable({
-      processing: true,
+      processing: false,
       serverSide: true,
       responsive: true,
       ajax: {
