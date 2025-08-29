@@ -93,7 +93,7 @@
             }
         });
 
-        $(function() {
+        $(function () {
             // (opsional) select2
             if ($.fn.select2) {
                 $('#program_filter, #kegiatan_filter, #sub_kegiatan_filter').select2({
@@ -103,49 +103,49 @@
             }
 
             // === Dropdown berantai ===
-            $('#program_filter').on('change', function() {
+            $('#program_filter').on('change', function () {
                 const pid = $(this).val();
 
                 $('#kegiatan_filter').empty().append('<option value="">-- Pilih Kegiatan --</option>').prop(
                     'disabled', true).trigger('change');
                 $('#sub_kegiatan_filter').empty().append(
-                        '<option value="">-- Pilih Sub Kegiatan --</option>').prop('disabled', true)
+                    '<option value="">-- Pilih Sub Kegiatan --</option>').prop('disabled', true)
                     .trigger('change');
 
                 if (pid) {
-                    $.get(`{{ url('/tree_view/program') }}/${pid}/kegiatan`, function(rows) {
+                    $.get(`{{ url('/tree_view/program') }}/${pid}/kegiatan`, function (rows) {
                         $('#kegiatan_filter').prop('disabled', false);
                         rows.forEach(r => {
                             $('#kegiatan_filter').append(
                                 `<option value="${r.id_kegiatan}">${r.kode_kegiatan} - ${r.nama_kegiatan}</option>`
-                                );
+                            );
                         });
                     });
                 }
                 table.ajax.reload();
             });
 
-            $('#kegiatan_filter').on('change', function() {
+            $('#kegiatan_filter').on('change', function () {
                 const kid = $(this).val();
 
                 $('#sub_kegiatan_filter').empty().append(
-                        '<option value="">-- Pilih Sub Kegiatan --</option>').prop('disabled', true)
+                    '<option value="">-- Pilih Sub Kegiatan --</option>').prop('disabled', true)
                     .trigger('change');
 
                 if (kid) {
-                    $.get(`{{ url('/tree_view/kegiatan') }}/${kid}/sub_kegiatan`, function(rows) {
+                    $.get(`{{ url('/tree_view/kegiatan') }}/${kid}/sub_kegiatan`, function (rows) {
                         $('#sub_kegiatan_filter').prop('disabled', false);
                         rows.forEach(r => {
                             $('#sub_kegiatan_filter').append(
                                 `<option value="${r.id_sub_kegiatan}">${r.kode_sub_kegiatan} - ${r.nama_sub_kegiatan}</option>`
-                                );
+                            );
                         });
                     });
                 }
                 table.ajax.reload();
             });
 
-            $('#sub_kegiatan_filter').on('change', function() {
+            $('#sub_kegiatan_filter').on('change', function () {
                 table.ajax.reload();
             });
 
@@ -157,58 +157,57 @@
                 ajax: {
                     url: `{{ url('/tree_view/list-sub_kegiatan') }}`,
                     type: 'POST',
-                    data: function(d) {
+                    data: function (d) {
                         d.id_program = $('#program_filter').val();
                         d.id_kegiatan = $('#kegiatan_filter').val();
                         d.id_sub_kegiatan = $('#sub_kegiatan_filter').val();
                     }
                 },
                 columns: [{
-                        data: 'expand',
-                        orderable: false,
-                        searchable: false,
-                        className: 'text-center align-middle'
-                    },
-                    {
-                        data: 'kode',
-                        className: 'align-middle'
-                    },
-                    {
-                        data: 'uraian',
-                        className: 'align-middle'
-                    },
-                    {
-                        data: 'p1',
-                        className: 'text-right align-middle'
-                    },
-                    {
-                        data: 'p2',
-                        className: 'text-right align-middle'
-                    },
-                    //   { data: 'real',   className:'text-right align-middle' },
-                    {
-                        data: 'sisa',
-                        className: 'text-right align-middle'
-                    },
+                    data: 'expand',
+                    orderable: false,
+                    searchable: false,
+                    className: 'text-center align-middle'
+                },
+                {
+                    data: 'kode',
+                    className: 'align-middle'
+                },
+                {
+                    data: 'uraian',
+                    className: 'align-middle'
+                },
+                {
+                    data: 'p1',
+                    className: 'text-right align-middle'
+                },
+                {
+                    data: 'p2',
+                    className: 'text-right align-middle'
+                },
+                //   { data: 'real',   className:'text-right align-middle' },
+                {
+                    data: 'sisa',
+                    className: 'text-right align-middle'
+                },
                 ],
                 order: [
                     [1, 'asc']
                 ],
             });
 
-            // === Child rows: rekening per subkegiatan ===
-            $('#table_tree tbody').on('click', '.btn-expand-sub', function(e) {
+            // === Child rows: rekening per sub_kegiatan ===
+            $('#table_tree tbody').on('click', '.btn-expand-sub', function (e) {
                 e.preventDefault();
 
                 const tr = $(this).closest('tr');
-                const row = table.row(tr);
                 const btn = $(this);
                 const id = btn.data('id');
+                const key = 'sub-' + id; // prefix biar tidak tabrakan id di level lain
 
                 if (tr.hasClass('shown')) {
-                    // Hapus semua child rows yang sudah ditambahkan
-                    $('.child-of-' + id).remove();
-
+                    // Hapus SEMUA turunan sub ini (anak, cucu, dst)
+                    $('.desc-of-' + key).remove();
                     btn.html('<i class="fas fa-chevron-right"></i>');
                     tr.removeClass('shown');
                 } else {
@@ -218,30 +217,33 @@
                         id_sub_kegiatan: $('#sub_kegiatan_filter').val() || '',
                     });
 
-                    $.get(`{{ url('/tree_view') }}/${id}/rekening?${params}`, function(rowsHtml) {
-                        // Tambahkan row baru setelah sub_kegiatan
-                        $(rowsHtml).insertAfter(tr);
+                    $.get(`{{ url('/tree_view') }}/${id}/rekening?${params}`, function (rowsHtml) {
+                        // Sisipkan
+                        const $ins = $(rowsHtml).insertAfter(tr);
+                        // Tandai sebagai anak LANGSUNG + semua turunan dari sub ini
+                        $ins.filter('tr').addClass('child-of-' + key + ' desc-of-' + key);
+
                         btn.html('<i class="fas fa-chevron-down"></i>');
                         tr.addClass('shown');
-                    }).fail(function() {
+                    }).fail(function () {
                         alert('Gagal memuat data rekening');
                     });
                 }
             });
 
+
             // === Child rows: SSH per rekening ===
-            $('#table_tree tbody').on('click', '.btn-expand-rek', function(e) {
+            $('#table_tree tbody').on('click', '.btn-expand-rek', function (e) {
                 e.preventDefault();
 
                 const tr = $(this).closest('tr');
-                const row = table.row(tr);
                 const btn = $(this);
                 const id = btn.data('id');
+                const key = 'rek-' + id;
 
                 if (tr.hasClass('shown')) {
-                    // Hapus semua child rows yang sudah ditambahkan
-                    $('.child-of-' + id).remove();
-
+                    // Hapus SEMUA turunan rekening ini (anak, cucu, dst)
+                    $('.desc-of-' + key).remove();
                     btn.html('<i class="fas fa-chevron-right"></i>');
                     tr.removeClass('shown');
                 } else {
@@ -251,16 +253,28 @@
                         id_sub_kegiatan: $('#sub_kegiatan_filter').val() || '',
                     });
 
-                    $.get(`{{ url('/tree_view') }}/${id}/ssh?${params}`, function(rowsHtml) {
-                        // Tambahkan row baru setelah rekening
-                        $(rowsHtml).insertAfter(tr);
+                    $.get(`{{ url('/tree_view') }}/${id}/ssh?${params}`, function (rowsHtml) {
+                        const $ins = $(rowsHtml).insertAfter(tr);
+
+                        // Warisi semua "desc-of-..." dari parent, supaya collapse di atas ikut bersih
+                        const parentMarks = (tr.attr('class') || '')
+                            .split(/\s+/)
+                            .filter(c => c.startsWith('desc-of-'));
+
+                        // Tandai sebagai anak langsung rekening + descendant rekening,
+                        // sekaligus wariskan semua penanda desc-of- parent (sub) agar collapse parent ikut menghapusnya
+                        $ins.filter('tr').addClass(
+                            ['child-of-' + key, 'desc-of-' + key].concat(parentMarks).join(' ')
+                        );
+
                         btn.html('<i class="fas fa-chevron-down"></i>');
                         tr.addClass('shown');
-                    }).fail(function() {
+                    }).fail(function () {
                         alert('Gagal memuat data SSH');
                     });
                 }
             });
+
 
 
         });
