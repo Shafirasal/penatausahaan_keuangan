@@ -60,13 +60,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Periode 1</label>
+                    <label>Pagu Periode 1</label>
                     <input type="number" name="pagu1" id="pagu1" class="form-control" required>
                     <small id="error-pagu1" class="error-text form-text text-danger"></small>
                 </div>
 
                 <div class="form-group">
-                    <label>Periode 2</label>
+                    <label>Pagu Periode 2</label>
                     <input type="text" name="pagu2" id="pagu2" class="form-control" required>
                     <small id="error-pagu2" class="error-text form-text text-danger"></small>
                 </div>
