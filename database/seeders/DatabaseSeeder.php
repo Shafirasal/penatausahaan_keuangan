@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             KegiatanSeeder::class,
             MasterSubKegiatanSeeder::class,
             RekeningSeeder::class,
+            SshSeeder::class,
         ]);
     }
 }
