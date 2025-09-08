@@ -32,7 +32,11 @@ class SSHController extends Controller
             $program->kode_program = formatKode($program->kode_program, 'program');
             return $program;
         });
-        return view('ssh.index', compact('breadcrumb', 'page', 'activeMenu', 'listProgram'));
+
+        $tahunSekarang = now()->year;
+        $tahunRange = range(2013, $tahunSekarang + 3); // 2013-now+3
+
+        return view('ssh.index', compact('breadcrumb', 'page', 'activeMenu', 'listProgram', 'tahunRange', 'tahunSekarang'));
     }
 
     public function list(Request $request)
@@ -45,15 +49,15 @@ class SSHController extends Controller
             'id_sub_kegiatan',
             'id_rekening',
             'nama_ssh',
-            DB::raw("CONCAT('Rp ', FORMAT(pagu, 0, 'id_ID')) as pagu"),
-            'periode',
+            DB::raw("CONCAT('Rp ', FORMAT(pagu1, 0, 'id_ID')) as pagu1"),
+            DB::raw("CONCAT('Rp ', FORMAT(pagu2, 0, 'id_ID')) as pagu2"),
             DB::raw('YEAR(tahun) as tahun'),
         )->with(
             'program:id_program,nama_program,kode_program',
             'kegiatan:id_kegiatan,nama_kegiatan,kode_kegiatan',
             'sub_kegiatan:id_sub_kegiatan,nama_sub_kegiatan,kode_sub_kegiatan',
             'rekening:id_rekening,nama_rekening,kode_rekening'
-        );
+        )->filterTahun($request->tahun);
 
         // Filter Program
         if ($request->id_program) {
@@ -93,10 +97,10 @@ class SSHController extends Controller
     public function create()
     {
         $program = MasterProgramModel::select('id_program', 'nama_program', 'kode_program')->get()
-        ->map(function ($p) {
-            $p->kode_program = formatKode($p->kode_program, 'program');
-            return $p;
-        });
+            ->map(function ($p) {
+                $p->kode_program = formatKode($p->kode_program, 'program');
+                return $p;
+            });
         return view('ssh.create', compact('program'));
     }
 
@@ -109,8 +113,8 @@ class SSHController extends Controller
             'id_sub_kegiatan' => 'required|integer|exists:t_master_sub_kegiatan,id_sub_kegiatan',
             'id_rekening' => 'required|integer|exists:t_rekening,id_rekening',
             'nama_ssh' => 'required|string|max:200',
-            'pagu' => 'required|integer|min:0',
-            'periode' => 'required|string|max:50',
+            'pagu1' => 'required|integer|min:0',
+            'pagu2' => 'required|integer|min:0',
             'tahun' => 'required|date',
         ]);
 
@@ -150,8 +154,8 @@ class SSHController extends Controller
                 'id_sub_kegiatan' => 'required|integer|exists:t_master_sub_kegiatan,id_sub_kegiatan',
                 'id_rekening' => 'required|integer|exists:t_rekening,id_rekening',
                 'nama_ssh' => 'required|string|max:200',
-                'pagu' => 'required|integer|min:0',
-                'periode' => 'required|string|max:50',
+                'pagu1' => 'required|integer|min:0',
+                'pagu2' => 'required|integer|min:0',
                 'tahun' => 'required|date',
             ];
 

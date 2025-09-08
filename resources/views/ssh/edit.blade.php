@@ -102,16 +102,16 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Pagu</label>
-                        <input type="number" name="pagu" id="pagu" class="form-control"
-                            value="{{ $ssh->pagu }}" required>
-                        <small id="error-pagu" class="error-text form-text text-danger"></small>
+                        <label>Periode 1</label>
+                        <input type="number" name="pagu1" id="pagu1" class="form-control"
+                            value="{{ $ssh->pagu1 }}" required>
+                        <small id="error-pagu1" class="error-text form-text text-danger"></small>
                     </div>
                     <div class="form-group">
-                        <label>Periode</label>
-                        <input type="text" name="periode" id="periode" class="form-control"
-                            value="{{ $ssh->periode }}" required>
-                        <small id="error-periode" class="error-text form-text text-danger"></small>
+                        <label>Periode 2</label>
+                        <input type="text" name="pagu2" id="pagu2" class="form-control"
+                            value="{{ $ssh->pagu2 }}" required>
+                        <small id="error-pagu2" class="error-text form-text text-danger"></small>
                     </div>
                     <div class="form-group">
                         <label>Tahun</label>
@@ -154,15 +154,16 @@
                         required: true,
                         maxlength: 200
                     },
-                    pagu: {
+                    pagu1: {
                         required: true,
                         number: true,
                         min: 0
                     },
-                    periode: {
-                        required: true,
-                        maxlength: 50
-                    },
+                    pagu2: {
+                    required: true,
+                    number: true,
+                    min: 0
+                },
                     tahun: {
                         required: true,
                         date: true

@@ -59,12 +59,12 @@
                             <td class="col-8">{{ $ssh->nama_ssh }}</td>
                         </tr>
                         <tr>
-                            <th class="text-right col-4">Pagu:</th>
-                            <td class="col-8">{{ number_format($ssh->pagu, 0, ',', '.') }}</td>
+                            <th class="text-right col-4">Periode 1:</th>
+                            <td class="col-8">{{ number_format($ssh->pagu1, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
-                            <th class="text-right col-4">Periode:</th>
-                            <td class="col-8">{{ $ssh->periode }}</td>
+                            <th class="text-right col-4">Periode 2:</th>
+                            <td class="col-8">{{ number_format($ssh->pagu2, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <th class="text-right col-4">Tahun:</th>

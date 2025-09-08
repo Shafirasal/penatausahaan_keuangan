@@ -21,6 +21,7 @@
                                 <i class="fas fa-plus"></i> Tambah
                             </button>
                         </div>
+
                     </div>
 
                     <div class="card-body">
@@ -76,8 +77,8 @@
                                         <th>#</th>
                                         <th>Kode SSH</th>
                                         <th>Nama SSH</th>
-                                        <th>Pagu</th>
-                                        <th>Periode</th>
+                                        <th>Periode 1</th>
+                                        <th>Periode 2</th>
                                         <th>Tahun</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -156,6 +157,7 @@
                         d.id_kegiatan = $('#kegiatan_filter').val();
                         d.id_sub_kegiatan = $('#sub_kegiatan_filter').val();
                         d.id_rekening = $('#rekening_filter').val();
+                        d.tahun = $('#tahun').val();
                     }
                 },
                 columns: [{
@@ -171,10 +173,10 @@
                         data: 'nama_ssh'
                     },
                     {
-                        data: 'pagu',
+                        data: 'pagu1',
                     },
                     {
-                        data: 'periode'
+                        data: 'pagu2'
                     },
                     {
                         data: 'tahun'
@@ -187,6 +189,7 @@
                     }
                 ]
             });
+
             // Reload tabel ketika filter berubah
             $('#program_filter').on('change', function() {
                 var programId = $(this).val();
@@ -219,6 +222,9 @@
 
                 // Reload DataTable
                 dataSSH.ajax.reload();
+            });
+            $(document).on('tahun:changed', function(e, tahun) {
+                dataSSH.ajax.reload(); // reload rekening utama
             });
 
             // Reload tabel ketika filter berubah
@@ -292,6 +298,10 @@
 
             // Event handler untuk filter Kegiatan
             $('#rekening_filter').on('change', function() {
+                dataSSH.ajax.reload();
+            });
+
+            $('#tahun').on('change', function() {
                 dataSSH.ajax.reload();
             });
         });
