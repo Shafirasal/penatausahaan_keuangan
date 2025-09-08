@@ -6,25 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('t_ssh', function (Blueprint $table) {
-            // Ubah tipe kolom 'periode' menjadi string
-            $table->string('periode')->change();
+            // ubah kolom
+            $table->renameColumn('pagu', 'pagu1');
+            $table->renameColumn('periode', 'pagu2');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('t_ssh', function (Blueprint $table) {
-            // Kembalikan ke tipe date (jika sebelumnya DATE)
-            $table->string('periode')->change();
+            // rollback (balikin ke nama awal)
+            $table->renameColumn('pagu1', 'pagu');
+            $table->renameColumn('pagu2', 'periode');
         });
     }
 };
