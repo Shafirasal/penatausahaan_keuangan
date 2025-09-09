@@ -16,45 +16,45 @@ class SshSeeder extends Seeder
                 '40107103' => [
                     '401071030001' => [
                         '510201010025' => [
-                            ['kode_ssh' => '11120103000200034', 'nama_ssh' => 'Fotokopi', 'pagu1' => 472844, 'pagu2' => 500000, 'tahun' => '2025-01-15'],
+                            ['kode_ssh' => '11120103000200034', 'nama_ssh' => 'Fotokopi', 'pagu1' => 472844, 'pagu2' => 925.800, 'tahun' => '2025-01-15'],
                         ],
                         '510201010032' => [
-                            ['kode_ssh' => '11120103000900071', 'nama_ssh' => 'Pakaian Dinas Lapangan', 'pagu1' => 14628000, 'pagu2' => 15000000, 'tahun' => '2025-02-20'],
+                            ['kode_ssh' => '11120103000900071', 'nama_ssh' => 'Pakaian Dinas Lapangan', 'pagu1' => 14628000, 'pagu2' => 14628000, 'tahun' => '2025-02-20'],
                         ],
                         '510201010035' => [
-                            ['kode_ssh' => '11120103001200018', 'nama_ssh' => 'Hand Bag', 'pagu1' => 31040000, 'pagu2' => 32000000, 'tahun' => '2025-03-10'],
+                            ['kode_ssh' => '11120103001200018', 'nama_ssh' => 'Hand Bag', 'pagu1' => 31040000, 'pagu2' => 36860000, 'tahun' => '2025-03-10'],
                         ],
                         '510201010052' => [
-                            ['kode_ssh' => '81020101005200002', 'nama_ssh' => 'Hidangan Rapat/Kegiatan Lainnya Provinsi Jawa Timur', 'pagu1' => 18480000, 'pagu2' => 19000000, 'tahun' => '2025-04-05'],
-                            ['kode_ssh' => '81020101005200003', 'nama_ssh' => 'Hidangan Rapat/Kegiatan Lainnya Provinsi Jawa Timur', 'pagu1' => 9200000, 'pagu2' => 9500000, 'tahun' => '2025-04-06'],
+                            ['kode_ssh' => '81020101005200002', 'nama_ssh' => 'Hidangan Rapat/Kegiatan Lainnya Provinsi Jawa Timur', 'pagu1' => 18480000, 'pagu2' => 21120000, 'tahun' => '2025-04-05'],
+                            ['kode_ssh' => '81020101005200003', 'nama_ssh' => 'Hidangan Rapat/Kegiatan Lainnya Provinsi Jawa Timur', 'pagu1' => 9200000, 'pagu2' => 11040000, 'tahun' => '2025-04-06'],
                         ],
                         '510202010026' => [
-                            ['kode_ssh' => '81020201002600012', 'nama_ssh' => 'Honorarium Jasa Tenaga Administrasi', 'pagu1' => 168000000, 'pagu2' => 170000000, 'tahun' => '2025-05-12'],
-                            ['kode_ssh' => '81020201002600038', 'nama_ssh' => 'Tambahan Honorarium Jasa Tenaga Administrasi', 'pagu1' => 84000000, 'pagu2' => 85000000, 'tahun' => '2025-05-13'],
-                            ['kode_ssh' => '81020201002600072', 'nama_ssh' => 'Tambahan Honorarium Jasa Tenaga Administrasi', 'pagu1' => 54720000, 'pagu2' => 55000000, 'tahun' => '2025-05-14'],
+                            ['kode_ssh' => '81020201002600012', 'nama_ssh' => 'Honorarium Jasa Tenaga Administrasi', 'pagu1' => 168000000, 'pagu2' => 168000000, 'tahun' => '2025-05-12'],
+                            ['kode_ssh' => '81020201002600038', 'nama_ssh' => 'Tambahan Honorarium Jasa Tenaga Administrasi', 'pagu1' => 84000000, 'pagu2' => 84000000, 'tahun' => '2025-05-13'],
+                            ['kode_ssh' => '81020201002600072', 'nama_ssh' => 'Tambahan Honorarium Jasa Tenaga Administrasi', 'pagu1' => 54720000, 'pagu2' => 54720000, 'tahun' => '2025-05-14'],
                         ],
                         '510202010047' => [
-                            ['kode_ssh' => '81020201004700018', 'nama_ssh' => 'Jasa Event Organizer', 'pagu1' => 71200000, 'pagu2' => 72000000, 'tahun' => '2025-06-18'],
-                            ['kode_ssh' => '81020201004700020', 'nama_ssh' => 'Jasa Event Organizer Pameran/Pelaksanaan Kegiatan', 'pagu1' => 0, 'pagu2' => 1000000, 'tahun' => '2025-06-19'],
-                            ['kode_ssh' => '81020201004700067', 'nama_ssh' => 'Jasa Event Organizer Pameran/Pelaksanaan Kegiatan', 'pagu1' => 50450600, 'pagu2' => 51000000, 'tahun' => '2025-06-20'],
+                            ['kode_ssh' => '81020201004700018', 'nama_ssh' => 'Jasa Event Organizer', 'pagu1' => 71200000, 'pagu2' => 0, 'tahun' => '2025-06-18'],
+                            ['kode_ssh' => '81020201004700020', 'nama_ssh' => 'Jasa Event Organizer Pameran/Pelaksanaan Kegiatan', 'pagu1' => 0, 'pagu2' => 62300000, 'tahun' => '2025-06-19'],
+                            ['kode_ssh' => '81020201004700067', 'nama_ssh' => 'Jasa Event Organizer Pameran/Pelaksanaan Kegiatan', 'pagu1' => 50450600, 'pagu2' => 50450600, 'tahun' => '2025-06-20'],
                         ],
                         '510202020005' => [
-                            ['kode_ssh' => '81020202000500053', 'nama_ssh' => '# Iuran Jaminan Kesehatan (BPJS) Non ASN', 'pagu1' => 7144956, 'pagu2' => 7500000, 'tahun' => '2025-07-08'],
+                            ['kode_ssh' => '81020202000500053', 'nama_ssh' => '# Iuran Jaminan Kesehatan (BPJS) Non ASN', 'pagu1' => 7144956, 'pagu2' => 5760000, 'tahun' => '2025-07-08'],
                         ],
                         '510202020006' => [
-                            ['kode_ssh' => '81020202000600007', 'nama_ssh' => 'Jaminan Kecelakaan Kerja (JKK) Non ASN', 'pagu1' => 345600, 'pagu2' => 400000, 'tahun' => '2025-07-09'],
+                            ['kode_ssh' => '81020202000600007', 'nama_ssh' => 'Jaminan Kecelakaan Kerja (JKK) Non ASN', 'pagu1' => 345600, 'pagu2' => 345600, 'tahun' => '2025-07-09'],
                         ],
                         '510202020007' => [
-                            ['kode_ssh' => '81020202000700007', 'nama_ssh' => 'Jaminan Kematian (JKM) Non ASN', 'pagu1' => 432000, 'pagu2' => 450000, 'tahun' => '2025-07-10'],
+                            ['kode_ssh' => '81020202000700007', 'nama_ssh' => 'Jaminan Kematian (JKM) Non ASN', 'pagu1' => 432000, 'pagu2' => 432000, 'tahun' => '2025-07-10'],
                         ],
                         '510202040036' => [
-                            ['kode_ssh' => '81020204003600117', 'nama_ssh' => '# Sewa Kendaraan Pelaksanaan Kegiatan Insidentil - Roda 4', 'pagu1' => 1231000, 'pagu2' => 1300000, 'tahun' => '2025-08-22'],
+                            ['kode_ssh' => '81020204003600117', 'nama_ssh' => '# Sewa Kendaraan Pelaksanaan Kegiatan Insidentil - Roda 4', 'pagu1' => 1231000, 'pagu2' => 0, 'tahun' => '2025-08-22'],
                         ],
                         '510202120001' => [
-                            ['kode_ssh' => '81020213000100017', 'nama_ssh' => 'Beban Kursus Singkat/Pelatihan', 'pagu1' => 294400000, 'pagu2' => 295000000, 'tahun' => '2025-09-15'],
+                            ['kode_ssh' => '81020213000100017', 'nama_ssh' => 'Beban Kursus Singkat/Pelatihan', 'pagu1' => 294400000, 'pagu2' => 294400000, 'tahun' => '2025-09-15'],
                         ],
                         '510204010003' => [
-                            ['kode_ssh' => '81020401000300340', 'nama_ssh' => 'Uang Transport Perjalanan dinas di dalam kota yang kurang dari 8 (delapan) jam', 'pagu1' => 13600000, 'pagu2' => 14000000, 'tahun' => '2025-10-30'],
+                            ['kode_ssh' => '81020401000300340', 'nama_ssh' => 'Uang Transport Perjalanan dinas di dalam kota yang kurang dari 8 (delapan) jam', 'pagu1' => 13600000, 'pagu2' => 12800000, 'tahun' => '2025-10-30'],
                         ],
                     ],
                 ],
