@@ -46,7 +46,7 @@
               <li class="nav-item dropdown">
                 <a href="#" class="nav-link has-dropdown"><i class="fas fa-th-large"></i> <span>Realisasi Anggaran</span></a>
                 <ul class="dropdown-menu">
-                  <li><a class="nav-link" href="components-article.html">Bagian PBJ</a></li>
+                  <li><a class="nav-link" href="{{ url('/realisasipbj') }}">Bagian PBJ</a></li>
                   <li><a class="nav-link" href="components-article.html">Bagian LPSE</a></li>
                   <li><a class="nav-link" href="components-article.html">Bagian Pembinaan</a></li>
                 </ul>
