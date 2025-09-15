@@ -29,6 +29,10 @@ class RealisasiModel extends Model
         'file'
     ];
 
+        protected $casts = [
+        'tanggal_realisasi' => 'date',
+        'nilai_realisasi'   => 'decimal:2',
+    ];
     // Relasi ke master program
 
     public function program()
