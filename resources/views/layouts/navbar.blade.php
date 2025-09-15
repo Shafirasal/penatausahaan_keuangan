@@ -13,7 +13,7 @@
 
     <ul class="navbar-nav navbar-right">
         <!-- Dropdown Tahun -->
-        @if (isset($tahunRange) && isset($tahunSekarang))
+        {{-- @if (isset($tahunRange) && isset($tahunSekarang))
             <li class="nav-item">
                 <form method="GET" action="{{ url()->current() }}" class="form-inline">
                     <div class="form-group mb-0">
@@ -28,7 +28,29 @@
                     </div>
                 </form>
             </li>
-        @endif
+        @endif --}}
+
+        <div class="dropdown">
+            <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">
+                <i class="fas fa-calendar-alt"></i> {{ request('tahun', $tahunSekarang) }}
+            </button>
+            <div class="dropdown-menu">
+                @foreach ($tahunRange as $tahun)
+                    <a class="dropdown-item" href="#" data-value="{{ $tahun }}">
+                        {{ $tahun }}
+                    </a>
+                @endforeach
+            </div>
+        </div>
+
+        <!-- Select tersembunyi supaya script lama tetap jalan -->
+        <select id="tahun" class="d-none">
+            @foreach ($tahunRange as $tahun)
+                <option value="{{ $tahun }}" {{ request('tahun', $tahunSekarang) == $tahun ? 'selected' : '' }}>
+                    {{ $tahun }}
+                </option>
+            @endforeach
+        </select>
 
 
 
@@ -110,10 +132,22 @@
             });
         });
     });
-    if ($('#tahun').length) {
-        $('#tahun').on('change', function() {
-            // Trigger event global supaya halaman manapun bisa nangkep
-            $(document).trigger('tahun:changed', [$(this).val()]);
+    if ($('.dropdown-item').length) {
+        $('.dropdown-item').on('click', function (e) {
+            e.preventDefault();
+
+            let tahun = $(this).data('value');
+
+            // update value di <select> tersembunyi
+            $('#tahun').val(tahun).trigger('change');
+
+            // update teks tombol biar sesuai pilihan
+            $(this).closest('.dropdown').find('.btn').html(
+                '<i class="fas fa-calendar-alt"></i> ' + tahun
+            );
+
+            // langsung reload halaman dengan parameter tahun
+            window.location.href = "{{ url()->current() }}?tahun=" + tahun;
         });
     }
 </script>
