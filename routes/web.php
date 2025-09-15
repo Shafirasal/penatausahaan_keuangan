@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\MasterProgramController;
+
+use App\Http\Controllers\RealisasipbjController;
 use App\Http\Controllers\RekeningController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -215,6 +217,28 @@ Route::prefix('tree_view')->group(function () {
     Route::get('/program/{id_program}/kegiatan', [TreeViewController::class, 'getKegiatanByProgram']);
     Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan', [TreeViewController::class, 'getSubKegiatanByKegiatan']);
 });
+
+
+Route::prefix('realisasipbj')->group(function () {
+    // DataTables
+    Route::post('/list', [RealisasipbjController::class, 'list']);
+
+    // CRUD
+    Route::get('/', [RealisasipbjController::class, 'index']);
+    Route::get('/create', [RealisasipbjController::class, 'create']);
+    Route::post('/store', [RealisasipbjController::class, 'store']);
+    Route::get('/{id}/edit', [RealisasipbjController::class, 'edit']);
+    Route::put('/{id}/update', [RealisasipbjController::class, 'update']);
+    Route::get('/{id}/confirm', [RealisasipbjController::class, 'confirm']);
+    Route::delete('/{id}/delete', [RealisasipbjController::class, 'delete']);
+
+    // Cascading select
+    Route::get('/program/{id_program}/kegiatan',        [RealisasipbjController::class, 'getKegiatanByProgram']);
+    Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan',  [RealisasipbjController::class, 'getSubKegiatanByKegiatan']);
+    Route::get('/sub_kegiatan/{id_sub_kegiatan}/rekening', [RealisasipbjController::class, 'getRekeningBySubKegiatan']);
+    Route::get('/rekening/{id_rekening}/ssh',           [RealisasipbjController::class, 'getSshByRekening']);
+});
+
 
 
 
