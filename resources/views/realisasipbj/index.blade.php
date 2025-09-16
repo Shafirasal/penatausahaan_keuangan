@@ -179,115 +179,456 @@
 </section>
 @endsection
 
+
 @push('js')
 <script>
 $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
 
-// Select2 (opsional—aktifkan jika dipakai global)
-$('#f_program,#f_kegiatan,#f_sub,#f_rekening,#f_ssh').select2({ width:'100%' });
-
-// helper untuk ringkasan & hidden
-function setSel(idSel, idShow, idHidden){
-  const $opt = $(idSel).find('option:selected');
-  $(idShow).text($opt.data('label') || $opt.text() || '-');
-  $(idHidden).val($(idSel).val() || '');
-}
-
-// mask rupiah: titik ribuan, koma desimal
-$('#i_nilai').on('input', function(){
-  let v = this.value.replace(/[^\d,]/g,'');
-  let p = v.split(',');
-  let i = p[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');
-  this.value = (p[1]!==undefined) ? (i+','+p[1].slice(0,2)) : i;
-});
-
-// ===== Cascading =====
-// 1) Program → Kegiatan
-$('#f_program').on('change', function(){
-  const id = $(this).val();
-  setSel('#f_program','#s_program','#h_program');
-
-  // reset bawahnya
-  $('#f_kegiatan').html('<option value="">-- Pilih Kegiatan --</option>').prop('disabled', !id).trigger('change');
-  $('#f_sub').html('<option value="">-- Pilih Sub Kegiatan --</option>').prop('disabled', true).trigger('change');
-  $('#f_rekening').html('<option value="">-- Pilih Rekening --</option>').prop('disabled', true).trigger('change');
-  $('#f_ssh').html('<option value="">-- Pilih SSH --</option>').prop('disabled', true).trigger('change');
-  $('#s_kegiatan,#s_sub,#s_rekening,#s_ssh').text('-'); $('#h_kegiatan,#h_sub,#h_rekening,#h_ssh').val('');
-
-  if(!id) return;
-  $.get(`/ssh/program/${id}/kegiatan`, function(data){
-    data.forEach(it=>{
-      $('#f_kegiatan').append(`<option value="${it.id_kegiatan}" data-label="${it.kode_kegiatan} - ${it.nama_kegiatan}">${it.kode_kegiatan} - ${it.nama_kegiatan}</option>`);
+$(document).ready(function() {
+    // Inisialisasi Select2 yang benar
+    $('#f_program').select2({
+        placeholder: "-- Pilih Program --",
+        allowClear: true,
+        width: '100%'
     });
-    $('#f_kegiatan').prop('disabled', false);
-  });
-});
 
-// 2) Kegiatan → Sub
-$('#f_kegiatan').on('change', function(){
-  const id = $(this).val();
-  setSel('#f_kegiatan','#s_kegiatan','#h_kegiatan');
+    $('#f_kegiatan').select2({
+        placeholder: "-- Pilih Kegiatan --",
+        allowClear: true,
+        width: '100%'
+    }).prop('disabled', true);
 
-  $('#f_sub').html('<option value="">-- Pilih Sub Kegiatan --</option>').prop('disabled', !id).trigger('change');
-  $('#f_rekening').html('<option value="">-- Pilih Rekening --</option>').prop('disabled', true).trigger('change');
-  $('#f_ssh').html('<option value="">-- Pilih SSH --</option>').prop('disabled', true).trigger('change');
-  $('#s_sub,#s_rekening,#s_ssh').text('-'); $('#h_sub,#h_rekening,#h_ssh').val('');
+    $('#f_sub').select2({
+        placeholder: "-- Pilih Sub Kegiatan --",
+        allowClear: true,
+        width: '100%'
+    }).prop('disabled', true);
 
-  if(!id) return;
-  $.get(`/ssh/kegiatan/${id}/sub_kegiatan`, function(data){
-    data.forEach(it=>{
-      $('#f_sub').append(`<option value="${it.id_sub_kegiatan}" data-label="${it.kode_sub_kegiatan} - ${it.nama_sub_kegiatan}">${it.kode_sub_kegiatan} - ${it.nama_sub_kegiatan}</option>`);
+    $('#f_rekening').select2({
+        placeholder: "-- Pilih Rekening --",
+        allowClear: true,
+        width: '100%'
+    }).prop('disabled', true);
+
+    $('#f_ssh').select2({
+        placeholder: "-- Pilih SSH --",
+        allowClear: true,
+        width: '100%'
+    }).prop('disabled', true);
+
+    // Helper untuk ringkasan & hidden
+    function setSel(idSel, idShow, idHidden){
+        const $opt = $(idSel).find('option:selected');
+        $(idShow).text($opt.data('label') || $opt.text() || '-');
+        $(idHidden).val($(idSel).val() || '');
+    }
+
+    // Mask rupiah: titik ribuan, koma desimal
+    $('#i_nilai').on('input', function(){
+        let v = this.value.replace(/[^\d,]/g,'');
+        let p = v.split(',');
+        let i = p[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+        this.value = (p[1]!==undefined) ? (i+','+p[1].slice(0,2)) : i;
     });
-    $('#f_sub').prop('disabled', false);
-  });
-});
 
-// 3) Sub → Rekening
-$('#f_sub').on('change', function(){
-  const id = $(this).val();
-  setSel('#f_sub','#s_sub','#h_sub');
+    // ===== Cascading dengan Select2 Events =====
+    // 1) Program → Kegiatan
+    $('#f_program').on('select2:select select2:clear', function(e) {
+        const programId = $(this).val();
+        setSel('#f_program','#s_program','#h_program');
 
-  $('#f_rekening').html('<option value="">-- Pilih Rekening --</option>').prop('disabled', !id).trigger('change');
-  $('#f_ssh').html('<option value="">-- Pilih SSH --</option>').prop('disabled', true).trigger('change');
-  $('#s_rekening,#s_ssh').text('-'); $('#h_rekening,#h_ssh').val('');
+        // Reset semua dropdown di bawahnya
+        resetDropdowns(['kegiatan', 'sub', 'rekening', 'ssh']);
 
-  if(!id) return;
-  $.get(`/ssh/sub_kegiatan/${id}/rekening`, function(data){
-    data.forEach(it=>{
-      $('#f_rekening').append(`<option value="${it.id_rekening}" data-label="${it.kode_rekening} - ${it.nama_rekening}">${it.kode_rekening} - ${it.nama_rekening}</option>`);
+        if (e.type === 'select2:select' && programId) {
+            // Set loading state
+            setLoadingState('#f_kegiatan', 'Loading...');
+            
+            $.get(`/realisasipbj/program/${programId}/kegiatan`)
+            .done(function(data) {
+                populateSelect('#f_kegiatan', data, 'id_kegiatan', 'kode_kegiatan', 'nama_kegiatan', '-- Pilih Kegiatan --');
+            })
+            .fail(function(xhr) {
+                console.error('Error loading kegiatan:', xhr);
+                alert('Gagal memuat data kegiatan. Silakan coba lagi.');
+                resetSelect('#f_kegiatan', '-- Pilih Kegiatan --');
+            });
+        }
     });
-    $('#f_rekening').prop('disabled', false);
-  });
-});
 
-// 4) Rekening → SSH
-$('#f_rekening').on('change', function(){
-  const id = $(this).val();
-  setSel('#f_rekening','#s_rekening','#h_rekening');
+    // 2) Kegiatan → Sub Kegiatan
+    $('#f_kegiatan').on('select2:select select2:clear', function(e) {
+        const kegiatanId = $(this).val();
+        setSel('#f_kegiatan','#s_kegiatan','#h_kegiatan');
 
-  $('#f_ssh').html('<option value="">-- Pilih SSH --</option>').prop('disabled', !id).trigger('change');
-  $('#s_ssh').text('-'); $('#h_ssh').val('');
+        // Reset dropdown di bawahnya
+        resetDropdowns(['sub', 'rekening', 'ssh']);
 
-  if(!id) return;
-  $.get(`/ssh/rekening/${id}/ssh`, function(data){
-    data.forEach(it=>{
-      $('#f_ssh').append(`<option value="${it.id_ssh}" data-label="${it.kode_ssh} - ${it.nama_ssh}">${it.kode_ssh} - ${it.nama_ssh}</option>`);
+        if (e.type === 'select2:select' && kegiatanId) {
+            setLoadingState('#f_sub', 'Loading...');
+            
+            $.get(`/realisasipbj/kegiatan/${kegiatanId}/sub_kegiatan`)
+            .done(function(data) {
+                populateSelect('#f_sub', data, 'id_sub_kegiatan', 'kode_sub_kegiatan', 'nama_sub_kegiatan', '-- Pilih Sub Kegiatan --');
+            })
+            .fail(function(xhr) {
+                console.error('Error loading sub kegiatan:', xhr);
+                alert('Gagal memuat data sub kegiatan. Silakan coba lagi.');
+                resetSelect('#f_sub', '-- Pilih Sub Kegiatan --');
+            });
+        }
     });
-    $('#f_ssh').prop('disabled', false);
-  });
-});
 
-// 5) SSH → ringkasan + hidden
-$('#f_ssh').on('change', function(){
-  setSel('#f_ssh','#s_ssh','#h_ssh');
-});
+    // 3) Sub Kegiatan → Rekening
+    $('#f_sub').on('select2:select select2:clear', function(e) {
+        const subId = $(this).val();
+        setSel('#f_sub','#s_sub','#h_sub');
 
-// Cegah submit jika filter belum lengkap
-$('#form-realisasi').on('submit', function(e){
-  if(!$('#h_program').val() || !$('#h_kegiatan').val() || !$('#h_sub').val() || !$('#h_rekening').val() || !$('#h_ssh').val()){
-    e.preventDefault();
-    alert('Lengkapi pilihan Program, Kegiatan, Sub Kegiatan, Rekening, dan SSH terlebih dahulu.');
-  }
+        // Reset dropdown di bawahnya
+        resetDropdowns(['rekening', 'ssh']);
+
+        if (e.type === 'select2:select' && subId) {
+            setLoadingState('#f_rekening', 'Loading...');
+            
+            $.get(`/realisasipbj/sub_kegiatan/${subId}/rekening`)
+            .done(function(data) {
+                populateSelect('#f_rekening', data, 'id_rekening', 'kode_rekening', 'nama_rekening', '-- Pilih Rekening --');
+            })
+            .fail(function(xhr) {
+                console.error('Error loading rekening:', xhr);
+                alert('Gagal memuat data rekening. Silakan coba lagi.');
+                resetSelect('#f_rekening', '-- Pilih Rekening --');
+            });
+        }
+    });
+
+    // 4) Rekening → SSH
+    $('#f_rekening').on('select2:select select2:clear', function(e) {
+        const rekeningId = $(this).val();
+        setSel('#f_rekening','#s_rekening','#h_rekening');
+
+        // Reset dropdown SSH
+        resetDropdowns(['ssh']);
+
+        if (e.type === 'select2:select' && rekeningId) {
+            setLoadingState('#f_ssh', 'Loading...');
+            
+            $.get(`/realisasipbj/rekening/${rekeningId}/ssh`)
+            .done(function(response) {
+                console.log('SSH Response:', response);
+                
+                if (response.success) {
+                    populateSelect('#f_ssh', response.data, 'id_ssh', 'kode_ssh', 'nama_ssh', '-- Pilih SSH --');
+                    console.log(`SSH loaded: ${response.count} records found`);
+                } else {
+                    alert('Error: ' + response.error);
+                    resetSelect('#f_ssh', '-- Pilih SSH --');
+                }
+            })
+            .fail(function(xhr) {
+                console.error('Error loading SSH:', xhr);
+                console.error('Response:', xhr.responseText);
+                alert('Gagal memuat data SSH. Silakan coba lagi.');
+                resetSelect('#f_ssh', '-- Pilih SSH --');
+            });
+        }
+    });
+
+    // 5) SSH → ringkasan + hidden
+    $('#f_ssh').on('select2:select select2:clear', function() {
+        setSel('#f_ssh','#s_ssh','#h_ssh');
+    });
+
+    // ===== Helper Functions =====
+    function resetDropdowns(dropdowns) {
+        const config = {
+            'kegiatan': { selector: '#f_kegiatan', placeholder: '-- Pilih Kegiatan --', summary: '#s_kegiatan', hidden: '#h_kegiatan' },
+            'sub': { selector: '#f_sub', placeholder: '-- Pilih Sub Kegiatan --', summary: '#s_sub', hidden: '#h_sub' },
+            'rekening': { selector: '#f_rekening', placeholder: '-- Pilih Rekening --', summary: '#s_rekening', hidden: '#h_rekening' },
+            'ssh': { selector: '#f_ssh', placeholder: '-- Pilih SSH --', summary: '#s_ssh', hidden: '#h_ssh' }
+        };
+
+        dropdowns.forEach(function(dropdown) {
+            const conf = config[dropdown];
+            if (conf) {
+                resetSelect(conf.selector, conf.placeholder);
+                $(conf.summary).text('-');
+                $(conf.hidden).val('');
+            }
+        });
+    }
+
+    function resetSelect(selector, placeholder) {
+        $(selector).empty().append(`<option value="">${placeholder}</option>`);
+        $(selector).select2('destroy').select2({
+            placeholder: placeholder,
+            allowClear: true,
+            width: '100%'
+        }).prop('disabled', true);
+    }
+
+    function setLoadingState(selector, loadingText) {
+        $(selector).empty().append(`<option value="">${loadingText}</option>`);
+        $(selector).select2('destroy').select2({
+            placeholder: loadingText,
+            allowClear: true,
+            width: '100%'
+        }).prop('disabled', true);
+    }
+
+    function populateSelect(selector, data, idField, codeField, nameField, placeholder) {
+        $(selector).empty().append(`<option value="">${placeholder}</option>`);
+        
+        data.forEach(function(item) {
+            const optionText = item[codeField] ? 
+                `${item[codeField]} - ${item[nameField]}` : 
+                item[nameField];
+            $(selector).append(new Option(optionText, item[idField]));
+            
+            // Set data-label untuk summary
+            $(selector).find('option:last').attr('data-label', optionText);
+        });
+
+        $(selector).select2('destroy').select2({
+            placeholder: placeholder,
+            allowClear: true,
+            width: '100%'
+        }).prop('disabled', false);
+    }
+
+    // Validasi sebelum submit
+    $('#form-realisasi').on('submit', function(e) {
+        const requiredFields = ['#h_program', '#h_kegiatan', '#h_sub', '#h_rekening', '#h_ssh'];
+        const emptyFields = requiredFields.filter(field => !$(field).val());
+        
+        if (emptyFields.length > 0) {
+            e.preventDefault();
+            alert('Lengkapi pilihan Program, Kegiatan, Sub Kegiatan, Rekening, dan SSH terlebih dahulu.');
+            return false;
+        }
+    });
 });
 </script>
 @endpush
+
+{{-- @push('js')
+<script>
+$.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
+
+$(document).ready(function() {
+    // Inisialisasi Select2 yang benar
+    $('#f_program').select2({
+        placeholder: "-- Pilih Program --",
+        allowClear: true,
+        width: '100%'
+    });
+
+    $('#f_kegiatan').select2({
+        placeholder: "-- Pilih Kegiatan --",
+        allowClear: true,
+        width: '100%'
+    }).prop('disabled', true);
+
+    $('#f_sub').select2({
+        placeholder: "-- Pilih Sub Kegiatan --",
+        allowClear: true,
+        width: '100%'
+    }).prop('disabled', true);
+
+    $('#f_rekening').select2({
+        placeholder: "-- Pilih Rekening --",
+        allowClear: true,
+        width: '100%'
+    }).prop('disabled', true);
+
+    $('#f_ssh').select2({
+        placeholder: "-- Pilih SSH --",
+        allowClear: true,
+        width: '100%'
+    }).prop('disabled', true);
+
+    // Helper untuk ringkasan & hidden
+    function setSel(idSel, idShow, idHidden){
+        const $opt = $(idSel).find('option:selected');
+        $(idShow).text($opt.data('label') || $opt.text() || '-');
+        $(idHidden).val($(idSel).val() || '');
+    }
+
+    // Mask rupiah: titik ribuan, koma desimal
+    $('#i_nilai').on('input', function(){
+        let v = this.value.replace(/[^\d,]/g,'');
+        let p = v.split(',');
+        let i = p[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+        this.value = (p[1]!==undefined) ? (i+','+p[1].slice(0,2)) : i;
+    });
+
+    // ===== Cascading dengan Select2 Events =====
+    // 1) Program → Kegiatan
+    $('#f_program').on('select2:select select2:clear', function(e) {
+        const programId = $(this).val();
+        setSel('#f_program','#s_program','#h_program');
+
+        // Reset semua dropdown di bawahnya
+        resetDropdowns(['kegiatan', 'sub', 'rekening', 'ssh']);
+
+        if (e.type === 'select2:select' && programId) {
+            // Set loading state
+            setLoadingState('#f_kegiatan', 'Loading...');
+            
+            $.get(`/ssh/program/${programId}/kegiatan`)
+            .done(function(data) {
+                populateSelect('#f_kegiatan', data, 'id_kegiatan', 'kode_kegiatan', 'nama_kegiatan', '-- Pilih Kegiatan --');
+            })
+            .fail(function(xhr) {
+                console.error('Error loading kegiatan:', xhr);
+                alert('Gagal memuat data kegiatan. Silakan coba lagi.');
+                resetSelect('#f_kegiatan', '-- Pilih Kegiatan --');
+            });
+        }
+    });
+
+    // 2) Kegiatan → Sub Kegiatan
+    $('#f_kegiatan').on('select2:select select2:clear', function(e) {
+        const kegiatanId = $(this).val();
+        setSel('#f_kegiatan','#s_kegiatan','#h_kegiatan');
+
+        // Reset dropdown di bawahnya
+        resetDropdowns(['sub', 'rekening', 'ssh']);
+
+        if (e.type === 'select2:select' && kegiatanId) {
+            setLoadingState('#f_sub', 'Loading...');
+            
+            $.get(`/ssh/kegiatan/${kegiatanId}/sub_kegiatan`)
+            .done(function(data) {
+                populateSelect('#f_sub', data, 'id_sub_kegiatan', 'kode_sub_kegiatan', 'nama_sub_kegiatan', '-- Pilih Sub Kegiatan --');
+            })
+            .fail(function(xhr) {
+                console.error('Error loading sub kegiatan:', xhr);
+                alert('Gagal memuat data sub kegiatan. Silakan coba lagi.');
+                resetSelect('#f_sub', '-- Pilih Sub Kegiatan --');
+            });
+        }
+    });
+
+    // 3) Sub Kegiatan → Rekening
+    $('#f_sub').on('select2:select select2:clear', function(e) {
+        const subId = $(this).val();
+        setSel('#f_sub','#s_sub','#h_sub');
+
+        // Reset dropdown di bawahnya
+        resetDropdowns(['rekening', 'ssh']);
+
+        if (e.type === 'select2:select' && subId) {
+            setLoadingState('#f_rekening', 'Loading...');
+            
+            $.get(`/ssh/sub_kegiatan/${subId}/rekening`)
+            .done(function(data) {
+                populateSelect('#f_rekening', data, 'id_rekening', 'kode_rekening', 'nama_rekening', '-- Pilih Rekening --');
+            })
+            .fail(function(xhr) {
+                console.error('Error loading rekening:', xhr);
+                alert('Gagal memuat data rekening. Silakan coba lagi.');
+                resetSelect('#f_rekening', '-- Pilih Rekening --');
+            });
+        }
+    });
+
+    // 4) Rekening → SSH
+    $('#f_rekening').on('select2:select select2:clear', function(e) {
+        const rekeningId = $(this).val();
+        setSel('#f_rekening','#s_rekening','#h_rekening');
+
+        // Reset dropdown SSH
+        resetDropdowns(['ssh']);
+
+        if (e.type === 'select2:select' && rekeningId) {
+            setLoadingState('#f_ssh', 'Loading...');
+            
+            $.get(`/ssh/rekening/${rekeningId}/ssh`)
+            .done(function(data) {
+                populateSelect('#f_ssh', data, 'id_ssh', 'kode_ssh', 'nama_ssh', '-- Pilih SSH --');
+            })
+            .fail(function(xhr) {
+                console.error('Error loading SSH:', xhr);
+                alert('Gagal memuat data SSH. Silakan coba lagi.');
+                resetSelect('#f_ssh', '-- Pilih SSH --');
+            });
+        }
+    });
+
+    // 5) SSH → ringkasan + hidden
+    $('#f_ssh').on('select2:select select2:clear', function() {
+        setSel('#f_ssh','#s_ssh','#h_ssh');
+    });
+
+    // ===== Helper Functions =====
+    function resetDropdowns(dropdowns) {
+        const config = {
+            'kegiatan': { selector: '#f_kegiatan', placeholder: '-- Pilih Kegiatan --', summary: '#s_kegiatan', hidden: '#h_kegiatan' },
+            'sub': { selector: '#f_sub', placeholder: '-- Pilih Sub Kegiatan --', summary: '#s_sub', hidden: '#h_sub' },
+            'rekening': { selector: '#f_rekening', placeholder: '-- Pilih Rekening --', summary: '#s_rekening', hidden: '#h_rekening' },
+            'ssh': { selector: '#f_ssh', placeholder: '-- Pilih SSH --', summary: '#s_ssh', hidden: '#h_ssh' }
+        };
+
+        dropdowns.forEach(function(dropdown) {
+            const conf = config[dropdown];
+            if (conf) {
+                resetSelect(conf.selector, conf.placeholder);
+                $(conf.summary).text('-');
+                $(conf.hidden).val('');
+            }
+        });
+    }
+
+    function resetSelect(selector, placeholder) {
+        $(selector).empty().append(`<option value="">${placeholder}</option>`);
+        $(selector).select2('destroy').select2({
+            placeholder: placeholder,
+            allowClear: true,
+            width: '100%'
+        }).prop('disabled', true);
+    }
+
+    function setLoadingState(selector, loadingText) {
+        $(selector).empty().append(`<option value="">${loadingText}</option>`);
+        $(selector).select2('destroy').select2({
+            placeholder: loadingText,
+            allowClear: true,
+            width: '100%'
+        }).prop('disabled', true);
+    }
+
+    function populateSelect(selector, data, idField, codeField, nameField, placeholder) {
+        $(selector).empty().append(`<option value="">${placeholder}</option>`);
+        
+        data.forEach(function(item) {
+            const optionText = item[codeField] ? 
+                `${item[codeField]} - ${item[nameField]}` : 
+                item[nameField];
+            $(selector).append(new Option(optionText, item[idField]));
+            
+            // Set data-label untuk summary
+            $(selector).find('option:last').attr('data-label', optionText);
+        });
+
+        $(selector).select2('destroy').select2({
+            placeholder: placeholder,
+            allowClear: true,
+            width: '100%'
+        }).prop('disabled', false);
+    }
+
+    // Validasi sebelum submit
+    $('#form-realisasi').on('submit', function(e) {
+        const requiredFields = ['#h_program', '#h_kegiatan', '#h_sub', '#h_rekening', '#h_ssh'];
+        const emptyFields = requiredFields.filter(field => !$(field).val());
+        
+        if (emptyFields.length > 0) {
+            e.preventDefault();
+            alert('Lengkapi pilihan Program, Kegiatan, Sub Kegiatan, Rekening, dan SSH terlebih dahulu.');
+            return false;
+        }
+    });
+});
+</script>
+@endpush --}}
