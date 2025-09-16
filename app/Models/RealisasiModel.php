@@ -26,13 +26,11 @@ class RealisasiModel extends Model
         'no_dokumen',
         'nilai_realisasi',
         'tanggal_realisasi',
-        'file'
+        'file',
+        'tanggal_realisasi',
+        'nilai_realisasi' 
     ];
 
-        protected $casts = [
-        'tanggal_realisasi' => 'date',
-        'nilai_realisasi'   => 'decimal:2',
-    ];
     // Relasi ke master program
 
     public function program()
