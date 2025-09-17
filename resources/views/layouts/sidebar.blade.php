@@ -4,7 +4,7 @@
             <a href="index.html">BIRO PBJ</a>
           </div>
           <div class="sidebar-brand sidebar-brand-sm">
-            <a href="index.html">St</a>
+            <a href="index.html">BPBJ</a>
           </div>
 
         {{--sidebar menu--}}
