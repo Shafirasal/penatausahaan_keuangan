@@ -72,25 +72,7 @@ class RealisasilpseController extends Controller
         ));
     }
 
-    public function create()
-    {
-        $breadcrumb = (object)[
-            'title' => 'Form Realisasi',
-            'list' => ['Home', 'Realisasi', 'Tambah']
-        ];
 
-        $page = (object)[
-            'title' => 'Tambah Realisasi'
-        ];
-
-        $activeMenu = 'realisasi';
-        $listProgram = MasterProgramModel::select('id_program', 'nama_program', 'kode_program')->get()->map(function ($program) {
-            $program->kode_program = formatKode($program->kode_program, 'program');
-            return $program;
-        });
-
-        return view('realisasilpse.create', compact('breadcrumb', 'page', 'activeMenu', 'listProgram'));
-    }
 
     public function getSummaryByKegiatan($id_kegiatan)
     {
@@ -325,120 +307,78 @@ class RealisasilpseController extends Controller
         }
     }
 
-
-
-    public function store(Request $request)
+    public function create()
     {
-        // Validasi input
-        $validator = Validator::make($request->all(), [
-            'id_program' => 'required|integer|exists:t_master_program,id_program',
-            'id_kegiatan' => 'required|integer|exists:t_master_kegiatan,id_kegiatan',
-            'id_sub_kegiatan' => 'required|integer|exists:t_master_sub_kegiatan,id_sub_kegiatan',
-            'id_rekening' => 'required|integer|exists:t_rekening,id_rekening',
-            'id_ssh' => 'required|integer|exists:t_ssh,id_ssh',
-            'jenis_realisasi' => 'required|string|in:Kwitansi,Nota,Dokumen Lainnya',
-            'no_dokumen' => 'nullable|string|max:100',
-            'nilai_realisasi' => 'required|string',
-            'tanggal_realisasi' => 'required|date',
-            'file' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:5120', // max 5MB
-            'keterangan' => 'nullable|string|max:500',
-        ]);
+        $breadcrumb = (object)[
+            'title' => 'Form Realisasi',
+            'list' => ['Home', 'Realisasi', 'Tambah']
+        ];
 
-        if ($validator->fails()) {
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Validasi gagal.',
-                    'msgField' => $validator->errors()
-                ]);
-            }
+        $page = (object)[
+            'title' => 'Tambah Realisasi'
+        ];
 
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
+        $activeMenu = 'realisasi';
+        $listProgram = MasterProgramModel::select('id_program', 'nama_program', 'kode_program')->get()->map(function ($program) {
+            $program->kode_program = formatKode($program->kode_program, 'program');
+            return $program;
+        });
 
-        try {
-            DB::beginTransaction();
-
-            // Konversi nilai realisasi dari format "1.000,00" ke float
-            $nilaiRealisasi = $this->parseRupiahToNumber($request->nilai_realisasi);
-
-            // Persiapkan data untuk disimpan
-            $data = [
-                'id_program' => $request->id_program,
-                'id_kegiatan' => $request->id_kegiatan,
-                'id_sub_kegiatan' => $request->id_sub_kegiatan,
-                'id_rekening' => $request->id_rekening,
-                'id_ssh' => $request->id_ssh,
-                'jenis_realisasi' => $request->jenis_realisasi,
-                'no_dokumen' => $request->no_dokumen,
-                'nilai_realisasi' => $nilaiRealisasi,
-                'tanggal_realisasi' => $request->tanggal_realisasi,
-                'keterangan' => $request->keterangan,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-
-            // Handle file upload
-            if ($request->hasFile('file')) {
-                $file = $request->file('file');
-                $fileName = time() . '_' . $file->getClientOriginalName();
-                $filePath = $file->storeAs('realisasi', $fileName, 'public');
-                $data['file_path'] = $filePath;
-                $data['file_name'] = $file->getClientOriginalName();
-            }
-
-            // Simpan data realisasi
-            $realisasi = RealisasiModel::create($data);
-
-            DB::commit();
-
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Data realisasi berhasil disimpan.',
-                    'data' => $realisasi
-                ]);
-            }
-
-            return redirect()->route('realisasilpse.index')
-                ->with('success', 'Data realisasi berhasil disimpan.');
-        } catch (QueryException $e) {
-            DB::rollBack();
-
-            $message = 'Gagal menyimpan data realisasi. ';
-            if ($e->getCode() == '23000') {
-                $message .= 'Data yang sama sudah ada.';
-            } else {
-                $message .= 'Silakan coba lagi.';
-            }
-
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'status' => false,
-                    'message' => $message
-                ]);
-            }
-
-            return redirect()->back()
-                ->with('error', $message)
-                ->withInput();
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Terjadi kesalahan sistem. Silakan coba lagi.'
-                ]);
-            }
-
-            return redirect()->back()
-                ->with('error', 'Terjadi kesalahan sistem. Silakan coba lagi.')
-                ->withInput();
-        }
+        return view('realisasipbj.index', compact('breadcrumb', 'page', 'activeMenu', 'listProgram'));
     }
+
+public function store(Request $request)
+{
+    // Validasi input
+    $validated = $request->validate([
+        'id_program'        => 'required|integer|exists:t_master_program,id_program',
+        'id_kegiatan'       => 'required|integer|exists:t_master_kegiatan,id_kegiatan',
+        'id_sub_kegiatan'   => 'required|integer|exists:t_master_sub_kegiatan,id_sub_kegiatan',
+        'id_rekening'       => 'required|integer|exists:t_rekening,id_rekening',
+        'id_ssh'            => 'required|integer|exists:t_ssh,id_ssh',
+        'jenis_realisasi'   => 'required|string|in:Kwitansi,Nota,Dokumen Lainnya',
+        'no_dokumen'        => 'nullable|string|max:255',
+        'nilai_realisasi'   => 'required|string',
+        'tanggal_realisasi' => 'required|date',
+        'file'              => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:5120',
+    ]);
+
+    try {
+        DB::beginTransaction();
+
+        // Normalisasi nilai realisasi
+        $nilai = str_replace('.', '', $validated['nilai_realisasi']);
+        $nilai = str_replace(',', '.', $nilai);
+        $validated['nilai_realisasi'] = (float) $nilai;
+
+        // Handle file upload
+        if ($request->hasFile('file')) {
+            $fileName = time() . '_' . $request->file('file')->getClientOriginalName();
+            $request->file('file')->storeAs('realisasi', $fileName, 'public');
+            $validated['file'] = $fileName;
+        }
+
+        // Simpan ke DB
+        $realisasi = RealisasiModel::create($validated);
+
+        DB::commit();
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Data realisasi berhasil disimpan.',
+            'data'    => $realisasi
+        ]);
+    } catch (\Exception $e) {
+        DB::rollBack();
+
+        return response()->json([
+            'status'  => false,
+            'message' => 'Terjadi kesalahan saat menyimpan data.',
+            'error'   => $e->getMessage()
+        ], 500);
+    }
+}
+
     // ===== CRUD METHODS (placeholder) =====
 
     public function list(Request $request)

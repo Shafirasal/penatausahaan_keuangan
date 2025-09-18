@@ -30,18 +30,17 @@
             </li>
         @endif --}}
 
-        <div class="dropdown">
-            <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">
-                <i class="fas fa-calendar-alt"></i> {{ request('tahun', $tahunSekarang) }}
-            </button>
-            <div class="dropdown-menu">
-                @foreach ($tahunRange as $tahun)
-                    <a class="dropdown-item" href="#" data-value="{{ $tahun }}">
-                        {{ $tahun }}
-                    </a>
-                @endforeach
-            </div>
+        <div class="dropdown" id="dropdownTahun">
+        <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">
+            <i class="fas fa-calendar-alt"></i> {{ request('tahun', $tahunSekarang) }}
+        </button>
+        <div class="dropdown-menu">
+            @foreach ($tahunRange as $tahun)
+            <a class="dropdown-item" href="#" data-value="{{ $tahun }}">{{ $tahun }}</a>
+            @endforeach
         </div>
+        </div>
+
 
         <!-- Select tersembunyi supaya script lama tetap jalan -->
         <select id="tahun" class="d-none">
@@ -132,22 +131,16 @@
             });
         });
     });
-    if ($('.dropdown-item').length) {
-        $('.dropdown-item').on('click', function (e) {
-            e.preventDefault();
+  $('.dropdown-item[data-value]').on('click', function (e) {
+    e.preventDefault();
+    const tahun = $(this).data('value');
+    if (!tahun) return;
 
-            let tahun = $(this).data('value');
+    $('#tahun').val(tahun).trigger('change');
+    $(this).closest('.dropdown').find('.btn')
+      .html('<i class="fas fa-calendar-alt"></i> ' + tahun);
 
-            // update value di <select> tersembunyi
-            $('#tahun').val(tahun).trigger('change');
+    window.location.href = "{{ url()->current() }}?tahun=" + encodeURIComponent(tahun);
+  });
 
-            // update teks tombol biar sesuai pilihan
-            $(this).closest('.dropdown').find('.btn').html(
-                '<i class="fas fa-calendar-alt"></i> ' + tahun
-            );
-
-            // langsung reload halaman dengan parameter tahun
-            window.location.href = "{{ url()->current() }}?tahun=" + tahun;
-        });
-    }
 </script>
