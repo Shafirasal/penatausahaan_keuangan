@@ -61,4 +61,15 @@ class SshModel extends Model
         $tahun = $tahun ?? now()->year; // default tahun sekarang
         return $query->whereYear('tahun', $tahun);
     }
+
+    public function realisasi()
+    {
+        return $this->hasMany(RealisasiModel::class, 'id_ssh');
+    }
+
+    // accessor buat pagu_final
+    public function getPaguFinalAttribute()
+    {
+        return $this->pagu2 && $this->pagu2 > 0 ? $this->pagu2 : $this->pagu1;
+    }
 }
