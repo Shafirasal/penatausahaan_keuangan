@@ -16,6 +16,7 @@ use App\Http\Controllers\RiwayatKepegawaianController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\MasterKegiatanController;
 use App\Http\Controllers\MasterSubKegiatanController;
+use App\Http\Controllers\RealisasilpseController;
 use App\Http\Controllers\SSHController;
 use App\Http\Controllers\SshTreeController;
 use App\Http\Controllers\SubKegiatanController;
@@ -237,6 +238,27 @@ Route::prefix('realisasipbj')->group(function () {
     Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan',  [RealisasipbjController::class, 'getSubKegiatanByKegiatan']);
     Route::get('/sub_kegiatan/{id_sub_kegiatan}/rekening', [RealisasipbjController::class, 'getRekeningBySubKegiatan']);
     Route::get('/rekening/{id_rekening}/ssh',           [RealisasipbjController::class, 'getSshByRekening']);
+});
+
+Route::prefix('realisasilpse')->group(function () {
+    // DataTables
+    Route::post('/list', [RealisasilpseController::class, 'list']);
+
+    // CRUD
+    Route::get('/', [RealisasilpseController::class, 'index']);
+    Route::get('/create', [RealisasilpseController::class, 'create']);
+    Route::post('/store', [RealisasilpseController::class, 'store']);
+    Route::get('/{id}/edit', [RealisasilpseController::class, 'edit']);
+    Route::put('/{id}/update', [RealisasilpseController::class, 'update']);
+    Route::get('/{id}/confirm', [RealisasilpseController::class, 'confirm']);
+    Route::delete('/{id}/delete', [RealisasilpseController::class, 'delete']);
+
+    // Cascading select
+    Route::get('/program/{id_program}/kegiatan',        [RealisasilpseController::class, 'getKegiatanByProgram']);
+    Route::get('/kegiatan/{id_kegiatan}/summary',        [RealisasilpseController::class, 'getSummaryByKegiatan']);
+    Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan',  [RealisasilpseController::class, 'getSubKegiatanByKegiatan']);
+    Route::get('/sub_kegiatan/{id_sub_kegiatan}/rekening', [RealisasilpseController::class, 'getRekeningBySubKegiatan']);
+    Route::get('/rekening/{id_rekening}/ssh',           [RealisasilpseController::class, 'getSshByRekening']);
 });
 
 
