@@ -106,6 +106,34 @@ class RealisasilpseController extends Controller
             ], 500);
         }
     }
+    public function getSummaryBySsh($id_ssh)
+{
+    try {
+        // Ambil data SSH beserta relasi realisasi
+        $ssh = SshModel::with('realisasi')->findOrFail($id_ssh);
+
+        // Hitung total pagu & realisasi
+        $total_pagu = (float) $ssh->pagu_final;
+        $total_realisasi = (float) $ssh->realisasi->sum('nilai_realisasi');
+
+        $sisa = $total_pagu - $total_realisasi;
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'pagu_final'      => $total_pagu,
+                'total_realisasi' => $total_realisasi,
+                'sisa'            => $sisa,
+            ]
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal menghitung summary SSH: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
 
 
     // ===== CASCADING DROPDOWN METHODS =====

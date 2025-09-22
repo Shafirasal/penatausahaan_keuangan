@@ -256,6 +256,7 @@ Route::prefix('realisasilpse')->group(function () {
     // Cascading select
     Route::get('/program/{id_program}/kegiatan',        [RealisasilpseController::class, 'getKegiatanByProgram']);
     Route::get('/kegiatan/{id_kegiatan}/summary',        [RealisasilpseController::class, 'getSummaryByKegiatan']);
+    Route::get('/ssh/{id_ssh}/summary',        [RealisasilpseController::class, 'getSummaryBySsh']);
     Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan',  [RealisasilpseController::class, 'getSubKegiatanByKegiatan']);
     Route::get('/sub_kegiatan/{id_sub_kegiatan}/rekening', [RealisasilpseController::class, 'getRekeningBySubKegiatan']);
     Route::get('/rekening/{id_rekening}/ssh',           [RealisasilpseController::class, 'getSshByRekening']);
