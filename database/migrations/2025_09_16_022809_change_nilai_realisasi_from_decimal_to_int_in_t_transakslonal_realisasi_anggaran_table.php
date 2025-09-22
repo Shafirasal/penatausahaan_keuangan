@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('t_transakslonal_realisasi_anggaran', function (Blueprint $table) {
+        Schema::table('t_transaksional_realisasi_anggaran', function (Blueprint $table) {
             $table->integer('nilai_realisasi')->change();
         });
     }
