@@ -508,7 +508,8 @@
                         required: true
                     },
                     no_dokumen: {
-                        maxlength: 50
+                        maxlength: 50,
+                        required: true
                     },
                     nilai_realisasi: {
                         required: true,
