@@ -1,6 +1,6 @@
 @extends('layouts.template')
 
-@section('title') | Form Realisasi @endsection
+@section('title') | Form Realisasi PBJ @endsection
 
 @section('content')
 <section class="section">
@@ -9,12 +9,14 @@
     @include('layouts.breadcrumb', ['list' => $breadcrumb->list])
   </div>
 
-  @if(session('success'))
+  @if (session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
   @endif
   @if ($errors->any())
     <div class="alert alert-danger">
-      <ul class="mb-0">@foreach ($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
+      <ul class="mb-0">
+        @foreach ($errors->all() as $e)<li>{{ $e }}</li>@endforeach
+      </ul>
     </div>
   @endif
 
@@ -26,27 +28,23 @@
         {{-- KIRI: filter bertingkat (2 atas, 2 bawah, SSH full) --}}
         <div class="col-lg-7">
           <div class="row">
-            {{-- Row 1 --}}
+            {{-- Row 1: Program & Kegiatan LOCK (readonly) --}}
             <div class="col-sm-6">
               <div class="form-group">
                 <label><strong>Program</strong></label>
-                <select id="f_program" class="form-control">
-                  <option value="">-- Pilih Program --</option>
-                  @foreach ($listProgram as $p)
-                    <option value="{{ $p->id_program }}"
-                            data-label="{{ $p->kode_program.' - '.$p->nama_program }}">
-                      {{ $p->kode_program }} - {{ $p->nama_program }}
-                    </option>
-                  @endforeach
-                </select>
+                <input id="program_display" type="text" class="form-control"
+                  value="{{ $program->kode_program_formatted }} - {{ $program->nama_program }}"
+                  data-label="{{ $program->kode_program_formatted }} - {{ $program->nama_program }}"
+                  readonly>
               </div>
             </div>
             <div class="col-sm-6">
               <div class="form-group">
                 <label><strong>Kegiatan</strong></label>
-                <select id="f_kegiatan" class="form-control" disabled>
-                  <option value="">-- Pilih Kegiatan --</option>
-                </select>
+                <input id="kegiatan_display" type="text" class="form-control"
+                  value="{{ $kegiatan->kode_kegiatan_formatted }} - {{ $kegiatan->nama_kegiatan }}"
+                  data-label="{{ $kegiatan->kode_kegiatan_formatted }} - {{ $kegiatan->nama_kegiatan }}"
+                  readonly>
               </div>
             </div>
 
@@ -68,7 +66,7 @@
               </div>
             </div>
 
-            {{-- Row 3: SSH full width --}}
+            {{-- Row 3: SSH full --}}
             <div class="col-12">
               <div class="form-group mb-0">
                 <label><strong>SSH</strong></label>
@@ -77,20 +75,38 @@
                 </select>
               </div>
             </div>
+
+            {{-- Row 4: Pagu & Sisa --}}
+            <div class="col-sm-6 mt-3">
+              <div class="form-group">
+                <label><strong>Pagu</strong></label>
+                <div class="border rounded p-2 bg-light">
+                  <p class="mb-0 font-weight-bold text-dark" id="s_pagu_final">Rp -</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 mt-3">
+              <div class="form-group">
+                <label><strong>Sisa</strong></label>
+                <div class="border rounded p-2 bg-light">
+                  <p class="mb-0 font-weight-bold text-dark" id="s_sisa">Rp -</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {{-- KANAN: ringkasan pilihan --}}
+        {{-- KANAN: Ringkasan pilihan --}}
         <div class="col-lg-5">
           <div class="card border">
             <div class="card-header py-2"><strong>Ringkasan Pilihan</strong></div>
             <div class="card-body p-0">
               <table class="table mb-0">
-                <tr><th style="width:180px">Program</th>     <td id="s_program">-</td></tr>
-                <tr><th>Kegiatan</th>                         <td id="s_kegiatan">-</td></tr>
-                <tr><th>Sub Kegiatan</th>                     <td id="s_sub">-</td></tr>
-                <tr><th>Rekening</th>                         <td id="s_rekening">-</td></tr>
-                <tr><th>SSH</th>                              <td id="s_ssh">-</td></tr>
+                <tr><th style="width:180px">Program</th><td id="s_program">-</td></tr>
+                <tr><th>Kegiatan</th>      <td id="s_kegiatan">-</td></tr>
+                <tr><th>Sub Kegiatan</th>  <td id="s_sub">-</td></tr>
+                <tr><th>Rekening</th>      <td id="s_rekening">-</td></tr>
+                <tr><th>SSH</th>           <td id="s_ssh">-</td></tr>
               </table>
             </div>
           </div>
@@ -103,12 +119,12 @@
   {{-- ===================== FORM REALISASI ===================== --}}
   <form action="{{ url('/realisasipbj/store') }}" method="POST" enctype="multipart/form-data" id="form-tambah">
     @csrf
-    {{-- hidden IDs dari filter --}}
-    <input type="hidden" name="id_program" id="h_program">
-    <input type="hidden" name="id_kegiatan" id="h_kegiatan">
+    {{-- hidden id (LOCK) --}}
+    <input type="hidden" name="id_program"  id="h_program"  value="{{ $program->id_program }}">
+    <input type="hidden" name="id_kegiatan" id="h_kegiatan" value="{{ $kegiatan->id_kegiatan }}">
     <input type="hidden" name="id_sub_kegiatan" id="h_sub">
-    <input type="hidden" name="id_rekening" id="h_rekening">
-    <input type="hidden" name="id_ssh" id="h_ssh">
+    <input type="hidden" name="id_rekening"     id="h_rekening">
+    <input type="hidden" name="id_ssh"          id="h_ssh">
 
     <div class="card">
       <div class="card-header"><h4>Realisasi</h4></div>
@@ -154,19 +170,6 @@
               <input type="file" name="file" class="form-control">
             </div>
           </div>
-
-          {{-- <div class="col-12">
-            <div class="form-group mb-0">
-              <label>Keterangan</label>
-              <textarea name="keterangan" rows="3" class="form-control">{{ old('keterangan') }}</textarea>
-            </div>
-          </div>
-
-          <div class="col-12 mt-3">
-            <div class="alert alert-secondary">
-              Tambah Pelaksana Swakelola setelah selesai menyimpan realisasi.
-            </div>
-          </div> --}}
         </div>
       </div>
 
@@ -183,503 +186,328 @@
 <script>
 $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
 
-$(document).ready(function () {
-    // ===== Modal parent (fallback ke body jika #myModal tidak ada) =====
-    function modalParent() {
-        return ($('#myModal').length ? $('#myModal') : $(document.body));
-    }
-    const dp = { dropdownParent: modalParent(), allowClear: true, width: '100%' };
+$(function() {
+  function modalParent(){ return ($('#myModal').length ? $('#myModal') : $(document.body)); }
+  const dp = { dropdownParent: modalParent(), allowClear: true, width: '100%' };
 
-    // ===== INIT Select2 =====
-    $('#f_program').select2({ ...dp, placeholder: "Pilih Program" });
-    $('#f_kegiatan').select2({ ...dp, placeholder: "Pilih Kegiatan" }).prop('disabled', true);
-    $('#f_sub').select2({ ...dp, placeholder: "Pilih Sub Kegiatan" }).prop('disabled', true);
-    $('#f_rekening').select2({ ...dp, placeholder: "Pilih Rekening" }).prop('disabled', true);
-    $('#f_ssh').select2({ ...dp, placeholder: "Pilih SSH" }).prop('disabled', true);
+  // init select2
+  $('#f_sub').select2({ placeholder: "-- Pilih Sub Kegiatan --", allowClear: true, width: '100%' }).prop('disabled', false);
+  $('#f_rekening').select2({ placeholder: "-- Pilih Rekening --",      allowClear: true, width: '100%' }).prop('disabled', true);
+  $('#f_ssh').select2({ placeholder: "-- Pilih SSH --",                allowClear: true, width: '100%' }).prop('disabled', true);
 
-    // ===== Helpers =====
-    function setLoading($el, text) {
-        $el.empty().append(`<option value="">${text}</option>`);
-        $el.select2('destroy').select2({ ...dp, placeholder: text }).prop('disabled', true);
-    }
-    function resetSelect($el, placeholder) {
-        $el.empty().append(`<option value="">-- ${placeholder} --</option>`);
-        $el.select2('destroy').select2({ ...dp, placeholder: `-- ${placeholder} --` }).prop('disabled', true);
-    }
-    function populateSelect($el, data, idField, codeField, nameField, placeholder) {
-        $el.empty().append(`<option value="">-- ${placeholder} --</option>`);
-        data.forEach(item => {
-            const label = item[codeField] ? `${item[codeField]} - ${item[nameField]}` : item[nameField];
-            const opt = new Option(label, item[idField]);
-            $(opt).attr('data-label', label);
-            $el.append(opt);
+  // helper ringkasan + hidden
+  function setSel(idSel, idShow, idHidden){
+    const $opt = $(idSel).find('option:selected');
+    $(idShow).text($opt.data('label') || $opt.text() || '-');
+    $(idHidden).val($(idSel).val() || '');
+  }
+
+  // set ringkasan awal dari display lock
+  $('#s_program').text($('#program_display').data('label'));
+  $('#s_kegiatan').text($('#kegiatan_display').data('label'));
+
+  // Ambil summary kegiatan (pagu&sisa)
+  const kegiatanId = $('#h_kegiatan').val();
+  if (kegiatanId) {
+    $.get(`/realisasipbj/kegiatan/${kegiatanId}/summary`).done(function(resp){
+      if (resp?.success){
+        const { total_pagu, sisa } = resp.data;
+        $('#s_pagu_final').text(formatRupiah(total_pagu));
+        $('#s_sisa').text(formatRupiah(sisa));
+      }
+    });
+
+    // Load sub kegiatan awal
+    $.get(`/realisasipbj/kegiatan/${kegiatanId}/sub_kegiatan`)
+     .done(function(resp){
+        if(resp?.success){
+          populateSelect('#f_sub', resp.data, 'id_sub_kegiatan', 'kode_sub_kegiatan', 'nama_sub_kegiatan', '-- Pilih Sub Kegiatan --');
+        }else{
+          alert('Gagal memuat data sub kegiatan: ' + (resp?.message || ''));
+          resetSelect('#f_sub', '-- Pilih Sub Kegiatan --');
+        }
+     })
+     .fail(function(){
+        alert('Gagal memuat data sub kegiatan.');
+        resetSelect('#f_sub', '-- Pilih Sub Kegiatan --');
+     });
+  }
+
+  // Sub -> Rekening
+  $('#f_sub').on('select2:select select2:clear', function(e){
+    const $opt = $(this).find('option:selected');
+    setSel('#f_sub', '#s_sub', '#h_sub');
+    resetDropdowns(['rekening','ssh']);
+
+    if (e.type === 'select2:select' && $opt.length){
+      const pagu_final = $opt.data('total_pagu') || 0;
+      const sisa = $opt.data('sisa') || 0;
+      $('#s_pagu_final').text(formatRupiah(pagu_final));
+      $('#s_sisa').text(formatRupiah(sisa));
+
+      const subId = $opt.val();
+      setLoadingState('#f_rekening', 'Loading...');
+      $.get(`/realisasipbj/sub_kegiatan/${subId}/rekening`)
+        .done(function(resp){
+          if(resp?.success){
+            populateSelect('#f_rekening', resp.data, 'id_rekening', 'kode_rekening', 'nama_rekening', '-- Pilih Rekening --');
+          }else{
+            alert('Gagal memuat data rekening: ' + (resp?.message || ''));
+            resetSelect('#f_rekening', '-- Pilih Rekening --');
+          }
+        })
+        .fail(function(){
+          alert('Gagal memuat data rekening.');
+          resetSelect('#f_rekening', '-- Pilih Rekening --');
         });
-        $el.select2('destroy').select2({ ...dp, placeholder: `-- ${placeholder} --` }).prop('disabled', false);
     }
-    function setSel(idSel, idShow, idHidden) {
-        const $opt = $(idSel).find('option:selected');
-        const selectedValue = $(idSel).val();
-        const labelText = $opt.data('label') || $opt.text() || '-';
-        $(idShow).text(labelText);
-        $(idHidden).val(selectedValue || '');
-    }
-    function clearSummary(keys) {
-        const map = {
-            kegiatan: ['#f_kegiatan', '#s_kegiatan', '#h_kegiatan', 'Pilih Kegiatan'],
-            sub:      ['#f_sub', '#s_sub', '#h_sub', 'Pilih Sub Kegiatan'],
-            rekening: ['#f_rekening', '#s_rekening', '#h_rekening', 'Pilih Rekening'],
-            ssh:      ['#f_ssh', '#s_ssh', '#h_ssh', 'Pilih SSH'],
-        };
-        keys.forEach(k => {
-            const [sel, sum, hid, ph] = map[k] || [];
-            if (!sel) return;
-            resetSelect($(sel), ph);
-            $(sum).text('-'); $(hid).val('');
-        });
-    }
+  });
 
-    // ===== Formatting Rupiah (tanpa simbol) =====
-    $('#i_nilai').on('input', function(){
-        let v = this.value.replace(/[^\d]/g,'');
-        this.value = v ? parseInt(v,10).toLocaleString('id-ID') : '';
-        $('#error-i_nilai').text('');
-    });
+  // Rekening -> SSH
+  $('#f_rekening').on('select2:select select2:clear', function(e){
+    const $opt = $(this).find('option:selected');
+    setSel('#f_rekening', '#s_rekening', '#h_rekening');
+    resetDropdowns(['ssh']);
 
-    // ===== Cascading Select2 =====
-    $('#f_program').on('select2:select select2:clear', function(e) {
-        const id = $(this).val();
-        setSel('#f_program','#s_program','#h_program');
-        clearSummary(['kegiatan','sub','rekening','ssh']);
+    if (e.type === 'select2:select' && $opt.length){
+      const pagu_final = $opt.data('total_pagu') || 0;
+      const sisa = $opt.data('sisa') || 0;
+      $('#s_pagu_final').text(formatRupiah(pagu_final));
+      $('#s_sisa').text(formatRupiah(sisa));
 
-        if (e.type === 'select2:select' && id) {
-            setLoading($('#f_kegiatan'), 'Loading...');
-            $.get(`/realisasipbj/program/${id}/kegiatan`)
-              .done(d => populateSelect($('#f_kegiatan'), d, 'id_kegiatan','kode_kegiatan','nama_kegiatan','Pilih Kegiatan'))
-              .fail(() => { alert('Gagal memuat data kegiatan'); resetSelect($('#f_kegiatan'),'Pilih Kegiatan'); });
-        }
-    });
-
-    $('#f_kegiatan').on('select2:select select2:clear', function(e) {
-        const id = $(this).val();
-        setSel('#f_kegiatan','#s_kegiatan','#h_kegiatan');
-        clearSummary(['sub','rekening','ssh']);
-
-        if (e.type === 'select2:select' && id) {
-            setLoading($('#f_sub'), 'Loading...');
-            $.get(`/realisasipbj/kegiatan/${id}/sub_kegiatan`)
-              .done(d => populateSelect($('#f_sub'), d, 'id_sub_kegiatan','kode_sub_kegiatan','nama_sub_kegiatan','Pilih Sub Kegiatan'))
-              .fail(() => { alert('Gagal memuat data sub kegiatan'); resetSelect($('#f_sub'),'Pilih Sub Kegiatan'); });
-        }
-    });
-
-    $('#f_sub').on('select2:select select2:clear', function(e) {
-        const id = $(this).val();
-        setSel('#f_sub','#s_sub','#h_sub');
-        clearSummary(['rekening','ssh']);
-
-        if (e.type === 'select2:select' && id) {
-            setLoading($('#f_rekening'), 'Loading...');
-            $.get(`/realisasipbj/sub_kegiatan/${id}/rekening`)
-              .done(d => populateSelect($('#f_rekening'), d, 'id_rekening','kode_rekening','nama_rekening','Pilih Rekening'))
-              .fail(() => { alert('Gagal memuat data rekening'); resetSelect($('#f_rekening'),'Pilih Rekening'); });
-        }
-    });
-
-    $('#f_rekening').on('select2:select select2:clear', function(e) {
-        const id = $(this).val();
-        setSel('#f_rekening','#s_rekening','#h_rekening');
-        clearSummary(['ssh']);
-
-        if (e.type === 'select2:select' && id) {
-            setLoading($('#f_ssh'), 'Loading...');
-            $.get(`/realisasipbj/rekening/${id}/ssh`)
-              .done(resp => {
-                  if (resp?.success) {
-                      populateSelect($('#f_ssh'), resp.data, 'id_ssh','kode_ssh','nama_ssh','Pilih SSH');
-                  } else {
-                      alert(resp?.error || 'Gagal memuat data SSH');
-                      resetSelect($('#f_ssh'),'Pilih SSH');
-                  }
-              })
-              .fail(() => { alert('Gagal memuat data SSH'); resetSelect($('#f_ssh'),'Pilih SSH'); });
-        }
-    });
-
-    $('#f_ssh').on('select2:select select2:clear', function() {
-        setSel('#f_ssh','#s_ssh','#h_ssh');
-    });
-
-    // ===== jQuery Validate (mirror SSH + file rules + Select2 handling) =====
-    // Custom method: filesize (byte)
-    $.validator.addMethod("filesize", function (value, element, param) {
-        if (this.optional(element) || !element.files || !element.files[0]) return true;
-        return element.files[0].size <= param;
-    }, "Ukuran file terlalu besar.");
-
-    $("#form-tambah").validate({
-        ignore: [], // penting agar select2 tervalidasi
-        rules: {
-            id_program:      { required: true },
-            id_kegiatan:     { required: true },
-            id_sub_kegiatan: { required: true },
-            id_rekening:     { required: true },
-            id_ssh:          { required: true },
-
-            jenis_realisasi: { required: true },
-            no_dokumen:      { maxlength: 50 }, // opsional, batasi panjang
-            nilai_realisasi: {
-                required: true,
-                number: true,
-                min: 1,
-                normalizer: function(value){
-                    const v = (value || '').replace(/[^\d]/g,'');
-                    return v ? String(parseInt(v,10)) : '';
-                }
-            },
-            tanggal_realisasi: { required: true },
-            file: { extension: "pdf,jpg,jpeg,png,doc,docx", filesize: 5 * 1024 * 1024 } // 5MB
-        },
-        messages: {
-            id_program:      { required: "Program wajib dipilih." },
-            id_kegiatan:     { required: "Kegiatan wajib dipilih." },
-            id_sub_kegiatan: { required: "Sub kegiatan wajib dipilih." },
-            id_rekening:     { required: "Rekening wajib dipilih." },
-            id_ssh:          { required: "SSH wajib dipilih." },
-
-            jenis_realisasi: { required: "Jenis realisasi wajib dipilih." },
-            no_dokumen:      { maxlength: "Maksimal 100 karakter." },
-            nilai_realisasi: {
-                required: "Nilai realisasi wajib diisi.",
-                number:   "Masukkan angka yang valid.",
-                min:      "Nilai realisasi harus lebih dari 0."
-            },
-            tanggal_realisasi: { required: "Tanggal realisasi wajib diisi." },
-            file: {
-                extension: "Format file harus pdf, jpg, jpeg, png, doc, atau docx.",
-                filesize:  "Ukuran file maksimum 5 MB."
-            }
-        },
-        // tempatkan error di .form-group, dan tangani select2
-        errorElement: 'span',
-        errorPlacement: function(error, element) {
-            error.addClass('invalid-feedback');
-            if (element.hasClass('select2-hidden-accessible')) {
-                element.next('.select2').closest('.form-group').append(error);
-            } else {
-                element.closest('.form-group').append(error);
-            }
-        },
-        highlight: function(element) {
-            if ($(element).hasClass('select2-hidden-accessible')) {
-                $(element).next('.select2').find('.select2-selection').addClass('is-invalid');
-            } else {
-                $(element).addClass('is-invalid');
-            }
-        },
-        unhighlight: function(element) {
-            if ($(element).hasClass('select2-hidden-accessible')) {
-                $(element).next('.select2').find('.select2-selection').removeClass('is-invalid');
-            } else {
-                $(element).removeClass('is-invalid');
-            }
-        },
-        // SUBMIT dengan FormData (supaya file ikut terkirim)
-        submitHandler: function(form) {
-            // siapkan nilai angka murni untuk backend
-            const nilaiClean = ($('#i_nilai').val() || '').replace(/[^\d]/g, '');
-            // pastikan hidden nilai clean ikut
-            let $hidden = $(form).find('input[name="nilai_realisasi_clean"]');
-            if ($hidden.length === 0) {
-                $('<input>', { type: 'hidden', name: 'nilai_realisasi_clean', value: nilaiClean }).appendTo(form);
-            } else {
-                $hidden.val(nilaiClean);
-            }
-
-            const fd = new FormData(form); // ambil semua field termasuk file
-
-            $.ajax({
-                url: form.action,
-                type: form.method,
-                data: fd,
-                processData: false, // penting untuk FormData
-                contentType: false, // penting untuk FormData
-                success: function (response) {
-                    if (response?.status) {
-                        // kalau ada modal, tutup; kalau tidak ada, biarkan saja
-                        if ($('#myModal').length) { $('#myModal').modal('hide'); }
-                        Swal.fire({ icon: 'success', title: 'Berhasil', text: response.message });
-                        if (typeof dataRealisasi !== 'undefined') dataRealisasi.ajax.reload();
-                        // opsional: reset form
-                        // form.reset();
-                    } else {
-                        Swal.fire({ icon: 'error', title: 'Gagal', text: response?.message || 'Terjadi kesalahan.' });
-                    }
-                },
-                error: function (xhr) {
-                    // bersihkan pesan error inline
-                    $('.invalid-feedback').remove();
-                    $('.is-invalid').removeClass('is-invalid');
-
-                    if (xhr.status === 422 && xhr.responseJSON?.errors) {
-                        const errors = xhr.responseJSON.errors;
-                        // tampilkan di bawah field yang sesuai jika punya name yang cocok
-                        $.each(errors, function (field, messages) {
-                            const $field = $(`[name="${field}"]`);
-                            if ($field.length) {
-                                const $group = $field.hasClass('select2-hidden-accessible')
-                                    ? $field.next('.select2').closest('.form-group')
-                                    : $field.closest('.form-group');
-                                const $err = $('<span class="invalid-feedback"></span>').text(messages[0]);
-                                $group.append($err);
-                                if ($field.hasClass('select2-hidden-accessible')) {
-                                    $field.next('.select2').find('.select2-selection').addClass('is-invalid');
-                                } else {
-                                    $field.addClass('is-invalid');
-                                }
-                            }
-                            // tetap dukung span manual #error-<field> jika ada
-                            $('#error-' + field).text(messages[0]);
-                        });
-                        Swal.fire({ icon: 'error', title: 'Validasi Gagal', text: 'Silakan periksa inputan Anda.' });
-                    } else {
-                        Swal.fire({ icon: 'error', title: 'Server Error', text: 'Terjadi kesalahan di server.' });
-                    }
-                }
+      const rekeningId = $opt.val();
+      setLoadingState('#f_ssh', 'Loading...');
+      $.get(`/realisasipbj/rekening/${rekeningId}/ssh`)
+        .done(function(resp){
+          if(resp?.success){
+            $('#f_ssh').empty().append(`<option value="">-- Pilih SSH --</option>`);
+            resp.data.forEach(function(item){
+              const label = `${item.kode_ssh} - ${item.nama_ssh}`;
+              const opt = new Option(label, item.id_ssh);
+              $(opt).attr('data-label', label)
+                    .attr('data-pagu_final', item.pagu_final)
+                    .attr('data-sisa', item.sisa);
+              $('#f_ssh').append(opt);
             });
-            return false; // cegah submit normal
-        }
-    });
+            $('#f_ssh').select2('destroy').select2({ placeholder:'-- Pilih SSH --', allowClear:true, width:'100%' }).prop('disabled', false);
+          }else{
+            alert('Error: ' + (resp?.error || ''));
+            resetSelect('#f_ssh', '-- Pilih SSH --');
+          }
+        })
+        .fail(function(){
+          alert('Gagal memuat data SSH.');
+          resetSelect('#f_ssh', '-- Pilih SSH --');
+        });
+    }
+  });
 
-    // ===== Bersihkan error saat user memilih ulang (UX) =====
-    $('#f_program,#f_kegiatan,#f_sub,#f_rekening,#f_ssh').on('select2:select select2:clear', function(){
-        if ($(this).hasClass('select2-hidden-accessible')) {
-            $(this).next('.select2').find('.select2-selection').removeClass('is-invalid');
-            $(this).next('.select2').closest('.form-group').find('.invalid-feedback').remove();
-        }
-    });
+  // SSH -> Ringkasan
+  $('#f_ssh').on('select2:select select2:clear', function(){
+    setSel('#f_ssh', '#s_ssh', '#h_ssh');
+    const $opt = $(this).find('option:selected');
+    const pagu_final = $opt.data('pagu_final') || 0;
+    const sisa       = $opt.data('sisa') || 0;
+    $('#s_pagu_final').text(formatRupiah(pagu_final));
+    $('#s_sisa').text(formatRupiah(sisa));
+  });
 
+  // resets
+  function resetDropdowns(dropdowns){
+    const cfg = {
+      'sub':      { selector:'#f_sub',      placeholder:'-- Pilih Sub Kegiatan --', summary:'#s_sub',      hidden:'#h_sub' },
+      'rekening': { selector:'#f_rekening', placeholder:'-- Pilih Rekening --',     summary:'#s_rekening', hidden:'#h_rekening' },
+      'ssh':      { selector:'#f_ssh',      placeholder:'-- Pilih SSH --',           summary:'#s_ssh',      hidden:'#h_ssh' },
+    };
+    dropdowns.forEach(function(d){
+      const c = cfg[d]; if(!c) return;
+      resetSelect(c.selector, c.placeholder);
+      $(c.summary).text('-');
+      $(c.hidden).val('');
+    });
+    if (dropdowns.includes('ssh')){
+      $('#s_pagu_final').text('Rp -');
+      $('#s_sisa').text('Rp -');
+    }
+  }
+
+  function resetSelect(selector, placeholder){
+    $(selector).empty().append(`<option value="">${placeholder}</option>`);
+    $(selector).select2('destroy').select2({ placeholder, allowClear:true, width:'100%' }).prop('disabled', true);
+  }
+
+  function setLoadingState(selector, loadingText){
+    $(selector).empty().append(`<option value="">${loadingText}</option>`);
+    $(selector).select2('destroy').select2({ placeholder: loadingText, allowClear:true, width:'100%' }).prop('disabled', true);
+  }
+
+  function populateSelect(selector, data, idField, codeField, nameField, placeholder){
+    $(selector).empty().append(`<option value="">${placeholder}</option>`);
+    data.forEach(function(item){
+      const text = item[codeField] ? `${item[codeField]} - ${item[nameField]}` : item[nameField];
+      $(selector).append(new Option(text, item[idField]));
+      $(selector).find('option:last').attr('data-label', text);
+      if (item.total_pagu !== undefined){
+        $(selector).find('option:last')
+          .attr('data-total_pagu', item.total_pagu)
+          .attr('data-total_realisasi', item.total_realisasi || 0)
+          .attr('data-sisa', item.sisa || 0);
+      }
+    });
+    $(selector).select2('destroy').select2({ placeholder, allowClear:true, width:'100%' }).prop('disabled', false);
+  }
+
+  function formatRupiah(angka){
+    return new Intl.NumberFormat('id-ID', { style:'currency', currency:'IDR' }).format(angka || 0);
+  }
+
+  // Masker angka
+  $('#i_nilai').on('input', function(){
+    let v = this.value.replace(/[^\d]/g,'');
+    this.value = v ? parseInt(v,10).toLocaleString('id-ID') : '';
+  });
+
+  // jQuery Validate: aturan & AJAX submit (disamakan)
+  $.validator.addMethod("filesize", function(value, element, param){
+    if (this.optional(element) || !element.files || !element.files[0]) return true;
+    return element.files[0].size <= param;
+  }, "Ukuran file terlalu besar.");
+
+  $("#form-tambah").validate({
+    ignore: [],
+    rules: {
+      id_program:{ required:true },
+      id_kegiatan:{ required:true },
+      id_sub_kegiatan:{ required:true },
+      id_rekening:{ required:true },
+      id_ssh:{ required:true },
+      jenis_realisasi:{ required:true },
+      no_dokumen:{ maxlength:50, required:true },
+      nilai_realisasi:{
+        required:true, number:true, min:1,
+        normalizer:function(value){
+          const v=(value||'').replace(/[^\d]/g,'');
+          return v ? String(parseInt(v,10)) : '';
+        }
+      },
+      tanggal_realisasi:{ required:true },
+      file:{ extension:"pdf,jpg,jpeg,png,doc,docx", filesize:5*1024*1024 }
+    },
+    messages:{
+      id_program:{ required:"Program wajib dipilih." },
+      id_kegiatan:{ required:"Kegiatan wajib dipilih." },
+      id_sub_kegiatan:{ required:"Sub kegiatan wajib dipilih." },
+      id_rekening:{ required:"Rekening wajib dipilih." },
+      id_ssh:{ required:"SSH wajib dipilih." },
+      jenis_realisasi:{ required:"Jenis realisasi wajib dipilih." },
+      no_dokumen:{ maxlength:"Maksimal 50 karakter." },
+      nilai_realisasi:{ required:"Nilai realisasi wajib diisi.", number:"Masukkan angka yang valid.", min:"Nilai realisasi harus lebih dari 0." },
+      tanggal_realisasi:{ required:"Tanggal realisasi wajib diisi." },
+      file:{ extension:"Format file harus pdf, jpg, jpeg, png, doc, atau docx.", filesize:"Ukuran file maksimum 5 MB." }
+    },
+    errorElement:'span',
+    errorPlacement:function(error,element){
+      error.addClass('invalid-feedback');
+      if (element.hasClass('select2-hidden-accessible')) {
+        element.next('.select2').closest('.form-group').append(error);
+      } else {
+        element.closest('.form-group').append(error);
+      }
+    },
+    highlight:function(element){
+      if ($(element).hasClass('select2-hidden-accessible')) {
+        $(element).next('.select2').find('.select2-selection').addClass('is-invalid');
+      } else {
+        $(element).addClass('is-invalid');
+      }
+    },
+    unhighlight:function(element){
+      if ($(element).hasClass('select2-hidden-accessible')) {
+        $(element).next('.select2').find('.select2-selection').removeClass('is-invalid');
+      } else {
+        $(element).removeClass('is-invalid');
+      }
+    },
+    submitHandler:function(form){
+      const nilaiClean = ($('#i_nilai').val() || '').replace(/[^\d]/g, '');
+      let $hidden = $(form).find('input[name="nilai_realisasi_clean"]');
+      if ($hidden.length === 0) {
+        $('<input>', { type:'hidden', name:'nilai_realisasi_clean', value: nilaiClean }).appendTo(form);
+      } else {
+        $hidden.val(nilaiClean);
+      }
+
+      const fd = new FormData(form);
+      $.ajax({
+        url: form.action,
+        type: form.method,
+        data: fd,
+        processData:false,
+        contentType:false,
+        success:function(res){
+          if (res?.status){
+            Swal.fire({ icon:'success', title:'Berhasil', text: res.message || 'Data tersimpan.' })
+            .then(()=>{
+              // 1) reset form input
+              $('#form-tambah')[0].reset();
+              $('#i_nilai').val(''); $('input[name="file"]').val('');
+
+              // 2) JANGAN reset pilihan dropdown filter
+              // 3) Update pagu&sisa berdasar SSH aktif
+              const sshId = $('#h_ssh').val();
+              if (sshId){
+                $.get(`/realisasipbj/ssh/${sshId}/summary`, { _: Date.now() })
+                 .done(function(resp){
+                   if (resp?.success){
+                     $('#s_pagu_final').text(formatRupiah(resp.data.pagu_final));
+                     $('#s_sisa').text(formatRupiah(resp.data.sisa));
+                     const $opt = $(`#f_ssh option[value="${sshId}"]`);
+                     if ($opt.length){
+                       $opt.attr('data-pagu_final', resp.data.pagu_final)
+                           .attr('data-sisa', resp.data.sisa);
+                     }
+                   }
+                 });
+              }
+            });
+          } else {
+            Swal.fire({ icon:'error', title:'Gagal', text: res?.message || 'Terjadi kesalahan.' });
+          }
+        },
+        error:function(xhr){
+          if (xhr.status === 422 && xhr.responseJSON?.errors){
+            const errors = xhr.responseJSON.errors;
+            $.each(errors, function(field, messages){
+              const $field = $(`[name="${field}"]`);
+              if ($field.length){
+                const $group = $field.hasClass('select2-hidden-accessible')
+                  ? $field.next('.select2').closest('.form-group')
+                  : $field.closest('.form-group');
+                const $err = $('<span class="invalid-feedback"></span>').text(messages[0]);
+                $group.append($err);
+                if ($field.hasClass('select2-hidden-accessible')){
+                  $field.next('.select2').find('.select2-selection').addClass('is-invalid');
+                } else {
+                  $field.addClass('is-invalid');
+                }
+              }
+              $('#error-'+field).text(messages[0]); // jika ada span manual
+            });
+            Swal.fire({ icon:'error', title:'Validasi Gagal', text:'Silakan periksa inputan Anda.' });
+          } else {
+            Swal.fire({ icon:'error', title:'Server Error', text:'Terjadi kesalahan di server.' });
+          }
+        }
+      });
+      return false;
+    }
+  });
+
+  // Bersihkan error UI saat pilih ulang
+  $('#f_sub,#f_rekening,#f_ssh').on('select2:select select2:clear', function(){
+    $(this).next('.select2').find('.select2-selection').removeClass('is-invalid');
+    $(this).next('.select2').closest('.form-group').find('.invalid-feedback').remove();
+  });
 });
 </script>
 @endpush
-
-{{-- @push('js')
-<script>
-$.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
-
-$(document).ready(function() {
-    // Inisialisasi Select2 yang benar
-    $('#f_program').select2({
-        placeholder: "-- Pilih Program --",
-        allowClear: true,
-        width: '100%'
-    });
-
-    $('#f_kegiatan').select2({
-        placeholder: "-- Pilih Kegiatan --",
-        allowClear: true,
-        width: '100%'
-    }).prop('disabled', true);
-
-    $('#f_sub').select2({
-        placeholder: "-- Pilih Sub Kegiatan --",
-        allowClear: true,
-        width: '100%'
-    }).prop('disabled', true);
-
-    $('#f_rekening').select2({
-        placeholder: "-- Pilih Rekening --",
-        allowClear: true,
-        width: '100%'
-    }).prop('disabled', true);
-
-    $('#f_ssh').select2({
-        placeholder: "-- Pilih SSH --",
-        allowClear: true,
-        width: '100%'
-    }).prop('disabled', true);
-
-    // Helper untuk ringkasan & hidden
-    function setSel(idSel, idShow, idHidden){
-        const $opt = $(idSel).find('option:selected');
-        $(idShow).text($opt.data('label') || $opt.text() || '-');
-        $(idHidden).val($(idSel).val() || '');
-    }
-
-    // Mask rupiah: titik ribuan, koma desimal
-    $('#i_nilai').on('input', function(){
-        let v = this.value.replace(/[^\d,]/g,'');
-        let p = v.split(',');
-        let i = p[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');
-        this.value = (p[1]!==undefined) ? (i+','+p[1].slice(0,2)) : i;
-    });
-
-    // ===== Cascading dengan Select2 Events =====
-    // 1) Program → Kegiatan
-    $('#f_program').on('select2:select select2:clear', function(e) {
-        const programId = $(this).val();
-        setSel('#f_program','#s_program','#h_program');
-
-        // Reset semua dropdown di bawahnya
-        resetDropdowns(['kegiatan', 'sub', 'rekening', 'ssh']);
-
-        if (e.type === 'select2:select' && programId) {
-            // Set loading state
-            setLoadingState('#f_kegiatan', 'Loading...');
-            
-            $.get(`/ssh/program/${programId}/kegiatan`)
-            .done(function(data) {
-                populateSelect('#f_kegiatan', data, 'id_kegiatan', 'kode_kegiatan', 'nama_kegiatan', '-- Pilih Kegiatan --');
-            })
-            .fail(function(xhr) {
-                console.error('Error loading kegiatan:', xhr);
-                alert('Gagal memuat data kegiatan. Silakan coba lagi.');
-                resetSelect('#f_kegiatan', '-- Pilih Kegiatan --');
-            });
-        }
-    });
-
-    // 2) Kegiatan → Sub Kegiatan
-    $('#f_kegiatan').on('select2:select select2:clear', function(e) {
-        const kegiatanId = $(this).val();
-        setSel('#f_kegiatan','#s_kegiatan','#h_kegiatan');
-
-        // Reset dropdown di bawahnya
-        resetDropdowns(['sub', 'rekening', 'ssh']);
-
-        if (e.type === 'select2:select' && kegiatanId) {
-            setLoadingState('#f_sub', 'Loading...');
-            
-            $.get(`/ssh/kegiatan/${kegiatanId}/sub_kegiatan`)
-            .done(function(data) {
-                populateSelect('#f_sub', data, 'id_sub_kegiatan', 'kode_sub_kegiatan', 'nama_sub_kegiatan', '-- Pilih Sub Kegiatan --');
-            })
-            .fail(function(xhr) {
-                console.error('Error loading sub kegiatan:', xhr);
-                alert('Gagal memuat data sub kegiatan. Silakan coba lagi.');
-                resetSelect('#f_sub', '-- Pilih Sub Kegiatan --');
-            });
-        }
-    });
-
-    // 3) Sub Kegiatan → Rekening
-    $('#f_sub').on('select2:select select2:clear', function(e) {
-        const subId = $(this).val();
-        setSel('#f_sub','#s_sub','#h_sub');
-
-        // Reset dropdown di bawahnya
-        resetDropdowns(['rekening', 'ssh']);
-
-        if (e.type === 'select2:select' && subId) {
-            setLoadingState('#f_rekening', 'Loading...');
-            
-            $.get(`/ssh/sub_kegiatan/${subId}/rekening`)
-            .done(function(data) {
-                populateSelect('#f_rekening', data, 'id_rekening', 'kode_rekening', 'nama_rekening', '-- Pilih Rekening --');
-            })
-            .fail(function(xhr) {
-                console.error('Error loading rekening:', xhr);
-                alert('Gagal memuat data rekening. Silakan coba lagi.');
-                resetSelect('#f_rekening', '-- Pilih Rekening --');
-            });
-        }
-    });
-
-    // 4) Rekening → SSH
-    $('#f_rekening').on('select2:select select2:clear', function(e) {
-        const rekeningId = $(this).val();
-        setSel('#f_rekening','#s_rekening','#h_rekening');
-
-        // Reset dropdown SSH
-        resetDropdowns(['ssh']);
-
-        if (e.type === 'select2:select' && rekeningId) {
-            setLoadingState('#f_ssh', 'Loading...');
-            
-            $.get(`/ssh/rekening/${rekeningId}/ssh`)
-            .done(function(data) {
-                populateSelect('#f_ssh', data, 'id_ssh', 'kode_ssh', 'nama_ssh', '-- Pilih SSH --');
-            })
-            .fail(function(xhr) {
-                console.error('Error loading SSH:', xhr);
-                alert('Gagal memuat data SSH. Silakan coba lagi.');
-                resetSelect('#f_ssh', '-- Pilih SSH --');
-            });
-        }
-    });
-
-    // 5) SSH → ringkasan + hidden
-    $('#f_ssh').on('select2:select select2:clear', function() {
-        setSel('#f_ssh','#s_ssh','#h_ssh');
-    });
-
-    // ===== Helper Functions =====
-    function resetDropdowns(dropdowns) {
-        const config = {
-            'kegiatan': { selector: '#f_kegiatan', placeholder: '-- Pilih Kegiatan --', summary: '#s_kegiatan', hidden: '#h_kegiatan' },
-            'sub': { selector: '#f_sub', placeholder: '-- Pilih Sub Kegiatan --', summary: '#s_sub', hidden: '#h_sub' },
-            'rekening': { selector: '#f_rekening', placeholder: '-- Pilih Rekening --', summary: '#s_rekening', hidden: '#h_rekening' },
-            'ssh': { selector: '#f_ssh', placeholder: '-- Pilih SSH --', summary: '#s_ssh', hidden: '#h_ssh' }
-        };
-
-        dropdowns.forEach(function(dropdown) {
-            const conf = config[dropdown];
-            if (conf) {
-                resetSelect(conf.selector, conf.placeholder);
-                $(conf.summary).text('-');
-                $(conf.hidden).val('');
-            }
-        });
-    }
-
-    function resetSelect(selector, placeholder) {
-        $(selector).empty().append(`<option value="">${placeholder}</option>`);
-        $(selector).select2('destroy').select2({
-            placeholder: placeholder,
-            allowClear: true,
-            width: '100%'
-        }).prop('disabled', true);
-    }
-
-    function setLoadingState(selector, loadingText) {
-        $(selector).empty().append(`<option value="">${loadingText}</option>`);
-        $(selector).select2('destroy').select2({
-            placeholder: loadingText,
-            allowClear: true,
-            width: '100%'
-        }).prop('disabled', true);
-    }
-
-    function populateSelect(selector, data, idField, codeField, nameField, placeholder) {
-        $(selector).empty().append(`<option value="">${placeholder}</option>`);
-        
-        data.forEach(function(item) {
-            const optionText = item[codeField] ? 
-                `${item[codeField]} - ${item[nameField]}` : 
-                item[nameField];
-            $(selector).append(new Option(optionText, item[idField]));
-            
-            // Set data-label untuk summary
-            $(selector).find('option:last').attr('data-label', optionText);
-        });
-
-        $(selector).select2('destroy').select2({
-            placeholder: placeholder,
-            allowClear: true,
-            width: '100%'
-        }).prop('disabled', false);
-    }
-
-    // Validasi sebelum submit
-    $('#form-realisasi').on('submit', function(e) {
-        const requiredFields = ['#h_program', '#h_kegiatan', '#h_sub', '#h_rekening', '#h_ssh'];
-        const emptyFields = requiredFields.filter(field => !$(field).val());
-        
-        if (emptyFields.length > 0) {
-            e.preventDefault();
-            alert('Lengkapi pilihan Program, Kegiatan, Sub Kegiatan, Rekening, dan SSH terlebih dahulu.');
-            return false;
-        }
-    });
-});
-</script>
-@endpush --}}
