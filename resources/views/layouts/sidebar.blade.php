@@ -48,7 +48,7 @@
                 <ul class="dropdown-menu">
                   <li><a class="nav-link" href="{{ url('/realisasipbj') }}">Bagian PBJ</a></li>
                   <li><a class="nav-link" href="{{ url('/realisasilpse') }}">Bagian LPSE</a></li>
-                  <li><a class="nav-link" href="components-article.html">Bagian Pembinaan</a></li>
+                  <li><a class="nav-link" href={{url('/realisasipembinaan')}}>Bagian Pembinaan</a></li>
                 </ul>
               </li>
 

@@ -17,6 +17,7 @@ use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\MasterKegiatanController;
 use App\Http\Controllers\MasterSubKegiatanController;
 use App\Http\Controllers\RealisasilpseController;
+use App\Http\Controllers\RealisasiPembinaanController;
 use App\Http\Controllers\SSHController;
 use App\Http\Controllers\SshTreeController;
 use App\Http\Controllers\SubKegiatanController;
@@ -266,6 +267,27 @@ Route::prefix('realisasilpse')->group(function () {
 });
 
 
+Route::prefix('realisasipembinaan')->group(function () {
+    // DataTables
+    Route::post('/list', [RealisasiPembinaanController::class, 'list']);
+
+    // CRUD
+    Route::get('/', [RealisasiPembinaanController::class, 'index']);
+    Route::get('/create', [RealisasiPembinaanController::class, 'create']);
+    Route::post('/store', [RealisasiPembinaanController::class, 'store']);
+    Route::get('/{id}/edit', [RealisasiPembinaanController::class, 'edit']);
+    Route::put('/{id}/update', [RealisasiPembinaanController::class, 'update']);
+    Route::get('/{id}/confirm', [RealisasiPembinaanController::class, 'confirm']);
+    Route::delete('/{id}/delete', [RealisasiPembinaanController::class, 'delete']);
+
+    // Cascading select
+    Route::get('/program/{id_program}/kegiatan',        [RealisasiPembinaanController::class, 'getKegiatanByProgram']);
+    Route::get('/kegiatan/{id_kegiatan}/summary',        [RealisasiPembinaanController::class, 'getSummaryByKegiatan']);
+    Route::get('/ssh/{id_ssh}/summary',        [RealisasiPembinaanController::class, 'getSummaryBySsh']);
+    Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan',  [RealisasiPembinaanController::class, 'getSubKegiatanByKegiatan']);
+    Route::get('/sub_kegiatan/{id_sub_kegiatan}/rekening', [RealisasiPembinaanController::class, 'getRekeningBySubKegiatan']);
+    Route::get('/rekening/{id_rekening}/ssh',           [RealisasiPembinaanController::class, 'getSshByRekening']);
+});
 
 
 
