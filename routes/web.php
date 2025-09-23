@@ -233,12 +233,15 @@ Route::prefix('realisasipbj')->group(function () {
     Route::get('/{id}/confirm', [RealisasipbjController::class, 'confirm']);
     Route::delete('/{id}/delete', [RealisasipbjController::class, 'delete']);
 
-    // Cascading select
+    // Cascading select + Summary
     Route::get('/program/{id_program}/kegiatan',        [RealisasipbjController::class, 'getKegiatanByProgram']);
+    Route::get('/kegiatan/{id_kegiatan}/summary',       [RealisasipbjController::class, 'getSummaryByKegiatan']);
+    Route::get('/ssh/{id_ssh}/summary',                 [RealisasipbjController::class, 'getSummaryBySsh']);
     Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan',  [RealisasipbjController::class, 'getSubKegiatanByKegiatan']);
     Route::get('/sub_kegiatan/{id_sub_kegiatan}/rekening', [RealisasipbjController::class, 'getRekeningBySubKegiatan']);
     Route::get('/rekening/{id_rekening}/ssh',           [RealisasipbjController::class, 'getSshByRekening']);
 });
+
 
 Route::prefix('realisasilpse')->group(function () {
     // DataTables
@@ -261,6 +264,7 @@ Route::prefix('realisasilpse')->group(function () {
     Route::get('/sub_kegiatan/{id_sub_kegiatan}/rekening', [RealisasilpseController::class, 'getRekeningBySubKegiatan']);
     Route::get('/rekening/{id_rekening}/ssh',           [RealisasilpseController::class, 'getSshByRekening']);
 });
+
 
 
 
