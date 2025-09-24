@@ -75,20 +75,14 @@ class TreeViewController extends Controller
     }
 
     /**
-     * DataTables level-1: Rekening (terfilter Program/Kegiatan/Sub Kegiatan)
-     * Kolom yang diminta: Kode, Uraian, P1, P2, Realisasi, Sisa
-     *
-     * ASUMSI: ada tabel t_realisasi_ssh(id_rekening, kode_ssh, amount).
-     * Jika beda, sesuaikan join/agregatnya.
+     * DataTables level-1: Sub Kegiatan dengan realisasi yang benar
      */
-
     public function listSubKegiatan(Request $request)
     {
         $id_program      = $request->id_program;
         $id_kegiatan     = $request->id_kegiatan;
         $id_sub_kegiatan = $request->id_sub_kegiatan;
         $tahun = $request->tahun ?? now()->year;
-
 
         $q = MasterSubKegiatanModel::query()
             ->select([
@@ -97,17 +91,18 @@ class TreeViewController extends Controller
                 't_master_sub_kegiatan.nama_sub_kegiatan',
                 DB::raw("COALESCE(SUM(t_ssh.pagu1),0) AS p1"),
                 DB::raw("COALESCE(SUM(t_ssh.pagu2),0) AS p2"),
-                DB::raw("SUM(CASE WHEN t_ssh.pagu2 > 0 THEN t_ssh.pagu2 ELSE t_ssh.pagu1 END) AS sisa_total")
-
+                DB::raw("COALESCE(SUM(realisasi.nilai_realisasi),0) AS total_realisasi"),
+                DB::raw("(COALESCE(SUM(CASE WHEN t_ssh.pagu2 > 0 THEN t_ssh.pagu2 ELSE t_ssh.pagu1 END),0) - COALESCE(SUM(realisasi.nilai_realisasi),0)) AS sisa_total")
             ])
-
             ->leftJoin('t_ssh', 't_ssh.id_sub_kegiatan', '=', 't_master_sub_kegiatan.id_sub_kegiatan')
+            ->leftJoin('t_transaksional_realisasi_anggaran as realisasi', function($join) {
+                $join->on('realisasi.id_sub_kegiatan', '=', 't_master_sub_kegiatan.id_sub_kegiatan');
+            })
             ->when($id_program, fn($x) => $x->where('t_master_sub_kegiatan.id_program', $id_program))
             ->when($id_kegiatan, fn($x) => $x->where('t_master_sub_kegiatan.id_kegiatan', $id_kegiatan))
-            ->whereYear('t_ssh.tahun', $tahun) // filter tahun
             ->when($id_sub_kegiatan, fn($x) => $x->where('t_master_sub_kegiatan.id_sub_kegiatan', $id_sub_kegiatan))
+            ->whereYear('t_ssh.tahun', $tahun) // filter tahun
             ->groupBy('t_master_sub_kegiatan.id_sub_kegiatan', 't_master_sub_kegiatan.kode_sub_kegiatan', 't_master_sub_kegiatan.nama_sub_kegiatan');
-
 
         return DataTables::of($q)
             ->addIndexColumn()
@@ -128,10 +123,8 @@ class TreeViewController extends Controller
             )
             ->addColumn('p1', fn($row) => number_format((float)$row->p1, 0, ',', '.'))
             ->addColumn('p2', fn($row) => number_format((float)$row->p2, 0, ',', '.'))
-            ->addColumn('real', fn($row) => number_format(0, 0, ',', '.')) // sementara 0
+            ->addColumn('real', fn($row) => number_format((float)$row->total_realisasi, 0, ',', '.'))
             ->addColumn('sisa', fn($row) => number_format((float)$row->sisa_total, 0, ',', '.'))
-
-
             ->rawColumns(['expand', 'uraian'])
             ->toJson();
     }
@@ -140,9 +133,8 @@ class TreeViewController extends Controller
     {
         $id_program   = $request->query('id_program');
         $id_kegiatan  = $request->query('id_kegiatan');
-        $filter_sub   = $request->query('id_sub_kegiatan'); // jangan timpa $id_sub_kegiatan dari parameter
+        $filter_sub   = $request->query('id_sub_kegiatan');
         $tahun = $request->tahun ?? now()->year;
-
 
         $rekening = RekeningModel::query()
             ->from('t_rekening')
@@ -153,25 +145,27 @@ class TreeViewController extends Controller
                 't_master_sub_kegiatan.kode_sub_kegiatan',
                 DB::raw("COALESCE(SUM(t_ssh.pagu1),0) AS p1"),
                 DB::raw("COALESCE(SUM(t_ssh.pagu2),0) AS p2"),
-                DB::raw("SUM(CASE WHEN t_ssh.pagu2 > 0 THEN t_ssh.pagu2 ELSE t_ssh.pagu1 END) AS sisa_total")
+                DB::raw("COALESCE(SUM(realisasi.nilai_realisasi),0) AS total_realisasi"),
+                DB::raw("(COALESCE(SUM(CASE WHEN t_ssh.pagu2 > 0 THEN t_ssh.pagu2 ELSE t_ssh.pagu1 END),0) - COALESCE(SUM(realisasi.nilai_realisasi),0)) AS sisa_total")
             ])
             ->leftJoin('t_master_sub_kegiatan', 't_master_sub_kegiatan.id_sub_kegiatan', '=', 't_rekening.id_sub_kegiatan')
             ->leftJoin('t_ssh', 't_ssh.id_rekening', '=', 't_rekening.id_rekening')
-            ->where('t_rekening.id_sub_kegiatan', $id_sub_kegiatan) // parameter utama dari route
+            ->leftJoin('t_transaksional_realisasi_anggaran as realisasi', function($join) {
+                $join->on('realisasi.id_rekening', '=', 't_rekening.id_rekening');
+            })
+            ->where('t_rekening.id_sub_kegiatan', $id_sub_kegiatan)
             ->when($id_program, fn($x) => $x->where('t_rekening.id_program', $id_program))
             ->when($id_kegiatan, fn($x) => $x->where('t_rekening.id_kegiatan', $id_kegiatan))
             ->when($filter_sub, fn($x) => $x->where('t_rekening.id_sub_kegiatan', $filter_sub))
-            ->whereYear('t_ssh.tahun', $tahun) // filter tahun
+            ->whereYear('t_ssh.tahun', $tahun)
             ->groupBy(
                 't_rekening.id_rekening',
                 't_rekening.kode_rekening',
                 't_rekening.nama_rekening',
                 't_master_sub_kegiatan.kode_sub_kegiatan',
             )
-
             ->orderBy('t_rekening.kode_rekening')
             ->get();
-
 
         $html = '';
         foreach ($rekening as $row) {
@@ -185,7 +179,7 @@ class TreeViewController extends Controller
             $html .= '<td><span class="px-2 py-1 rounded" style="background:#fff3cd; color:#856404;">' . e($row->nama_rekening) . '</span></td>';
             $html .= '<td class="text-right">' . number_format($row->p1, 0, ',', '.') . '</td>';
             $html .= '<td class="text-right">' . number_format($row->p2, 0, ',', '.') . '</td>';
-            $html .= '<td class="text-right">' . number_format($row->real, 0, ',', '.') . '</td>';
+            $html .= '<td class="text-right">' . number_format($row->total_realisasi, 0, ',', '.') . '</td>';
             $html .= '<td class="text-right">' . number_format((float)$row->sisa_total, 0, ',', '.') . '</td>';
             $html .= '</tr>';
         }
@@ -197,16 +191,12 @@ class TreeViewController extends Controller
         return response($html);
     }
 
-
-
-
     public function listRekening(Request $request)
     {
         $id_program      = $request->id_program;
         $id_kegiatan     = $request->id_kegiatan;
         $id_sub_kegiatan = $request->id_sub_kegiatan;
         $tahun = $request->tahun ?? now()->year;
-
 
         $q = RekeningModel::query()
             ->from('t_rekening')
@@ -220,45 +210,22 @@ class TreeViewController extends Controller
                 't_master_sub_kegiatan.kode_sub_kegiatan',
                 DB::raw("COALESCE(SUM(t_ssh.pagu1),0) AS anggaran_periode1"),
                 DB::raw("COALESCE(SUM(t_ssh.pagu2),0) AS anggaran_periode2"),
-                DB::raw("SUM(CASE WHEN t_ssh.pagu2 > 0 THEN t_ssh.pagu2 ELSE t_ssh.pagu1 END) AS sisa_total")
+                DB::raw("COALESCE(SUM(realisasi.nilai_realisasi),0) AS total_realisasi"),
+                DB::raw("(COALESCE(SUM(CASE WHEN t_ssh.pagu2 > 0 THEN t_ssh.pagu2 ELSE t_ssh.pagu1 END),0) - COALESCE(SUM(realisasi.nilai_realisasi),0)) AS sisa_total")
             ])
             ->when($id_program, fn($x) => $x->where('t_rekening.id_program', $id_program))
             ->when($id_kegiatan, fn($x) => $x->where('t_rekening.id_kegiatan', $id_kegiatan))
             ->when($id_sub_kegiatan, fn($x) => $x->where('t_rekening.id_sub_kegiatan', $id_sub_kegiatan))
             ->leftJoin('t_ssh', 't_ssh.id_rekening', '=', 't_rekening.id_rekening')
             ->leftJoin('t_master_sub_kegiatan', 't_master_sub_kegiatan.id_sub_kegiatan', '=', 't_rekening.id_sub_kegiatan')
+            ->leftJoin('t_transaksional_realisasi_anggaran as realisasi', function($join) {
+                $join->on('realisasi.id_rekening', '=', 't_rekening.id_rekening');
+            })
             ->when($id_program, fn($x) => $x->where('t_ssh.id_program', $id_program))
             ->when($id_kegiatan, fn($x) => $x->where('t_ssh.id_kegiatan', $id_kegiatan))
-            ->whereYear('t_ssh.tahun', $tahun) // filter tahun
-            ->when($id_sub_kegiatan, fn($x) => $x->where('t_ssh.id_sub_kegiatan', $id_sub_kegiatan));
-
-
-
-        // === OPTIONAL JOIN REALISASI ===
-        $hasRealisasi = Schema::hasTable('t_realisasi_ssh');
-
-        if ($hasRealisasi) {
-            $q->leftJoin(DB::raw("
-                (SELECT id_rekening, COALESCE(SUM(amount),0) AS realisasi
-                 FROM t_realisasi_ssh
-                 GROUP BY id_rekening) AS rls
-            "), 'rls.id_rekening', '=', 't_rekening.id_rekening')
-                ->addSelect([
-                    DB::raw("COALESCE(rls.realisasi,0) AS realisasi"),
-                    DB::raw("(COALESCE(SUM(t_ssh.pagu1),0)
-                      + COALESCE(SUM(t_ssh.pagu2),0)
-                      - COALESCE(rls.realisasi,0)) AS sisa_total"),
-                ])
-                ->groupBy('t_rekening.id_rekening', 't_rekening.kode_rekening', 't_rekening.nama_rekening', 't_rekening.id_program', 't_rekening.id_kegiatan', 't_rekening.id_sub_kegiatan', 'rls.realisasi');
-        } else {
-            // tanpa tabel realisasi
-            $q->addSelect([
-                DB::raw("0 AS realisasi"),
-                DB::raw("(COALESCE(SUM(t_ssh.pagu1),0)
-                      + COALESCE(SUM(t_ssh.pagu2),0)) AS sisa_total"),
-            ])
-                ->groupBy('t_rekening.id_rekening', 't_rekening.kode_rekening', 't_rekening.nama_rekening', 't_rekening.id_program', 't_rekening.id_kegiatan', 't_rekening.id_sub_kegiatan');
-        }
+            ->whereYear('t_ssh.tahun', $tahun)
+            ->when($id_sub_kegiatan, fn($x) => $x->where('t_ssh.id_sub_kegiatan', $id_sub_kegiatan))
+            ->groupBy('t_rekening.id_rekening', 't_rekening.kode_rekening', 't_rekening.nama_rekening', 't_rekening.id_program', 't_rekening.id_kegiatan', 't_rekening.id_sub_kegiatan', 't_master_sub_kegiatan.kode_sub_kegiatan');
 
         return DataTables::of($q)
             ->addIndexColumn()
@@ -277,23 +244,17 @@ class TreeViewController extends Controller
                 '<span class="px-2 py-1 rounded" style="background-color:#fff3cd; color:#856404;">'
                     . e($row->nama_rekening) .
                     '</span>'
-
             )
-            ->addColumn('p1',     fn($row) => number_format((float)$row->anggaran_periode1, 0, ',', '.'))
-            ->addColumn('p2',     fn($row) => number_format((float)$row->anggaran_periode2, 0, ',', '.'))
-            ->addColumn('real', fn($row) => number_format(0, 0, ',', '.')) // sementara 0
+            ->addColumn('p1', fn($row) => number_format((float)$row->anggaran_periode1, 0, ',', '.'))
+            ->addColumn('p2', fn($row) => number_format((float)$row->anggaran_periode2, 0, ',', '.'))
+            ->addColumn('real', fn($row) => number_format((float)$row->total_realisasi, 0, ',', '.'))
             ->addColumn('sisa', fn($row) => number_format((float)$row->sisa_total, 0, ',', '.'))
-
-
-
             ->rawColumns(['expand', 'uraian'])
             ->toJson();
     }
 
-
     /**
-     * Child rows: tabel kecil daftar SSH di bawah suatu Rekening
-     * Terfilter oleh Program/Kegiatan/Sub Kegiatan bila dikirim via query string.
+     * Child rows: tabel SSH di bawah suatu Rekening dengan realisasi yang benar
      */
     public function listSshByRekening($id_rekening, Request $request)
     {
@@ -302,28 +263,35 @@ class TreeViewController extends Controller
         $id_sub_kegiatan = $request->query('id_sub_kegiatan');
         $tahun = $request->tahun ?? now()->year;
 
-
         $ssh = SshModel::query()
             ->from('t_ssh')
             ->select([
+                't_ssh.id_ssh',
                 't_ssh.kode_ssh',
                 't_ssh.nama_ssh',
                 't_rekening.kode_rekening',
                 't_master_sub_kegiatan.kode_sub_kegiatan',
-                DB::raw("COALESCE(SUM(t_ssh.pagu1),0) AS p1"),
-                DB::raw("COALESCE(SUM(t_ssh.pagu2),0) AS p2"),
-                DB::raw("SUM(CASE WHEN t_ssh.pagu2 > 0 THEN t_ssh.pagu2 ELSE t_ssh.pagu1 END) AS sisa_total")
+                DB::raw("COALESCE(t_ssh.pagu1,0) AS p1"),
+                DB::raw("COALESCE(t_ssh.pagu2,0) AS p2"),
+                DB::raw("COALESCE(SUM(realisasi.nilai_realisasi),0) AS total_realisasi"),
+                DB::raw("(COALESCE(CASE WHEN t_ssh.pagu2 > 0 THEN t_ssh.pagu2 ELSE t_ssh.pagu1 END,0) - COALESCE(SUM(realisasi.nilai_realisasi),0)) AS sisa_total")
             ])
             ->leftJoin('t_master_sub_kegiatan', 't_master_sub_kegiatan.id_sub_kegiatan', '=', 't_ssh.id_sub_kegiatan')
-            ->leftjoin('t_rekening', 't_rekening.id_rekening', '=', 't_ssh.id_rekening')
+            ->leftJoin('t_rekening', 't_rekening.id_rekening', '=', 't_ssh.id_rekening')
+            ->leftJoin('t_transaksional_realisasi_anggaran as realisasi', function($join) {
+                $join->on('realisasi.id_ssh', '=', 't_ssh.id_ssh');
+            })
             ->where('t_ssh.id_rekening', $id_rekening)
             ->when($id_program, fn($x) => $x->where('t_ssh.id_program', $id_program))
             ->when($id_kegiatan, fn($x) => $x->where('t_ssh.id_kegiatan', $id_kegiatan))
             ->when($id_sub_kegiatan, fn($x) => $x->where('t_ssh.id_sub_kegiatan', $id_sub_kegiatan))
-            ->whereYear('t_ssh.tahun', $tahun) // filter tahun
+            ->whereYear('t_ssh.tahun', $tahun)
             ->groupBy(
+                't_ssh.id_ssh',
                 't_ssh.kode_ssh',
                 't_ssh.nama_ssh',
+                't_ssh.pagu1',
+                't_ssh.pagu2',
                 't_ssh.id_rekening',
                 't_ssh.id_sub_kegiatan',
                 't_master_sub_kegiatan.kode_sub_kegiatan',
@@ -332,26 +300,8 @@ class TreeViewController extends Controller
             ->orderBy('t_ssh.kode_ssh')
             ->get();
 
-        // realisasi per SSH: hanya jika tabel ada
-        // $realisasiMap = [];
-        // if (Schema::hasTable('t_realisasi_ssh')) {
-        //     $realisasiMap = DB::table('t_realisasi_ssh')
-        //         ->select('kode_ssh', DB::raw('COALESCE(SUM(amount),0) AS realisasi'))
-        //         ->where('id_rekening', $id_rekening)
-        //         ->groupBy('kode_ssh')
-        //         ->pluck('realisasi', 'kode_ssh');
-        // }
-
-        // $html = '<table class="table table-sm table-bordered mb-0">';
-        // $html .= '<thead class="thead-light"><tr>';
-        // $html .= '<th style="width:140px">Kode</th><th>Uraian</th><th class="text-right">Periode 1</th><th class="text-right">Periode 2</th><th class="text-right">Realisasi</th><th class="text-right">Sisa</th>';
-        // $html .= '</tr></thead><tbody>';
         $html = '';
         foreach ($ssh as $row) {
-            // $real = (float)($realisasiMap[$row->kode_ssh] ?? 0);
-            $real = 0;
-            $sisa = (float)($row->p2 ?: $row->p1) - $real;
-
             $html .= '<tr class="child-of-' . $id_rekening . '">';
             $html .= '<td></td>'; // kolom expand kosong
             $html .= '<td>' . e(formatKode($row->kode_sub_kegiatan, 'sub_kegiatan')) . '.' . e(formatKode($row->kode_rekening, 'rekening')) . '.' . e(formatKode($row->kode_ssh, 'ssh')) . '</td>';
@@ -359,11 +309,11 @@ class TreeViewController extends Controller
             <span class="px-2 py-1" style="background-color:#d4edda; color:#155724;">
             ' . e($row->nama_ssh) . '
         </span>
-          </td>'; // SSH hijau dengan kotak
+          </td>';
             $html .= '<td class="text-right">' . number_format($row->p1, 0, ',', '.') . '</td>';
             $html .= '<td class="text-right">' . number_format($row->p2, 0, ',', '.') . '</td>';
-            $html .= '<td class="text-right">' . number_format($real, 0, ',', '.') . '</td>';
-            $html .= '<td class="text-right">' . number_format($sisa, 0, ',', '.') . '</td>';
+            $html .= '<td class="text-right">' . number_format($row->total_realisasi, 0, ',', '.') . '</td>';
+            $html .= '<td class="text-right">' . number_format($row->sisa_total, 0, ',', '.') . '</td>';
             $html .= '</tr>';
         }
 
@@ -373,82 +323,4 @@ class TreeViewController extends Controller
 
         return response($html);
     }
-
-
-    // public function listSshByRekening($id_rekening, Request $request)
-    // {
-    //     $id_program      = $request->query('id_program');
-    //     $id_kegiatan     = $request->query('id_kegiatan');
-    //     $id_sub_kegiatan = $request->query('id_sub_kegiatan');
-
-    //     $ssh = SshModel::query()
-    //         ->from('t_ssh')
-    //         ->select([
-    //             't_ssh.kode_ssh',
-    //             't_ssh.nama_ssh',
-    //             DB::raw("COALESCE(SUM(CASE WHEN t_ssh.periode = 1 THEN t_ssh.pagu ELSE 0 END),0) AS p1"),
-    //             DB::raw("COALESCE(SUM(CASE WHEN t_ssh.periode = 2 THEN t_ssh.pagu ELSE 0 END),0) AS p2"),
-    //         ])
-    //         ->where('t_ssh.id_rekening', $id_rekening)
-    //         ->when($id_program, fn($x) => $x->where('t_ssh.id_program', $id_program))
-    //         ->when($id_kegiatan, fn($x) => $x->where('t_ssh.id_kegiatan', $id_kegiatan))
-    //         ->when($id_sub_kegiatan, fn($x) => $x->where('t_ssh.id_sub_kegiatan', $id_sub_kegiatan))
-    //         ->groupBy('t_ssh.kode_ssh', 't_ssh.nama_ssh')
-    //         ->orderBy('t_ssh.kode_ssh')
-    //         ->get();
-
-    //     // realisasi per SSH (opsional bila ada tabel)
-    //     $realisasiMap = [];
-    //     if (Schema::hasTable('t_realisasi_ssh')) {
-    //         $realisasiMap = DB::table('t_realisasi_ssh')
-    //             ->select('kode_ssh', DB::raw('COALESCE(SUM(amount),0) AS realisasi'))
-    //             ->where('id_rekening', $id_rekening)
-    //             ->groupBy('kode_ssh')
-    //             ->pluck('realisasi', 'kode_ssh');
-    //     }
-
-    //     // === Jika diminta JSON ===
-    //     if ($request->query('format') === 'json' || $request->wantsJson()) {
-    //         $rows = $ssh->map(function($r) use ($realisasiMap){
-    //             $real = (float)($realisasiMap[$r->kode_ssh] ?? 0);
-    //             $sisa = ((float)$r->p1 + (float)$r->p2) - $real;
-    //             return [
-    //                 'kode' => formatKode($r->kode_ssh, 'ssh'),
-    //                 'uraian' => $r->nama_ssh,
-    //                 'p1' => number_format((float)$r->p1, 0, ',', '.'),
-    //                 'p2' => number_format((float)$r->p2, 0, ',', '.'),
-    //                 'real' => number_format($real, 0, ',', '.'),
-    //                 'sisa' => number_format($sisa, 0, ',', '.'),
-    //             ];
-    //         })->values();
-
-    //         return response()->json(['data' => $rows]);
-    //     }
-
-    //     // === (fallback lama) HTML kecil untuk child rows (kalau masih dibutuhkan di tempat lain) ===
-    //     $html = '<table class="table table-sm table-bordered mb-0">';
-    //     $html .= '<thead class="thead-light"><tr>';
-    //     $html .= '<th style="width:140px">Kode</th><th>Uraian</th><th class="text-right">Periode 1</th><th class="text-right">Periode 2</th><th class="text-right">Realisasi</th><th class="text-right">Sisa</th>';
-    //     $html .= '</tr></thead><tbody>';
-
-    //     foreach ($ssh as $row) {
-    //         $real = (float)($realisasiMap[$row->kode_ssh] ?? 0);
-    //         $sisa = ((float)$row->p1 + (float)$row->p2) - $real;
-
-    //         $html .= '<tr>';
-    //         $html .= '<td>'.e(formatKode($row->kode_ssh, 'ssh')).'</td>';
-    //         $html .= '<td>'.e($row->nama_ssh).'</td>';
-    //         $html .= '<td class="text-right">'.number_format((float)$row->p1, 0, ',', '.').'</td>';
-    //         $html .= '<td class="text-right">'.number_format((float)$row->p2, 0, ',', '.').'</td>';
-    //         $html .= '<td class="text-right">'.number_format($real, 0, ',', '.').'</td>';
-    //         $html .= '<td class="text-right">'.number_format($sisa, 0, ',', '.').'</td>';
-    //         $html .= '</tr>';
-    //     }
-    //     if ($ssh->isEmpty()) {
-    //         $html .= '<tr><td colspan="6" class="text-center text-muted">Tidak ada data SSH pada rekening ini.</td></tr>';
-    //     }
-    //     $html .= '</tbody></table>';
-
-    //     return response($html);
-    // }
 }
