@@ -107,32 +107,32 @@ class RealisasiPembinaanController extends Controller
         }
     }
     public function getSummaryBySsh($id_ssh)
-{
-    try {
-        // Ambil data SSH beserta relasi realisasi
-        $ssh = SshModel::with('realisasi')->findOrFail($id_ssh);
+    {
+        try {
+            // Ambil data SSH beserta relasi realisasi
+            $ssh = SshModel::with('realisasi')->findOrFail($id_ssh);
 
-        // Hitung total pagu & realisasi
-        $total_pagu = (float) $ssh->pagu_final;
-        $total_realisasi = (float) $ssh->realisasi->sum('nilai_realisasi');
+            // Hitung total pagu & realisasi
+            $total_pagu = (float) $ssh->pagu_final;
+            $total_realisasi = (float) $ssh->realisasi->sum('nilai_realisasi');
 
-        $sisa = $total_pagu - $total_realisasi;
+            $sisa = $total_pagu - $total_realisasi;
 
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'pagu_final'      => $total_pagu,
-                'total_realisasi' => $total_realisasi,
-                'sisa'            => $sisa,
-            ]
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Gagal menghitung summary SSH: ' . $e->getMessage()
-        ], 500);
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'pagu_final'      => $total_pagu,
+                    'total_realisasi' => $total_realisasi,
+                    'sisa'            => $sisa,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghitung summary SSH: ' . $e->getMessage()
+            ], 500);
+        }
     }
-}
 
 
 
@@ -355,57 +355,77 @@ class RealisasiPembinaanController extends Controller
         return view('realisasipbj.index', compact('breadcrumb', 'page', 'activeMenu', 'listProgram'));
     }
 
-public function store(Request $request)
-{
-    // Validasi input
-    $validated = $request->validate([
-        'id_program'        => 'required|integer|exists:t_master_program,id_program',
-        'id_kegiatan'       => 'required|integer|exists:t_master_kegiatan,id_kegiatan',
-        'id_sub_kegiatan'   => 'required|integer|exists:t_master_sub_kegiatan,id_sub_kegiatan',
-        'id_rekening'       => 'required|integer|exists:t_rekening,id_rekening',
-        'id_ssh'            => 'required|integer|exists:t_ssh,id_ssh',
-        'jenis_realisasi'   => 'required|string|in:Kwitansi,Nota,Dokumen Lainnya',
-        'no_dokumen'        => 'nullable|string|max:255',
-        'nilai_realisasi'   => 'required|string',
-        'tanggal_realisasi' => 'required|date',
-        'file'              => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:5120',
-    ]);
-
-    try {
-        DB::beginTransaction();
-
-        // Normalisasi nilai realisasi
-        $nilai = str_replace('.', '', $validated['nilai_realisasi']);
-        $nilai = str_replace(',', '.', $nilai);
-        $validated['nilai_realisasi'] = (float) $nilai;
-
-        // Handle file upload
-        if ($request->hasFile('file')) {
-            $fileName = time() . '_' . $request->file('file')->getClientOriginalName();
-            $request->file('file')->storeAs('realisasi', $fileName, 'public');
-            $validated['file'] = $fileName;
-        }
-
-        // Simpan ke DB
-        $realisasi = RealisasiModel::create($validated);
-
-        DB::commit();
-
-        return response()->json([
-            'status'  => true,
-            'message' => 'Data realisasi berhasil disimpan.',
-            'data'    => $realisasi
+    public function store(Request $request)
+    {
+        // Validasi input
+        $validated = $request->validate([
+            'id_program'        => 'required|integer|exists:t_master_program,id_program',
+            'id_kegiatan'       => 'required|integer|exists:t_master_kegiatan,id_kegiatan',
+            'id_sub_kegiatan'   => 'required|integer|exists:t_master_sub_kegiatan,id_sub_kegiatan',
+            'id_rekening'       => 'required|integer|exists:t_rekening,id_rekening',
+            'id_ssh'            => 'required|integer|exists:t_ssh,id_ssh',
+            'jenis_realisasi'   => 'required|string|in:Kwitansi,Nota,Dokumen Lainnya',
+            'no_dokumen'        => 'nullable|string|max:255',
+            'nilai_realisasi'   => 'required|string',
+            'tanggal_realisasi' => 'required|date',
+            'file'              => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:5120',
         ]);
-    } catch (\Exception $e) {
-        DB::rollBack();
 
-        return response()->json([
-            'status'  => false,
-            'message' => 'Terjadi kesalahan saat menyimpan data.',
-            'error'   => $e->getMessage()
-        ], 500);
+        try {
+            DB::beginTransaction();
+
+            // Normalisasi nilai realisasi
+            $nilai = str_replace('.', '', $validated['nilai_realisasi']);
+            $nilai = str_replace(',', '.', $nilai);
+            $validated['nilai_realisasi'] = (float) $nilai;
+
+            // Ambil SSH
+            $ssh = SshModel::findOrFail($validated['id_ssh']);
+
+            // Pilih pagu yang aktif
+            $pagu = $ssh->pagu2 && $ssh->pagu2 > 0 ? $ssh->pagu2 : $ssh->pagu1;
+
+            // Hitung total realisasi yang sudah ada
+            $totalRealisasi = RealisasiModel::where('id_ssh', $validated['id_ssh'])
+                ->sum('nilai_realisasi');
+
+            $sisa = $pagu - $totalRealisasi;
+
+            if ($validated['nilai_realisasi'] > $sisa) {
+                return response()->json([
+                    'status'  => false,
+                    'message' => "Nilai realisasi tidak boleh melebihi sisa anggaran SSH.
+                              Sisa tersedia: Rp " . number_format($sisa, 0, ',', '.'),
+                ], 422);
+            }
+            
+            // Handle file upload
+            if ($request->hasFile('file')) {
+                $fileName = time() . '_' . $request->file('file')->getClientOriginalName();
+                $request->file('file')->storeAs('realisasi', $fileName, 'public');
+                $validated['file'] = $fileName;
+            }
+
+            // Simpan ke DB
+            $realisasi = RealisasiModel::create($validated);
+
+            DB::commit();
+
+            return response()->json([
+                'status'  => true,
+                'message' => 'Data realisasi berhasil disimpan.',
+                'data'    => $realisasi
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'status'  => false,
+                'message' => 'Terjadi kesalahan saat menyimpan data.',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
     }
-}
 
     // ===== CRUD METHODS (placeholder) =====
 

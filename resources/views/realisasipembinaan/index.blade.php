@@ -141,7 +141,8 @@
         </div>
 
         {{-- ===================== FORM REALISASI ===================== --}}
-        <form action="{{ url('/realisasipembinaan/store') }}" method="POST" enctype="multipart/form-data" id="form-tambah">
+        <form action="{{ url('/realisasipembinaan/store') }}" method="POST" enctype="multipart/form-data"
+            id="form-tambah">
             @csrf
             {{-- hidden IDs (HANYA DI DALAM FORM) --}}
             <input type="hidden" name="id_program" id="h_program" value="{{ $program->id_program }}">
@@ -182,6 +183,7 @@
                                 <input type="text" name="nilai_realisasi" id="i_nilai" class="form-control"
                                     placeholder="1.000,00" required>
                                 <small class="form-text text-muted">Gunakan koma untuk pemisah desimal.</small>
+                                <small id="error_realisasi" class="text-danger d-none"></small>
                             </div>
                         </div>
 
@@ -226,6 +228,8 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
+        let sisaGlobal = 0;
 
         $(document).ready(function() {
 
@@ -380,10 +384,28 @@
                 const $opt = $(this).find('option:selected');
                 const pagu_final = $opt.data('pagu_final') || 0;
                 const sisa = $opt.data('sisa') || 0;
+
+                sisaGlobal = sisa;
                 $('#s_pagu_final').text(formatRupiah(pagu_final));
                 $('#s_sisa').text(formatRupiah(sisa));
+                //reset error setiap ganti ssh
+                $('#error_realisasi').text('').addClass('d-none');
             });
 
+            // validasi di input realisasi
+            $('#i_nilai').on('blur', function() {
+                let val = $(this).val().replace(/\./g, '').replace(',', '.');
+                let nilai = parseFloat(val) || 0;
+
+                if (nilai > sisaGlobal) {
+                    $('#error_realisasi')
+                        .text("Nilai realisasi melebihi sisa anggaran (Rp " + sisaGlobal.toLocaleString(
+                            "id-ID") + ")")
+                        .removeClass('d-none');
+                } else {
+                    $('#error_realisasi').text('').addClass('d-none');
+                }
+            });
             // resetDropdowns: hapus reset #s_realisasi
             function resetDropdowns(dropdowns) {
                 const config = {
@@ -582,13 +604,32 @@
                 unhighlight: function(element) {
                     if ($(element).hasClass('select2-hidden-accessible')) {
                         $(element).next('.select2').find('.select2-selection').removeClass(
-                        'is-invalid');
+                            'is-invalid');
                     } else {
                         $(element).removeClass('is-invalid');
                     }
                 },
                 submitHandler: function(form) {
-                    const nilaiClean = ($('#i_nilai').val() || '').replace(/[^\d]/g, '');
+                    // Ambil nilai realisasi & normalisasi
+                    const nilaiRaw = $('#i_nilai').val() || '';
+                    const nilaiClean = nilaiRaw.replace(/\./g, '').replace(',',
+                        '.'); // ganti ribuan & desimal
+                    const nilai = parseFloat(nilaiClean) || 0;
+
+                    // Cek terhadap sisaGlobal
+                    if (nilai > sisaGlobal) {
+                        // tampilkan error di bawah input
+                        $('#error_realisasi')
+                            .text("Nilai realisasi melebihi sisa anggaran (Rp " + sisaGlobal
+                                .toLocaleString("id-ID") + ")")
+                            .removeClass('d-none');
+
+                        // stop submit
+                        return false;
+                    } else {
+                        // clear error jika valid
+                        $('#error_realisasi').text('').addClass('d-none');
+                    }
                     let $hidden = $(form).find('input[name="nilai_realisasi_clean"]');
                     if ($hidden.length === 0) {
                         $('<input>', {
@@ -635,14 +676,13 @@
                                                         $('#s_pagu_final').text(
                                                             formatRupiah(resp
                                                                 .data.pagu_final
-                                                                ));
+                                                            ));
                                                         $('#s_sisa').text(
                                                             formatRupiah(resp
                                                                 .data.sisa));
-                                                        // update data attribute option agar konsisten
                                                         const $opt = $(
                                                             `#f_ssh option[value="${sshId}"]`
-                                                            );
+                                                        );
                                                         if ($opt.length) {
                                                             $opt.attr(
                                                                     'data-pagu_final',
@@ -651,6 +691,8 @@
                                                                 .attr('data-sisa',
                                                                     resp.data.sisa);
                                                         }
+                                                        // update variabel global sisa
+                                                        sisaGlobal = resp.data.sisa;
                                                     }
                                                 });
                                         }
@@ -678,7 +720,7 @@
                                                 '.form-group');
                                         const $err = $(
                                             '<span class="invalid-feedback"></span>'
-                                            ).text(messages[0]);
+                                        ).text(messages[0]);
                                         $group.append($err);
                                         if ($field.hasClass(
                                                 'select2-hidden-accessible')) {
@@ -690,7 +732,7 @@
                                         }
                                     }
                                     $('#error-' + field).text(messages[
-                                    0]); // kalau ada span manual
+                                        0]); // kalau ada span manual
                                 });
                                 Swal.fire({
                                     icon: 'error',

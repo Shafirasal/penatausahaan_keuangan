@@ -248,6 +248,26 @@ class RealisasipbjController extends Controller
             $nilai = str_replace(',', '.', $nilai);
             $validated['nilai_realisasi'] = (float)$nilai;
 
+            // Ambil SSH
+            $ssh = SshModel::findOrFail($validated['id_ssh']);
+
+            // Pilih pagu yang aktif
+            $pagu = $ssh->pagu2 && $ssh->pagu2 > 0 ? $ssh->pagu2 : $ssh->pagu1;
+
+            // Hitung total realisasi yang sudah ada
+            $totalRealisasi = RealisasiModel::where('id_ssh', $validated['id_ssh'])
+                ->sum('nilai_realisasi');
+
+            $sisa = $pagu - $totalRealisasi;
+
+            if ($validated['nilai_realisasi'] > $sisa) {
+                return response()->json([
+                    'status'  => false,
+                    'message' => "Nilai realisasi tidak boleh melebihi sisa anggaran SSH.
+                              Sisa tersedia: Rp " . number_format($sisa, 0, ',', '.'),
+                ], 422);
+            }
+
             // Upload file (opsional)
             if ($request->hasFile('file')) {
                 $fileName = time() . '_' . $request->file('file')->getClientOriginalName();
