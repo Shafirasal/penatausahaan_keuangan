@@ -87,6 +87,8 @@
 
 @push('js')
     <script>
+
+        let isSearching = false;
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -153,7 +155,7 @@
             const table = $('#table_tree').DataTable({
                 processing: true,
                 serverSide: true,
-                responsive: true,
+                responsive: true,  
                 ajax: {
                     url: `{{ url('/tree_view/list-sub_kegiatan') }}`,
                     type: 'POST',
@@ -162,6 +164,13 @@
                         d.id_kegiatan = $('#kegiatan_filter').val();
                         d.id_sub_kegiatan = $('#sub_kegiatan_filter').val();
                         d.tahun = $('#tahun').val();
+                        // tambahan: kalau input search ≥3 huruf, kirim sebagai ssh_search
+                        if (d.search && d.search.value && d.search.value.length >= 3) {
+                            d.ssh_search = d.search.value;
+                            isSearching = true;
+                        } else {
+                            isSearching = false;
+                        }
                     }
                 },
                 columns: [{
@@ -200,6 +209,20 @@
                 ],
             });
 
+            table.on('draw', function() {
+            if (isSearching) {
+                // expand semua sub_kegiatan
+                $('.btn-expand-sub').each(function() { $(this).click(); });
+
+                // rekening akan expand otomatis setelah event rekening:loaded dipicu untuk search
+
+                
+                // $(document).one('rekening:loaded', function() {
+                //     $('.btn-expand-rek').each(function() { $(this).click(); });
+                // });
+                
+            }
+        });
             // === Child rows: rekening per sub_kegiatan ===
             $('#table_tree tbody').on('click', '.btn-expand-sub', function(e) {
                 e.preventDefault();
@@ -220,6 +243,7 @@
                         id_kegiatan: $('#kegiatan_filter').val() || '',
                         id_sub_kegiatan: $('#sub_kegiatan_filter').val() || '',
                         tahun: $('#tahun').val() || '',
+                        ssh_search: $('.dataTables_filter input').val() || '' // ambil dari input search DataTables
                     });
 
                     $.get(`{{ url('/tree_view') }}/${id}/rekening?${params}`, function(rowsHtml) {
@@ -230,6 +254,9 @@
 
                         btn.html('<i class="fas fa-chevron-down"></i>');
                         tr.addClass('shown');
+
+                        // ✅ beri sinyal kalau rekening sudah selesai dimuat untuk search
+                        $(document).trigger('rekening:loaded');
                     }).fail(function() {
                         alert('Gagal memuat data rekening');
                     });
@@ -257,6 +284,7 @@
                         id_kegiatan: $('#kegiatan_filter').val() || '',
                         id_sub_kegiatan: $('#sub_kegiatan_filter').val() || '',
                         tahun: $('#tahun').val() || '',
+                        ssh_search: $('.dataTables_filter input').val() || '' // ✅ ambil dari input search DataTables
                     });
 
                     $.get(`{{ url('/tree_view') }}/${id}/ssh?${params}`, function(rowsHtml) {
@@ -285,7 +313,23 @@
                 table.ajax.reload(); // reload rekening utama
             });
 
-
         });
+
+        //untuk memunculkan semua data yang di search dengan keyword tertentu
+        $(document).ajaxStop(function() {
+            if (isSearching) {
+                $('.btn-expand-sub').each(function() { 
+                    if (!$(this).closest('tr').hasClass('shown')) {
+                            $(this).click();
+                    }
+                });
+                $('.btn-expand-rek').each(function() { 
+                    if (!$(this).closest('tr').hasClass('shown')) {
+                        $(this).click();
+                    }
+                });
+            }
+        });
+
     </script>
 @endpush
