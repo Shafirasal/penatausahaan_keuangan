@@ -427,6 +427,16 @@ class RealisasiPembinaanController extends Controller
         }
     }
 
+    public function histori($id)
+    {
+        $query = RealisasiModel::where('id_ssh', $id)
+            ->orderByDesc('tanggal_realisasi');
+
+        return DataTables::of($query)
+            ->addIndexColumn()
+            ->make(true);
+    }
+    
     // ===== CRUD METHODS (placeholder) =====
 
     public function list(Request $request)

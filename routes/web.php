@@ -290,6 +290,8 @@ Route::prefix('realisasipembinaan')->group(function () {
     Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan',  [RealisasiPembinaanController::class, 'getSubKegiatanByKegiatan']);
     Route::get('/sub_kegiatan/{id_sub_kegiatan}/rekening', [RealisasiPembinaanController::class, 'getRekeningBySubKegiatan']);
     Route::get('/rekening/{id_rekening}/ssh',           [RealisasiPembinaanController::class, 'getSshByRekening']);
+
+    Route::get('/ssh/{id}/histori',[RealisasiPembinaanController::class,'histori']);
 });
 
 
