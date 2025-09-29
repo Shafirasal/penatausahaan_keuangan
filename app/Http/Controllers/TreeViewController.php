@@ -83,6 +83,7 @@ class TreeViewController extends Controller
         $id_kegiatan     = $request->id_kegiatan;
         $id_sub_kegiatan = $request->id_sub_kegiatan;
         $tahun = $request->tahun ?? now()->year;
+        $ssh_search = $request->ssh_search; // 👈 tambahan SEARCH
 
         $q = MasterSubKegiatanModel::query()
             ->select([
@@ -101,8 +102,22 @@ class TreeViewController extends Controller
             ->when($id_program, fn($x) => $x->where('t_master_sub_kegiatan.id_program', $id_program))
             ->when($id_kegiatan, fn($x) => $x->where('t_master_sub_kegiatan.id_kegiatan', $id_kegiatan))
             ->when($id_sub_kegiatan, fn($x) => $x->where('t_master_sub_kegiatan.id_sub_kegiatan', $id_sub_kegiatan))
-            ->whereYear('t_ssh.tahun', $tahun) // filter tahun
-            ->groupBy('t_master_sub_kegiatan.id_sub_kegiatan', 't_master_sub_kegiatan.kode_sub_kegiatan', 't_master_sub_kegiatan.nama_sub_kegiatan');
+            ->whereYear('t_ssh.tahun', $tahun); // filter tahun
+
+            // 🔍 tambahan: filter jika ssh_search ada SEARCH
+            if (!empty($ssh_search) && strlen($ssh_search) >= 3) {
+                $q->whereExists(function($query) use ($ssh_search, $tahun) {
+                    $query->select(DB::raw(1))
+                        ->from('t_ssh')
+                        ->whereColumn('t_ssh.id_sub_kegiatan', 't_master_sub_kegiatan.id_sub_kegiatan')
+                        ->where(function($q) use ($ssh_search) {
+                            $q->where('t_ssh.kode_ssh', 'LIKE', "%{$ssh_search}%")
+                                ->orWhere('t_ssh.nama_ssh', 'LIKE', "%{$ssh_search}%");
+                        })
+                        ->whereYear('t_ssh.tahun', $tahun);
+                });
+            }
+            $q->groupBy('t_master_sub_kegiatan.id_sub_kegiatan', 't_master_sub_kegiatan.kode_sub_kegiatan', 't_master_sub_kegiatan.nama_sub_kegiatan');
 
         return DataTables::of($q)
             ->addIndexColumn()
@@ -135,6 +150,7 @@ class TreeViewController extends Controller
         $id_kegiatan  = $request->query('id_kegiatan');
         $filter_sub   = $request->query('id_sub_kegiatan');
         $tahun = $request->tahun ?? now()->year;
+        $ssh_search = $request->query('ssh_search'); //UNTUK SEARCH
 
         $rekening = RekeningModel::query()
             ->from('t_rekening')
@@ -158,6 +174,19 @@ class TreeViewController extends Controller
             ->when($id_kegiatan, fn($x) => $x->where('t_rekening.id_kegiatan', $id_kegiatan))
             ->when($filter_sub, fn($x) => $x->where('t_rekening.id_sub_kegiatan', $filter_sub))
             ->whereYear('t_ssh.tahun', $tahun)
+            // tambahkan filter rekening hanya kalau punya SSH yang match UNTUK SEARCH
+            ->when(!empty($ssh_search) && strlen($ssh_search) >= 3, function($q) use ($ssh_search, $tahun) {
+                $q->whereExists(function($sub) use ($ssh_search, $tahun) {
+                    $sub->select(DB::raw(1))
+                        ->from('t_ssh')
+                        ->whereColumn('t_ssh.id_rekening', 't_rekening.id_rekening')
+                        ->where(function($xx) use ($ssh_search) {
+                            $xx->where('t_ssh.kode_ssh', 'LIKE', "%{$ssh_search}%")
+                            ->orWhere('t_ssh.nama_ssh', 'LIKE', "%{$ssh_search}%");
+                        })
+                        ->whereYear('t_ssh.tahun', $tahun);
+                });
+            })
             ->groupBy(
                 't_rekening.id_rekening',
                 't_rekening.kode_rekening',
@@ -262,6 +291,7 @@ class TreeViewController extends Controller
         $id_kegiatan     = $request->query('id_kegiatan');
         $id_sub_kegiatan = $request->query('id_sub_kegiatan');
         $tahun = $request->tahun ?? now()->year;
+        $ssh_search = $request->query('ssh_search'); //UNTUK SEARCH
 
         $ssh = SshModel::query()
             ->from('t_ssh')
@@ -286,6 +316,13 @@ class TreeViewController extends Controller
             ->when($id_kegiatan, fn($x) => $x->where('t_ssh.id_kegiatan', $id_kegiatan))
             ->when($id_sub_kegiatan, fn($x) => $x->where('t_ssh.id_sub_kegiatan', $id_sub_kegiatan))
             ->whereYear('t_ssh.tahun', $tahun)
+            // 🔍 tambahan: filter SSH langsung UNTUK SEARCH
+            ->when(!empty($ssh_search) && strlen($ssh_search) >= 3, function($x) use ($ssh_search) {
+                $x->where(function($q) use ($ssh_search) {
+                    $q->where('t_ssh.kode_ssh', 'LIKE', "%{$ssh_search}%")
+                    ->orWhere('t_ssh.nama_ssh', 'LIKE', "%{$ssh_search}%");
+                });
+            })
             ->groupBy(
                 't_ssh.id_ssh',
                 't_ssh.kode_ssh',
@@ -302,14 +339,14 @@ class TreeViewController extends Controller
 
         $html = '';
         foreach ($ssh as $row) {
+            $namaSSH = $row->nama_ssh;
+            if (!empty($ssh_search)) {
+                $namaSSH = preg_replace('/(' . preg_quote($ssh_search, '/') . ')/i', '<mark>$1</mark>', $namaSSH);
+            }
             $html .= '<tr class="child-of-' . $id_rekening . '">';
             $html .= '<td></td>'; // kolom expand kosong
             $html .= '<td>' . e(formatKode($row->kode_sub_kegiatan, 'sub_kegiatan')) . '.' . e(formatKode($row->kode_rekening, 'rekening')) . '.' . e(formatKode($row->kode_ssh, 'ssh')) . '</td>';
-            $html .= '<td>
-            <span class="px-2 py-1" style="background-color:#d4edda; color:#155724;">
-            ' . e($row->nama_ssh) . '
-        </span>
-          </td>';
+            $html .= '<td><span class="px-2 py-1" style="background-color:#d4edda; color:#155724;">' . $namaSSH . '</span></td>';
             $html .= '<td class="text-right">' . number_format($row->p1, 0, ',', '.') . '</td>';
             $html .= '<td class="text-right">' . number_format($row->p2, 0, ',', '.') . '</td>';
             $html .= '<td class="text-right">' . number_format($row->total_realisasi, 0, ',', '.') . '</td>';
