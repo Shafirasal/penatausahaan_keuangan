@@ -836,14 +836,23 @@
                             data: 'tanggal_realisasi',
                             name: 'tanggal_realisasi'
                         },
-                        {
-                            data: 'file',
-                            name: 'file',
-                            render: function(data) {
-                                return data ?
-                                    `<a href="/storage/${data}" target="_blank">Lihat</a>` : '-';
-                            }
-                        }
+
+                {
+                    data: 'file',
+                    className: '',
+                    render: function (data, type, row) {
+                    if (!data) return '-';
+
+                    // Ambil nama file dari path
+                    const fileName = data.split('/').pop().replace(/^\d{10}_/, '');
+
+                    return `
+                        <a href="/storage/${data}" download="${fileName}" title="Klik untuk download">
+                        ${fileName}
+                        </a>
+                    `;
+                    }
+                }
                     ]
                 });
             }
