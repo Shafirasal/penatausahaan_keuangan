@@ -10,6 +10,9 @@ use App\Models\SshModel;
 use App\Models\RealisasiModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Yajra\DataTables\Facades\DataTables;
+
 use function formatKode;
 
 class RealisasipbjController extends Controller
@@ -237,7 +240,7 @@ class RealisasipbjController extends Controller
             'no_dokumen'        => 'nullable|string|max:255',
             'nilai_realisasi'   => 'required|string',
             'tanggal_realisasi' => 'required|date',
-            'file'              => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:5120',
+            'file'              => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx,xls,xlsx|max:5120',
         ]);
 
         try {
@@ -267,13 +270,17 @@ class RealisasipbjController extends Controller
                               Sisa tersedia: Rp " . number_format($sisa, 0, ',', '.'),
                 ], 422);
             }
-
-            // Upload file (opsional)
             if ($request->hasFile('file')) {
-                $fileName = time() . '_' . $request->file('file')->getClientOriginalName();
-                $request->file('file')->storeAs('realisasi', $fileName, 'public');
-                $validated['file'] = $fileName;
+                $originalName = pathinfo($request->file('file')->getClientOriginalName(), PATHINFO_FILENAME);
+                $extension = $request->file('file')->getClientOriginalExtension();
+                $filename = time() . '_' . Str::slug($originalName) . '.' . $extension;
+
+                $request->file('file')->storeAs('public/realisasipbj', $filename);
+
+                // simpan ke array validated agar masuk ke DB
+                $validated['file'] = 'realisasipbj/' . $filename;
             }
+
 
             $realisasi = RealisasiModel::create($validated);
 
@@ -293,4 +300,15 @@ class RealisasipbjController extends Controller
             ], 500);
         }
     }
+
+        public function histori($id)
+    {
+        $query = RealisasiModel::where('id_ssh', $id)
+            ->orderByDesc('tanggal_realisasi');
+
+        return DataTables::of($query)
+            ->addIndexColumn()
+            ->make(true);
+    }
+
 }
