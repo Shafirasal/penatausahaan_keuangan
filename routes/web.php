@@ -264,6 +264,9 @@ Route::prefix('realisasilpse')->group(function () {
     Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan',  [RealisasilpseController::class, 'getSubKegiatanByKegiatan']);
     Route::get('/sub_kegiatan/{id_sub_kegiatan}/rekening', [RealisasilpseController::class, 'getRekeningBySubKegiatan']);
     Route::get('/rekening/{id_rekening}/ssh',           [RealisasilpseController::class, 'getSshByRekening']);
+
+    Route::get('/ssh/{id}/histori', [RealisasilpseController::class, 'histori']);
+
 });
 
 

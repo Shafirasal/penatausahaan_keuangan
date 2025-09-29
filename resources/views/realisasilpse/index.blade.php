@@ -217,6 +217,29 @@
                 </div>
             </div>
         </form>
+        {{-- ===================== HISTORI REALISASI ===================== --}}
+        <div class="card mt-4">
+            <div class="card-header">
+                <h4>Histori Realisasi</h4>
+            </div>
+            <div class="card-body p-3">
+                <div class="card-body p-0">
+                    <table class="table table-striped mb-0" id="tbl-histori">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Jenis</th>
+                                <th>No Dokumen</th>
+                                <th>Nilai Realisasi</th>
+                                <th>Tanggal</th>
+                                <th>File</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </section>
 @endsection
 
@@ -387,6 +410,16 @@
                 sisaGlobal = sisa;
                 $('#s_pagu_final').text(formatRupiah(pagu_final));
                 $('#s_sisa').text(formatRupiah(sisa));
+
+                // 🔹 panggil histori realisasi SSH yg dipilih
+                const sshId = $opt.val();
+                if (sshId) {
+                    initHistoriTable(sshId);
+                } else {
+                    if (historiTable) {
+                        historiTable.clear().draw();
+                    }
+                }
 
                 //reset error setiap ganti ssh
                 $('#error_realisasi').text('').addClass('d-none');
@@ -614,7 +647,7 @@
                     // Ambil nilai realisasi & normalisasi
                     const nilaiRaw = $('#i_nilai').val() || '';
                     const nilaiClean = nilaiRaw.replace(/\./g, '').replace(',',
-                    '.'); // ganti ribuan & desimal
+                        '.'); // ganti ribuan & desimal
                     const nilai = parseFloat(nilaiClean) || 0;
 
                     // Cek terhadap sisaGlobal
@@ -673,13 +706,13 @@
                                                     $('#s_pagu_final').text(
                                                         formatRupiah(resp
                                                             .data.pagu_final
-                                                            ));
+                                                        ));
                                                     $('#s_sisa').text(
                                                         formatRupiah(resp
                                                             .data.sisa));
                                                     const $opt = $(
                                                         `#f_ssh option[value="${sshId}"]`
-                                                        );
+                                                    );
                                                     if ($opt.length) {
                                                         $opt.attr(
                                                                 'data-pagu_final',
@@ -690,6 +723,8 @@
                                                     }
                                                     // update variabel global sisa
                                                     sisaGlobal = resp.data.sisa;
+                                                    // refresh histori
+                                                    initHistoriTable(sshId);
                                                 }
                                             });
                                     }
@@ -715,7 +750,7 @@
                                             $field.closest('.form-group');
                                         const $err = $(
                                             '<span class="invalid-feedback"></span>'
-                                            ).text(messages[0]);
+                                        ).text(messages[0]);
                                         $group.append($err);
                                         if ($field.hasClass(
                                                 'select2-hidden-accessible')) {
@@ -727,7 +762,7 @@
                                         }
                                     }
                                     $('#error-' + field).text(messages[
-                                    0]); // kalau ada span manual
+                                        0]); // kalau ada span manual
                                 });
                                 Swal.fire({
                                     icon: 'error',
@@ -748,6 +783,69 @@
                 }
 
             });
+
+            let historiTable;
+
+            function initHistoriTable(sshId) {
+                if (historiTable) {
+                    historiTable.destroy(); // hapus instance lama
+                    $('#tbl-histori').empty(); // kosongkan isi tabel
+                    $('#tbl-histori').html(`
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Jenis</th>
+                    <th>No Dokumen</th>
+                    <th>Nilai (Rp)</th>
+                    <th>Tanggal</th>
+                    <th>File</th>
+                </tr>
+            </thead>
+        `);
+                }
+
+                historiTable = $('#tbl-histori').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: `/realisasilpse/ssh/${sshId}/histori`,
+                    columns: [{
+                            data: 'DT_RowIndex',
+                            name: 'DT_RowIndex',
+                            orderable: false,
+                            searchable: false
+                        },
+                        {
+                            data: 'jenis_realisasi',
+                            name: 'jenis_realisasi'
+                        },
+                        {
+                            data: 'no_dokumen',
+                            name: 'no_dokumen'
+                        },
+                        {
+                            data: 'nilai_realisasi',
+                            name: 'nilai_realisasi',
+                            render: function(data) {
+                                return formatRupiah(data);
+                            }
+                        },
+                        {
+                            data: 'tanggal_realisasi',
+                            name: 'tanggal_realisasi'
+                        },
+                        {
+                            data: 'file',
+                            name: 'file',
+                            render: function(data) {
+                                return data ?
+                                    `<a href="/storage/${data}" target="_blank">Lihat</a>` : '-';
+                            }
+                        }
+                    ]
+                });
+            }
+
+
 
             // Bersihkan error UI saat user memilih ulang select2
             $('#f_sub,#f_rekening,#f_ssh').on('select2:select select2:clear', function() {
