@@ -241,7 +241,7 @@ Route::prefix('realisasipbj')->group(function () {
     Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan',  [RealisasipbjController::class, 'getSubKegiatanByKegiatan']);
     Route::get('/sub_kegiatan/{id_sub_kegiatan}/rekening', [RealisasipbjController::class, 'getRekeningBySubKegiatan']);
     Route::get('/rekening/{id_rekening}/ssh',           [RealisasipbjController::class, 'getSshByRekening']);
-    Route::get('/ssh/{id}/histori', [RealisasilpseController::class, 'histori']);
+    Route::get('/ssh/{id}/histori', [RealisasipbjController::class, 'histori']);
 });
 
 
