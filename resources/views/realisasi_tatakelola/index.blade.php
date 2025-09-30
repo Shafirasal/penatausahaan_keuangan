@@ -264,6 +264,16 @@
                 width: '100%'
             };
             // ========== INIT Select2 untuk filter ==========
+            $('#f_program').select2({
+                placeholder: "-- Pilih Program --",
+                allowClear: true,
+                width: '100%'
+            }).prop('disabled', false);
+            $('#f_kegiatan').select2({
+                placeholder: "-- Pilih Kegiatan --",
+                allowClear: true,
+                width: '100%'
+            }).prop('disabled', false);
             $('#f_sub').select2({
                 placeholder: "-- Pilih Sub Kegiatan --",
                 allowClear: true,
@@ -287,7 +297,6 @@
                 $(idHidden).val($(idSel).val() || '');
             }
 
-            // Set ringkasan awal dari display (program/kegiatan locked)
             // Set ringkasan awal dari display (program/kegiatan locked)
             $('#s_program').text($('#f_program').data('label'));
             $('#s_kegiatan').text($('#f_kegiatan').data('label'));
