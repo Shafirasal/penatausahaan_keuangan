@@ -3,6 +3,7 @@
 use App\Http\Controllers\MasterProgramController;
 
 use App\Http\Controllers\RealisasipbjController;
+use App\Http\Controllers\RealisasiTatakelolaController;
 use App\Http\Controllers\RekeningController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -295,6 +296,30 @@ Route::prefix('realisasipembinaan')->group(function () {
     Route::get('/ssh/{id}/histori',[RealisasiPembinaanController::class,'histori']);
 });
 
+Route::prefix('realisasitatakelola')->group(function () {
+    // DataTables
+    Route::post('/list', [RealisasiTatakelolaController::class, 'list']);
+
+    // CRUD
+    Route::get('/', [RealisasiTatakelolaController::class, 'index']);
+    Route::get('/create', [RealisasiTatakelolaController::class, 'create']);
+    Route::post('/store', [RealisasiTatakelolaController::class, 'store']);
+    Route::get('/{id}/edit', [RealisasiTatakelolaController::class, 'edit']);
+    Route::put('/{id}/update', [RealisasiTatakelolaController::class, 'update']);
+    Route::get('/{id}/confirm', [RealisasiTatakelolaController::class, 'confirm']);
+    Route::delete('/{id}/delete', [RealisasiTatakelolaController::class, 'delete']);
+
+    // Cascading select
+    Route::get('/program/{id_program}/kegiatan',        [RealisasiTatakelolaController::class, 'getKegiatanByProgram']);
+    Route::get('/kegiatan/{id_kegiatan}/summary',        [RealisasiTatakelolaController::class, 'getSummaryByKegiatan']);
+    Route::get('/ssh/{id_ssh}/summary',        [RealisasiTatakelolaController::class, 'getSummaryBySsh']);
+    Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan',  [RealisasiTatakelolaController::class, 'getSubKegiatanByKegiatan']);
+    Route::get('/sub_kegiatan/{id_sub_kegiatan}/rekening', [RealisasiTatakelolaController::class, 'getRekeningBySubKegiatan']);
+    Route::get('/rekening/{id_rekening}/ssh',           [RealisasiTatakelolaController::class, 'getSshByRekening']);
+
+    Route::get('/ssh/{id}/histori', [RealisasiTatakelolaController::class, 'histori']);
+
+});
 
 
     Route::get('whoami', function () {

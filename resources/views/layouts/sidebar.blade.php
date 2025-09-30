@@ -49,7 +49,7 @@
                   <li><a class="nav-link" href="{{ url('/realisasipbj') }}">Bagian PBJ</a></li>
                   <li><a class="nav-link" href="{{ url('/realisasilpse') }}">Bagian LPSE</a></li>
                   <li><a class="nav-link" href={{url('/realisasipembinaan')}}>Bagian Pembinaan</a></li>
-                                    <li><a class="nav-link" href={{url('')}}>Bagian TU</a></li>
+                                    <li><a class="nav-link" href={{url('/realisasitatakelola')}}>Bagian TU</a></li>
                 </ul>
               </li>
 
