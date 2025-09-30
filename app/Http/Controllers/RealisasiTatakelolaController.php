@@ -21,7 +21,7 @@ class RealisasiTatakelolaController extends Controller
     public function index()
     {
         $breadcrumb = (object)[
-            'title' => 'Realisasi LPSE',
+            'title' => 'Realisasi Tatakelola',
             'list'  => ['Home', 'Realisasi']
         ];
 
