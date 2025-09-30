@@ -90,34 +90,45 @@ class TreeViewController extends Controller
                 't_master_sub_kegiatan.id_sub_kegiatan',
                 't_master_sub_kegiatan.kode_sub_kegiatan',
                 't_master_sub_kegiatan.nama_sub_kegiatan',
-                DB::raw("COALESCE(SUM(t_ssh.pagu1),0) AS p1"),
-                DB::raw("COALESCE(SUM(t_ssh.pagu2),0) AS p2"),
-                DB::raw("COALESCE(SUM(realisasi.nilai_realisasi),0) AS total_realisasi"),
-                DB::raw("(COALESCE(SUM(CASE WHEN t_ssh.pagu2 > 0 THEN t_ssh.pagu2 ELSE t_ssh.pagu1 END),0) - COALESCE(SUM(realisasi.nilai_realisasi),0)) AS sisa_total")
+                // Ambil SUM pagu langsung dari t_ssh (tanpa join realisasi)
+                DB::raw("(SELECT COALESCE(SUM(pagu1),0) FROM t_ssh
+                  WHERE t_ssh.id_sub_kegiatan = t_master_sub_kegiatan.id_sub_kegiatan
+                  AND YEAR(t_ssh.tahun) = {$tahun}) AS p1"),
+                DB::raw("(SELECT COALESCE(SUM(pagu2),0) FROM t_ssh
+                  WHERE t_ssh.id_sub_kegiatan = t_master_sub_kegiatan.id_sub_kegiatan
+                  AND YEAR(t_ssh.tahun) = {$tahun}) AS p2"),
+                // Total realisasi dipisah subquery agar tidak duplikasi
+                DB::raw("(SELECT COALESCE(SUM(nilai_realisasi),0)
+                  FROM t_transaksional_realisasi_anggaran r
+                  WHERE r.id_sub_kegiatan = t_master_sub_kegiatan.id_sub_kegiatan) AS total_realisasi")
             ])
-            ->leftJoin('t_ssh', 't_ssh.id_sub_kegiatan', '=', 't_master_sub_kegiatan.id_sub_kegiatan')
-            ->leftJoin('t_transaksional_realisasi_anggaran as realisasi', function($join) {
-                $join->on('realisasi.id_sub_kegiatan', '=', 't_master_sub_kegiatan.id_sub_kegiatan');
-            })
+            ->addSelect(DB::raw("(
+        (SELECT COALESCE(SUM(CASE WHEN pagu2 > 0 THEN pagu2 ELSE pagu1 END),0)
+         FROM t_ssh WHERE t_ssh.id_sub_kegiatan = t_master_sub_kegiatan.id_sub_kegiatan
+         AND YEAR(t_ssh.tahun) = {$tahun})
+        -
+        (SELECT COALESCE(SUM(nilai_realisasi),0)
+         FROM t_transaksional_realisasi_anggaran r
+         WHERE r.id_sub_kegiatan = t_master_sub_kegiatan.id_sub_kegiatan)
+    ) as sisa_total"))
             ->when($id_program, fn($x) => $x->where('t_master_sub_kegiatan.id_program', $id_program))
             ->when($id_kegiatan, fn($x) => $x->where('t_master_sub_kegiatan.id_kegiatan', $id_kegiatan))
-            ->when($id_sub_kegiatan, fn($x) => $x->where('t_master_sub_kegiatan.id_sub_kegiatan', $id_sub_kegiatan))
-            ->whereYear('t_ssh.tahun', $tahun); // filter tahun
+            ->when($id_sub_kegiatan, fn($x) => $x->where('t_master_sub_kegiatan.id_sub_kegiatan', $id_sub_kegiatan));
 
-            // 🔍 tambahan: filter jika ssh_search ada SEARCH
-            if (!empty($ssh_search) && strlen($ssh_search) >= 3) {
-                $q->whereExists(function($query) use ($ssh_search, $tahun) {
-                    $query->select(DB::raw(1))
-                        ->from('t_ssh')
-                        ->whereColumn('t_ssh.id_sub_kegiatan', 't_master_sub_kegiatan.id_sub_kegiatan')
-                        ->where(function($q) use ($ssh_search) {
-                            $q->where('t_ssh.kode_ssh', 'LIKE', "%{$ssh_search}%")
-                                ->orWhere('t_ssh.nama_ssh', 'LIKE', "%{$ssh_search}%");
-                        })
-                        ->whereYear('t_ssh.tahun', $tahun);
-                });
-            }
-            $q->groupBy('t_master_sub_kegiatan.id_sub_kegiatan', 't_master_sub_kegiatan.kode_sub_kegiatan', 't_master_sub_kegiatan.nama_sub_kegiatan');
+        // 🔍 tambahan: filter jika ssh_search ada SEARCH
+        if (!empty($ssh_search) && strlen($ssh_search) >= 3) {
+            $q->whereExists(function ($query) use ($ssh_search, $tahun) {
+                $query->select(DB::raw(1))
+                    ->from('t_ssh')
+                    ->whereColumn('t_ssh.id_sub_kegiatan', 't_master_sub_kegiatan.id_sub_kegiatan')
+                    ->where(function ($q) use ($ssh_search) {
+                        $q->where('t_ssh.kode_ssh', 'LIKE', "%{$ssh_search}%")
+                            ->orWhere('t_ssh.nama_ssh', 'LIKE', "%{$ssh_search}%");
+                    })
+                    ->whereYear('t_ssh.tahun', $tahun);
+            });
+        }
+        $q->groupBy('t_master_sub_kegiatan.id_sub_kegiatan', 't_master_sub_kegiatan.kode_sub_kegiatan', 't_master_sub_kegiatan.nama_sub_kegiatan');
 
         return DataTables::of($q)
             ->addIndexColumn()
@@ -149,8 +160,8 @@ class TreeViewController extends Controller
         $id_program   = $request->query('id_program');
         $id_kegiatan  = $request->query('id_kegiatan');
         $filter_sub   = $request->query('id_sub_kegiatan');
-        $tahun = $request->tahun ?? now()->year;
-        $ssh_search = $request->query('ssh_search'); //UNTUK SEARCH
+        $tahun        = $request->tahun ?? now()->year;
+        $ssh_search   = $request->query('ssh_search'); // UNTUK SEARCH
 
         $rekening = RekeningModel::query()
             ->from('t_rekening')
@@ -159,43 +170,63 @@ class TreeViewController extends Controller
                 't_rekening.kode_rekening',
                 't_rekening.nama_rekening',
                 't_master_sub_kegiatan.kode_sub_kegiatan',
-                DB::raw("COALESCE(SUM(t_ssh.pagu1),0) AS p1"),
-                DB::raw("COALESCE(SUM(t_ssh.pagu2),0) AS p2"),
-                DB::raw("COALESCE(SUM(realisasi.nilai_realisasi),0) AS total_realisasi"),
-                DB::raw("(COALESCE(SUM(CASE WHEN t_ssh.pagu2 > 0 THEN t_ssh.pagu2 ELSE t_ssh.pagu1 END),0) - COALESCE(SUM(realisasi.nilai_realisasi),0)) AS sisa_total")
+
+                // ✅ SUM pagu dari SSH saja (tanpa join realisasi)
+                DB::raw("(SELECT COALESCE(SUM(pagu1),0)
+                      FROM t_ssh
+                      WHERE t_ssh.id_rekening = t_rekening.id_rekening
+                        AND t_ssh.id_sub_kegiatan = {$id_sub_kegiatan}
+                        AND YEAR(t_ssh.tahun) = {$tahun}) AS p1"),
+
+                DB::raw("(SELECT COALESCE(SUM(pagu2),0)
+                      FROM t_ssh
+                      WHERE t_ssh.id_rekening = t_rekening.id_rekening
+                        AND t_ssh.id_sub_kegiatan = {$id_sub_kegiatan}
+                        AND YEAR(t_ssh.tahun) = {$tahun}) AS p2"),
+
+                // ✅ SUM realisasi dari tabel realisasi langsung
+                DB::raw("(SELECT COALESCE(SUM(nilai_realisasi),0)
+                      FROM t_transaksional_realisasi_anggaran r
+                      WHERE r.id_rekening = t_rekening.id_rekening
+                        AND r.id_sub_kegiatan = {$id_sub_kegiatan}) AS total_realisasi"),
+
+                // ✅ sisa = pagu - realisasi
+                DB::raw("(
+                (SELECT COALESCE(SUM(CASE WHEN pagu2 > 0 THEN pagu2 ELSE pagu1 END),0)
+                 FROM t_ssh
+                 WHERE t_ssh.id_rekening = t_rekening.id_rekening
+                   AND t_ssh.id_sub_kegiatan = {$id_sub_kegiatan}
+                   AND YEAR(t_ssh.tahun) = {$tahun})
+                -
+                (SELECT COALESCE(SUM(nilai_realisasi),0)
+                 FROM t_transaksional_realisasi_anggaran r
+                 WHERE r.id_rekening = t_rekening.id_rekening
+                   AND r.id_sub_kegiatan = {$id_sub_kegiatan})
+            ) as sisa_total"),
             ])
             ->leftJoin('t_master_sub_kegiatan', 't_master_sub_kegiatan.id_sub_kegiatan', '=', 't_rekening.id_sub_kegiatan')
-            ->leftJoin('t_ssh', 't_ssh.id_rekening', '=', 't_rekening.id_rekening')
-            ->leftJoin('t_transaksional_realisasi_anggaran as realisasi', function($join) {
-                $join->on('realisasi.id_rekening', '=', 't_rekening.id_rekening');
-            })
             ->where('t_rekening.id_sub_kegiatan', $id_sub_kegiatan)
             ->when($id_program, fn($x) => $x->where('t_rekening.id_program', $id_program))
             ->when($id_kegiatan, fn($x) => $x->where('t_rekening.id_kegiatan', $id_kegiatan))
             ->when($filter_sub, fn($x) => $x->where('t_rekening.id_sub_kegiatan', $filter_sub))
-            ->whereYear('t_ssh.tahun', $tahun)
-            // tambahkan filter rekening hanya kalau punya SSH yang match UNTUK SEARCH
-            ->when(!empty($ssh_search) && strlen($ssh_search) >= 3, function($q) use ($ssh_search, $tahun) {
-                $q->whereExists(function($sub) use ($ssh_search, $tahun) {
+
+            // ✅ search SSH tetap jalan
+            ->when(!empty($ssh_search) && strlen($ssh_search) >= 3, function ($q) use ($ssh_search, $tahun) {
+                $q->whereExists(function ($sub) use ($ssh_search, $tahun) {
                     $sub->select(DB::raw(1))
                         ->from('t_ssh')
                         ->whereColumn('t_ssh.id_rekening', 't_rekening.id_rekening')
-                        ->where(function($xx) use ($ssh_search) {
+                        ->where(function ($xx) use ($ssh_search) {
                             $xx->where('t_ssh.kode_ssh', 'LIKE', "%{$ssh_search}%")
-                            ->orWhere('t_ssh.nama_ssh', 'LIKE', "%{$ssh_search}%");
+                                ->orWhere('t_ssh.nama_ssh', 'LIKE', "%{$ssh_search}%");
                         })
                         ->whereYear('t_ssh.tahun', $tahun);
                 });
             })
-            ->groupBy(
-                't_rekening.id_rekening',
-                't_rekening.kode_rekening',
-                't_rekening.nama_rekening',
-                't_master_sub_kegiatan.kode_sub_kegiatan',
-            )
             ->orderBy('t_rekening.kode_rekening')
             ->get();
 
+        // generate HTML
         $html = '';
         foreach ($rekening as $row) {
             $html .= '<tr class="child-of-' . $id_sub_kegiatan . '">';
@@ -220,12 +251,34 @@ class TreeViewController extends Controller
         return response($html);
     }
 
+
     public function listRekening(Request $request)
     {
         $id_program      = $request->id_program;
         $id_kegiatan     = $request->id_kegiatan;
         $id_sub_kegiatan = $request->id_sub_kegiatan;
         $tahun = $request->tahun ?? now()->year;
+
+        // Subquery untuk SSH
+        $sshAgg = DB::table('t_ssh')
+            ->select(
+                'id_rekening',
+                DB::raw("COALESCE(SUM(pagu1),0) AS total_p1"),
+                DB::raw("COALESCE(SUM(pagu2),0) AS total_p2")
+            )
+            ->whereYear('tahun', $tahun)
+            ->when($id_program, fn($q) => $q->where('id_program', $id_program))
+            ->when($id_kegiatan, fn($q) => $q->where('id_kegiatan', $id_kegiatan))
+            ->when($id_sub_kegiatan, fn($q) => $q->where('id_sub_kegiatan', $id_sub_kegiatan))
+            ->groupBy('id_rekening');
+
+        // Subquery untuk Realisasi
+        $realAgg = DB::table('t_transaksional_realisasi_anggaran')
+            ->select(
+                'id_rekening',
+                DB::raw("COALESCE(SUM(nilai_realisasi),0) AS total_real")
+            )
+            ->groupBy('id_rekening');
 
         $q = RekeningModel::query()
             ->from('t_rekening')
@@ -237,24 +290,20 @@ class TreeViewController extends Controller
                 't_rekening.id_kegiatan',
                 't_rekening.id_sub_kegiatan',
                 't_master_sub_kegiatan.kode_sub_kegiatan',
-                DB::raw("COALESCE(SUM(t_ssh.pagu1),0) AS anggaran_periode1"),
-                DB::raw("COALESCE(SUM(t_ssh.pagu2),0) AS anggaran_periode2"),
-                DB::raw("COALESCE(SUM(realisasi.nilai_realisasi),0) AS total_realisasi"),
-                DB::raw("(COALESCE(SUM(CASE WHEN t_ssh.pagu2 > 0 THEN t_ssh.pagu2 ELSE t_ssh.pagu1 END),0) - COALESCE(SUM(realisasi.nilai_realisasi),0)) AS sisa_total")
+                DB::raw("COALESCE(ssh.total_p1,0) as anggaran_periode1"),
+                DB::raw("COALESCE(ssh.total_p2,0) as anggaran_periode2"),
+                DB::raw("COALESCE(real.total_real,0) as total_realisasi"),
+                DB::raw("(
+                COALESCE(CASE WHEN ssh.total_p2 > 0 THEN ssh.total_p2 ELSE ssh.total_p1 END,0)
+                - COALESCE(real.total_real,0)
+            ) as sisa_total")
             ])
+            ->leftJoinSub($sshAgg, 'ssh', 'ssh.id_rekening', '=', 't_rekening.id_rekening')
+            ->leftJoinSub($realAgg, 'real', 'real.id_rekening', '=', 't_rekening.id_rekening')
+            ->leftJoin('t_master_sub_kegiatan', 't_master_sub_kegiatan.id_sub_kegiatan', '=', 't_rekening.id_sub_kegiatan')
             ->when($id_program, fn($x) => $x->where('t_rekening.id_program', $id_program))
             ->when($id_kegiatan, fn($x) => $x->where('t_rekening.id_kegiatan', $id_kegiatan))
-            ->when($id_sub_kegiatan, fn($x) => $x->where('t_rekening.id_sub_kegiatan', $id_sub_kegiatan))
-            ->leftJoin('t_ssh', 't_ssh.id_rekening', '=', 't_rekening.id_rekening')
-            ->leftJoin('t_master_sub_kegiatan', 't_master_sub_kegiatan.id_sub_kegiatan', '=', 't_rekening.id_sub_kegiatan')
-            ->leftJoin('t_transaksional_realisasi_anggaran as realisasi', function($join) {
-                $join->on('realisasi.id_rekening', '=', 't_rekening.id_rekening');
-            })
-            ->when($id_program, fn($x) => $x->where('t_ssh.id_program', $id_program))
-            ->when($id_kegiatan, fn($x) => $x->where('t_ssh.id_kegiatan', $id_kegiatan))
-            ->whereYear('t_ssh.tahun', $tahun)
-            ->when($id_sub_kegiatan, fn($x) => $x->where('t_ssh.id_sub_kegiatan', $id_sub_kegiatan))
-            ->groupBy('t_rekening.id_rekening', 't_rekening.kode_rekening', 't_rekening.nama_rekening', 't_rekening.id_program', 't_rekening.id_kegiatan', 't_rekening.id_sub_kegiatan', 't_master_sub_kegiatan.kode_sub_kegiatan');
+            ->when($id_sub_kegiatan, fn($x) => $x->where('t_rekening.id_sub_kegiatan', $id_sub_kegiatan));
 
         return DataTables::of($q)
             ->addIndexColumn()
@@ -308,7 +357,7 @@ class TreeViewController extends Controller
             ])
             ->leftJoin('t_master_sub_kegiatan', 't_master_sub_kegiatan.id_sub_kegiatan', '=', 't_ssh.id_sub_kegiatan')
             ->leftJoin('t_rekening', 't_rekening.id_rekening', '=', 't_ssh.id_rekening')
-            ->leftJoin('t_transaksional_realisasi_anggaran as realisasi', function($join) {
+            ->leftJoin('t_transaksional_realisasi_anggaran as realisasi', function ($join) {
                 $join->on('realisasi.id_ssh', '=', 't_ssh.id_ssh');
             })
             ->where('t_ssh.id_rekening', $id_rekening)
@@ -317,10 +366,10 @@ class TreeViewController extends Controller
             ->when($id_sub_kegiatan, fn($x) => $x->where('t_ssh.id_sub_kegiatan', $id_sub_kegiatan))
             ->whereYear('t_ssh.tahun', $tahun)
             // 🔍 tambahan: filter SSH langsung UNTUK SEARCH
-            ->when(!empty($ssh_search) && strlen($ssh_search) >= 3, function($x) use ($ssh_search) {
-                $x->where(function($q) use ($ssh_search) {
+            ->when(!empty($ssh_search) && strlen($ssh_search) >= 3, function ($x) use ($ssh_search) {
+                $x->where(function ($q) use ($ssh_search) {
                     $q->where('t_ssh.kode_ssh', 'LIKE', "%{$ssh_search}%")
-                    ->orWhere('t_ssh.nama_ssh', 'LIKE', "%{$ssh_search}%");
+                        ->orWhere('t_ssh.nama_ssh', 'LIKE', "%{$ssh_search}%");
                 });
             })
             ->groupBy(
