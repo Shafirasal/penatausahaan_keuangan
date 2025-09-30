@@ -12,6 +12,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 use function formatKode;
 
@@ -401,11 +402,16 @@ class RealisasilpseController extends Controller
 
 
             // Handle file upload
-            if ($request->hasFile('file')) {
-                $fileName = time() . '_' . $request->file('file')->getClientOriginalName();
-                $request->file('file')->storeAs('realisasi', $fileName, 'public');
-                $validated['file'] = $fileName;
-            }
+        if ($request->hasFile('file')) {
+            $originalName = pathinfo($request->file('file')->getClientOriginalName(), PATHINFO_FILENAME);
+            $extension = $request->file('file')->getClientOriginalExtension();
+            $filename = time() . '_' . Str::slug($originalName) . '.' . $extension;
+
+            $request->file('file')->storeAs('public/realisasilpse', $filename);
+
+            // simpan ke array validated agar masuk ke DB
+            $validated['file'] = 'realisasilpse/' . $filename;
+        }
 
             // Simpan ke DB
             $realisasi = RealisasiModel::create($validated);

@@ -1,7 +1,7 @@
 @extends('layouts.template')
 
 @section('title')
-    | Form Realisasi Pembinaan
+    | Form Realisasi LPSE
 @endsection
 
 @section('content')
@@ -35,27 +35,27 @@
                     <div class="col-lg-7">
                         <div class="row">
                             {{-- Row 1 --}}
-                            {{-- Program Locked (TAMPILAN SAJA) --}}
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label><strong>Program</strong></label>
-                                    <input id="program_display" type="text" class="form-control"
-                                        value="{{ $program->kode_program_formatted }} - {{ $program->nama_program }}"
-                                        data-label="{{ $program->kode_program_formatted }} - {{ $program->nama_program }}"
-                                        readonly>
-                                </div>
-                            </div>
+                        {{-- Program Editable --}}
+                        <div class="col-sm-6">
+                        <div class="form-group">
+                            <label><strong> Program</strong></label>
+                            <select id="program_display" class="form-control">
+                            <option value="">-- Pilih Program --</option>
+                            @foreach ($listProgram as $program)
+                                <option value="{{ $program->id_program }}">{{ $program->kode_program }} - {{ $program->nama_program }}</option>
+                            @endforeach
+                            </select>
+                        </div>
+                        </div>
+                        <div class="col-sm-6">
+                        <div class="form-group">
+                            <label><strong> Kegiatan</strong></label>
+                            <select id="kegiatan_filter" class="form-control" disabled>
+                            <option value="">-- Pilih Kegiatan --</option>
+                            </select>
+                        </div>
+                        </div>
 
-                            {{-- Kegiatan Locked (TAMPILAN SAJA) --}}
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label><strong>Kegiatan</strong></label>
-                                    <input id="kegiatan_display" type="text" class="form-control"
-                                        value="{{ $kegiatan->kode_kegiatan_formatted }} - {{ $kegiatan->nama_kegiatan }}"
-                                        data-label="{{ $kegiatan->kode_kegiatan_formatted }} - {{ $kegiatan->nama_kegiatan }}"
-                                        readonly>
-                                </div>
-                            </div>
 
                             {{-- Row 2 --}}
                             <div class="col-sm-6">
@@ -141,12 +141,11 @@
         </div>
 
         {{-- ===================== FORM REALISASI ===================== --}}
-        <form action="{{ url('/realisasipembinaan/store') }}" method="POST" enctype="multipart/form-data"
-            id="form-tambah">
+        <form action="{{ url('/realisasilpse/store') }}" method="POST" enctype="multipart/form-data" id="form-tambah">
             @csrf
             {{-- hidden IDs (HANYA DI DALAM FORM) --}}
-            <input type="hidden" name="id_program" id="h_program" value="{{ $program->id_program }}">
-            <input type="hidden" name="id_kegiatan" id="h_kegiatan" value="{{ $kegiatan->id_kegiatan }}">
+            <input type="hidden" name="id_program" id="h_program">
+            <input type="hidden" name="id_kegiatan" id="h_kegiatan">
             <input type="hidden" name="id_sub_kegiatan" id="h_sub">
             <input type="hidden" name="id_rekening" id="h_rekening">
             <input type="hidden" name="id_ssh" id="h_ssh">
@@ -240,6 +239,7 @@
                 </div>
             </div>
         </div>
+
     </section>
 @endsection
 
@@ -264,6 +264,11 @@
                 width: '100%'
             };
             // ========== INIT Select2 untuk filter ==========
+            $('#f_sub').select2({
+                placeholder: "-- Pilih Sub Kegiatan --",
+                allowClear: true,
+                width: '100%'
+            }).prop('disabled', false);
             $('#f_sub').select2({
                 placeholder: "-- Pilih Sub Kegiatan --",
                 allowClear: true,
@@ -295,7 +300,7 @@
             // Ambil summary kegiatan (pagu & sisa saja)
             const kegiatanId = $('#h_kegiatan').val();
             if (kegiatanId) {
-                $.get(`/realisasipembinaan/kegiatan/${kegiatanId}/summary`)
+                $.get(`/realisasilpse/kegiatan/${kegiatanId}/summary`)
                     .done(function(resp) {
                         if (resp?.success) {
                             const {
@@ -308,7 +313,7 @@
                     });
 
                 // Load sub kegiatan awal
-                $.get(`/realisasipembinaan/kegiatan/${kegiatanId}/sub_kegiatan`)
+                $.get(`/realisasilpse/kegiatan/${kegiatanId}/sub_kegiatan`)
                     .done(function(resp) {
                         if (resp?.success) {
                             populateSelect('#f_sub', resp.data, 'id_sub_kegiatan', 'kode_sub_kegiatan',
@@ -339,7 +344,7 @@
 
                     const subId = $opt.val();
                     setLoadingState('#f_rekening', 'Loading...');
-                    $.get(`/realisasipembinaan/sub_kegiatan/${subId}/rekening`)
+                    $.get(`/realisasilpse/sub_kegiatan/${subId}/rekening`)
                         .done(function(resp) {
                             if (resp?.success) {
                                 populateSelect('#f_rekening', resp.data, 'id_rekening', 'kode_rekening',
@@ -371,7 +376,7 @@
 
                     const rekeningId = $opt.val();
                     setLoadingState('#f_ssh', 'Loading...');
-                    $.get(`/realisasipembinaan/rekening/${rekeningId}/ssh`)
+                    $.get(`/realisasilpse/rekening/${rekeningId}/ssh`)
                         .done(function(resp) {
                             if (resp?.success) {
                                 $('#f_ssh').empty().append(`<option value="">-- Pilih SSH --</option>`);
@@ -439,6 +444,7 @@
                     $('#error_realisasi').text('').addClass('d-none');
                 }
             });
+
             // resetDropdowns: hapus reset #s_realisasi
             function resetDropdowns(dropdowns) {
                 const config = {
@@ -663,15 +669,17 @@
                         // clear error jika valid
                         $('#error_realisasi').text('').addClass('d-none');
                     }
+
+                    // tambahkan hidden field untuk nilai bersih
                     let $hidden = $(form).find('input[name="nilai_realisasi_clean"]');
                     if ($hidden.length === 0) {
                         $('<input>', {
                             type: 'hidden',
                             name: 'nilai_realisasi_clean',
-                            value: nilaiClean
+                            value: nilai
                         }).appendTo(form);
                     } else {
-                        $hidden.val(nilaiClean);
+                        $hidden.val(nilai);
                     }
 
                     const fd = new FormData(form);
@@ -685,53 +693,47 @@
                         success: function(res) {
                             if (res?.status) {
                                 Swal.fire({
-                                        icon: 'success',
-                                        title: 'Berhasil',
-                                        text: res.message || 'Data tersimpan.'
-                                    })
-                                    .then(() => {
-                                        // ── 1) kosongkan hanya form tambah
-                                        $('#form-tambah')[0].reset();
-                                        $('#i_nilai').val('');
-                                        $('input[name="file"]').val('');
+                                    icon: 'success',
+                                    title: 'Berhasil',
+                                    text: res.message || 'Data tersimpan.'
+                                }).then(() => {
+                                    $('#form-tambah')[0].reset();
+                                    $('#i_nilai').val('');
+                                    $('input[name="file"]').val('');
 
-                                        // ── 2) jangan reset dropdown filter (sub/rekening/ssh)
-                                        // biarkan pilihan user tetap
-
-                                        // ── 3) update ulang pagu & sisa berdasarkan SSH yg aktif
-                                        const sshId = $('#h_ssh').val();
-                                        if (sshId) {
-                                            $.get(`/realisasipembinaan/ssh/${sshId}/summary`, {
-                                                    _: Date.now()
-                                                })
-                                                .done(function(resp) {
-                                                    if (resp?.success) {
-                                                        $('#s_pagu_final').text(
-                                                            formatRupiah(resp
-                                                                .data.pagu_final
-                                                            ));
-                                                        $('#s_sisa').text(
-                                                            formatRupiah(resp
-                                                                .data.sisa));
-                                                        const $opt = $(
-                                                            `#f_ssh option[value="${sshId}"]`
-                                                        );
-                                                        if ($opt.length) {
-                                                            $opt.attr(
-                                                                    'data-pagu_final',
-                                                                    resp.data
-                                                                    .pagu_final)
-                                                                .attr('data-sisa',
-                                                                    resp.data.sisa);
-                                                        }
-                                                        // update variabel global sisa
-                                                        sisaGlobal = resp.data.sisa;
-                                                        // refresh histori
-                                                        initHistoriTable(sshId);
+                                    const sshId = $('#h_ssh').val();
+                                    if (sshId) {
+                                        $.get(`/realisasilpse/ssh/${sshId}/summary`, {
+                                                _: Date.now()
+                                            })
+                                            .done(function(resp) {
+                                                if (resp?.success) {
+                                                    $('#s_pagu_final').text(
+                                                        formatRupiah(resp
+                                                            .data.pagu_final
+                                                        ));
+                                                    $('#s_sisa').text(
+                                                        formatRupiah(resp
+                                                            .data.sisa));
+                                                    const $opt = $(
+                                                        `#f_ssh option[value="${sshId}"]`
+                                                    );
+                                                    if ($opt.length) {
+                                                        $opt.attr(
+                                                                'data-pagu_final',
+                                                                resp.data
+                                                                .pagu_final)
+                                                            .attr('data-sisa',
+                                                                resp.data.sisa);
                                                     }
-                                                });
-                                        }
-                                    });
+                                                    // update variabel global sisa
+                                                    sisaGlobal = resp.data.sisa;
+                                                    // refresh histori
+                                                    initHistoriTable(sshId);
+                                                }
+                                            });
+                                    }
+                                });
                             } else {
                                 Swal.fire({
                                     icon: 'error',
@@ -740,8 +742,6 @@
                                 });
                             }
                         },
-
-
                         error: function(xhr) {
                             if (xhr.status === 422 && xhr.responseJSON?.errors) {
                                 const errors = xhr.responseJSON.errors;
@@ -750,9 +750,9 @@
                                     if ($field.length) {
                                         const $group = $field.hasClass(
                                                 'select2-hidden-accessible') ?
-                                                $field.next('.select2').closest(
-                                                '.form-group') : $field.closest(
-                                                '.form-group');
+                                            $field.next('.select2').closest(
+                                                '.form-group') :
+                                            $field.closest('.form-group');
                                         const $err = $(
                                             '<span class="invalid-feedback"></span>'
                                         ).text(messages[0]);
@@ -767,7 +767,7 @@
                                         }
                                     }
                                     $('#error-' + field).text(messages[
-                                    0]); // kalau ada span manual
+                                        0]); // kalau ada span manual
                                 });
                                 Swal.fire({
                                     icon: 'error',
@@ -783,8 +783,10 @@
                             }
                         }
                     });
+
                     return false; // cegah submit normal
                 }
+
             });
 
             let historiTable;
@@ -836,26 +838,27 @@
                             data: 'tanggal_realisasi',
                             name: 'tanggal_realisasi'
                         },
+                        {
+                            data: 'file',
+                            className: '',
+                            render: function (data, type, row) {
+                            if (!data) return '-';
 
-                {
-                    data: 'file',
-                    className: '',
-                    render: function (data, type, row) {
-                    if (!data) return '-';
+                            // Ambil nama file dari path
+                            const fileName = data.split('/').pop().replace(/^\d{10}_/, '');
 
-                    // Ambil nama file dari path
-                    const fileName = data.split('/').pop().replace(/^\d{10}_/, '');
-
-                    return `
-                        <a href="/storage/${data}" download="${fileName}" title="Klik untuk download">
-                        ${fileName}
-                        </a>
-                    `;
-                    }
-                }
+                            return `
+                                <a href="/storage/${data}" download="${fileName}" title="Klik untuk download">
+                                ${fileName}
+                                </a>
+                            `;
+                            }
+                        }
                     ]
                 });
             }
+
+
 
             // Bersihkan error UI saat user memilih ulang select2
             $('#f_sub,#f_rekening,#f_ssh').on('select2:select select2:clear', function() {

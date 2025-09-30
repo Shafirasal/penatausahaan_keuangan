@@ -16,20 +16,27 @@ use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 use function formatKode;
 
-class RealisasiPembinaanController extends Controller
+class RealisasiTatakelolaController extends Controller
 {
     public function index()
     {
         $breadcrumb = (object)[
-            'title' => 'Realisasi Pembinaan',
+            'title' => 'Realisasi LPSE',
             'list'  => ['Home', 'Realisasi']
         ];
 
         $page = (object)[
-            'title' => 'Data Realisasi Pembinaan'
+            'title' => 'Data Realisasi LPSE'
         ];
 
         $activeMenu = 'realisasi';
+        $listProgram = MasterProgramModel::select('id_program', 'kode_program', 'nama_program')
+            ->get()
+            ->map(function ($program) {
+                $program->kode_program = formatKode($program->kode_program, 'program');
+                return $program;
+            });
+    
 
         // ambil program berdasarkan kode (lock ke "4.01.07")
         $program = MasterProgramModel::where('kode_program', '40107')->first();
@@ -39,7 +46,7 @@ class RealisasiPembinaanController extends Controller
         }
 
         // ambil kegiatan berdasarkan kode (lock ke "4.01.07.1.02")
-        $kegiatan = MasterKegiatanModel::where('kode_kegiatan', '40107103')->first();
+        $kegiatan = MasterKegiatanModel::where('kode_kegiatan', '40107102')->first();
         if ($kegiatan) {
             $kegiatan->kode_kegiatan_formatted = formatKode($kegiatan->kode_kegiatan, 'kegiatan');
         }
@@ -60,10 +67,11 @@ class RealisasiPembinaanController extends Controller
         $tahunSekarang = now()->year;
         $tahunRange    = range(2013, $tahunSekarang + 3);
 
-        return view('realisasipembinaan.index', compact(
+        return view('realisasi_tatakelola.index', compact(
             'breadcrumb',
             'page',
             'activeMenu',
+            'listProgram',
             'program',
             'kegiatan',
             'pagu',
@@ -399,18 +407,19 @@ class RealisasiPembinaanController extends Controller
                               Sisa tersedia: Rp " . number_format($sisa, 0, ',', '.'),
                 ], 422);
             }
-            
+
+
             // Handle file upload
-            if ($request->hasFile('file')) {
-                $originalName = pathinfo($request->file('file')->getClientOriginalName(), PATHINFO_FILENAME);
-                $extension = $request->file('file')->getClientOriginalExtension();
-                $filename = time() . '_' . Str::slug($originalName) . '.' . $extension;
+        if ($request->hasFile('file')) {
+            $originalName = pathinfo($request->file('file')->getClientOriginalName(), PATHINFO_FILENAME);
+            $extension = $request->file('file')->getClientOriginalExtension();
+            $filename = time() . '_' . Str::slug($originalName) . '.' . $extension;
 
-                $request->file('file')->storeAs('public/realisasipembinaan', $filename);
+            $request->file('file')->storeAs('public/realisasitatakelola', $filename);
 
-                // simpan ke array validated agar masuk ke DB
-                $validated['file'] = 'realisasipembinaan/' . $filename;
-            }
+            // simpan ke array validated agar masuk ke DB
+            $validated['file'] = 'realisasitatakelola/' . $filename;
+        }
 
             // Simpan ke DB
             $realisasi = RealisasiModel::create($validated);
@@ -442,7 +451,8 @@ class RealisasiPembinaanController extends Controller
             ->addIndexColumn()
             ->make(true);
     }
-    
+
+
     // ===== CRUD METHODS (placeholder) =====
 
     public function list(Request $request)
