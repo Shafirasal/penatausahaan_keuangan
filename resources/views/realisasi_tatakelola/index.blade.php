@@ -1,7 +1,7 @@
 @extends('layouts.template')
 
 @section('title')
-    | Form Realisasi LPSE
+    | Form Realisasi Tatakelola
 @endsection
 
 @section('content')
@@ -39,7 +39,7 @@
                         <div class="col-sm-6">
                         <div class="form-group">
                             <label><strong> Program</strong></label>
-                            <select id="program_display" class="form-control">
+                            <select id="f_program" class="form-control">
                             <option value="">-- Pilih Program --</option>
                             @foreach ($listProgram as $program)
                                 <option value="{{ $program->id_program }}">{{ $program->kode_program }} - {{ $program->nama_program }}</option>
@@ -50,7 +50,7 @@
                         <div class="col-sm-6">
                         <div class="form-group">
                             <label><strong> Kegiatan</strong></label>
-                            <select id="kegiatan_filter" class="form-control" disabled>
+                            <select id="f_kegiatan" class="form-control" disabled>
                             <option value="">-- Pilih Kegiatan --</option>
                             </select>
                         </div>
@@ -269,11 +269,6 @@
                 allowClear: true,
                 width: '100%'
             }).prop('disabled', false);
-            $('#f_sub').select2({
-                placeholder: "-- Pilih Sub Kegiatan --",
-                allowClear: true,
-                width: '100%'
-            }).prop('disabled', false);
             $('#f_rekening').select2({
                 placeholder: "-- Pilih Rekening --",
                 allowClear: true,
@@ -294,8 +289,8 @@
 
             // Set ringkasan awal dari display (program/kegiatan locked)
             // Set ringkasan awal dari display (program/kegiatan locked)
-            $('#s_program').text($('#program_display').data('label'));
-            $('#s_kegiatan').text($('#kegiatan_display').data('label'));
+            $('#s_program').text($('#f_program').data('label'));
+            $('#s_kegiatan').text($('#f_kegiatan').data('label'));
 
             // Ambil summary kegiatan (pagu & sisa saja)
             const kegiatanId = $('#h_kegiatan').val();
