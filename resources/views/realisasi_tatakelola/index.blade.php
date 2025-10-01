@@ -41,8 +41,8 @@
                             <label><strong> Program</strong></label>
                             <select id="f_program" class="form-control">
                             <option value="">-- Pilih Program --</option>
-                            @foreach ($listProgram as $program)
-                                <option value="{{ $program->id_program }}">{{ $program->kode_program }} - {{ $program->nama_program }}</option>
+                            @foreach ($listProgram as $prog)
+                                <option value="{{ $prog->id_program }}">{{ $prog->kode_program }} - {{ $prog->nama_program }}</option>
                             @endforeach
                             </select>
                         </div>
@@ -255,6 +255,9 @@
 
         $(document).ready(function() {
 
+            // ========== DATA KEGIATAN DARI BACKEND ==========
+            const allKegiatan = @json($listKegiatan);
+
             function modalParent() {
                 return ($('#myModal').length ? $('#myModal') : $(document.body));
             }
@@ -263,32 +266,109 @@
                 allowClear: true,
                 width: '100%'
             };
+            
             // ========== INIT Select2 untuk filter ==========
             $('#f_program').select2({
                 placeholder: "-- Pilih Program --",
                 allowClear: true,
                 width: '100%'
-            }).prop('disabled', false);
+            }).prop('disabled', false); // Enable program dropdown
+            
             $('#f_kegiatan').select2({
                 placeholder: "-- Pilih Kegiatan --",
                 allowClear: true,
                 width: '100%'
-            }).prop('disabled', false);
+            }).prop('disabled', true); // Disabled sampai program dipilih
+            
             $('#f_sub').select2({
                 placeholder: "-- Pilih Sub Kegiatan --",
                 allowClear: true,
                 width: '100%'
-            }).prop('disabled', false);
+            }).prop('disabled', true);
+            
             $('#f_rekening').select2({
                 placeholder: "-- Pilih Rekening --",
                 allowClear: true,
                 width: '100%'
             }).prop('disabled', true);
+            
             $('#f_ssh').select2({
                 placeholder: "-- Pilih SSH --",
                 allowClear: true,
                 width: '100%'
             }).prop('disabled', true);
+
+            // ========== EVENT: PROGRAM CHANGE ==========
+            $('#f_program').on('select2:select select2:clear', function(e) {
+                const programId = $(this).val();
+                
+                // Reset dropdown di bawahnya
+                resetDropdowns(['kegiatan', 'sub', 'rekening', 'ssh']);
+                
+                if (e.type === 'select2:select' && programId) {
+                    // Filter kegiatan berdasarkan program
+                    const filteredKegiatan = allKegiatan.filter(k => k.id_program == programId);
+                    
+                    // Populate dropdown kegiatan
+                    $('#f_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
+                    
+                    filteredKegiatan.forEach(function(kegiatan) {
+                        const text = `${kegiatan.kode_kegiatan_formatted} - ${kegiatan.nama_kegiatan}`;
+                        const opt = new Option(text, kegiatan.id_kegiatan);
+                        $(opt).attr('data-label', text);
+                        $('#f_kegiatan').append(opt);
+                    });
+                    
+                    // Enable kegiatan dropdown
+                    $('#f_kegiatan').select2('destroy').select2({
+                        placeholder: '-- Pilih Kegiatan --',
+                        allowClear: true,
+                        width: '100%'
+                    }).prop('disabled', false);
+                }
+            });
+
+            // ========== EVENT: KEGIATAN CHANGE ==========
+            $('#f_kegiatan').on('select2:select select2:clear', function(e) {
+                const $opt = $(this).find('option:selected');
+                
+                // Reset dropdown di bawahnya
+                resetDropdowns(['sub', 'rekening', 'ssh']);
+                
+                if (e.type === 'select2:select' && $opt.length) {
+                    const kegiatanId = $opt.val();
+                    
+                    // Ambil summary kegiatan (pagu & sisa)
+                    $.get(`/realisasilpse/kegiatan/${kegiatanId}/summary`)
+                        .done(function(resp) {
+                            if (resp?.success) {
+                                const { total_pagu, sisa } = resp.data;
+                                $('#s_pagu_final').text(formatRupiah(total_pagu));
+                                $('#s_sisa').text(formatRupiah(sisa));
+                            }
+                        })
+                        .fail(function() {
+                            console.error('Gagal memuat summary kegiatan');
+                        });
+
+                    // Load sub kegiatan
+                    setLoadingState('#f_sub', 'Loading...');
+                    $.get(`/realisasilpse/kegiatan/${kegiatanId}/sub_kegiatan`)
+                        .done(function(resp) {
+                            if (resp?.success) {
+                                populateSelect('#f_sub', resp.data, 'id_sub_kegiatan', 'kode_sub_kegiatan',
+                                    'nama_sub_kegiatan', '-- Pilih Sub Kegiatan --');
+                            } else {
+                                alert('Gagal memuat data sub kegiatan: ' + (resp?.message || ''));
+                                resetSelect('#f_sub', '-- Pilih Sub Kegiatan --');
+                            }
+                        })
+                        .fail(function() {
+                            alert('Gagal memuat data sub kegiatan.');
+                            resetSelect('#f_sub', '-- Pilih Sub Kegiatan --');
+                        });
+            }
+        });
 
             // ========== Helper ringkasan + hidden ==========
             function setSel(idSel, idShow, idHidden) {
@@ -449,9 +529,15 @@
                 }
             });
 
-            // resetDropdowns: hapus reset #s_realisasi
+            /// ========== UPDATE resetDropdowns function ==========
             function resetDropdowns(dropdowns) {
                 const config = {
+                    'program': {
+                        selector: '#f_program',
+                        placeholder: '-- Pilih Program --',
+                        summary: '#s_program',
+                        hidden: '#h_program'
+                    },
                     'kegiatan': {
                         selector: '#f_kegiatan',
                         placeholder: '-- Pilih Kegiatan --',
@@ -481,8 +567,8 @@
                     const c = config[d];
                     if (!c) return;
                     resetSelect(c.selector, c.placeholder);
-                    $(c.summary).text('-');
-                    $(c.hidden).val('');
+                    if (c.summary) $(c.summary).text('-');
+                    if (c.hidden) $(c.hidden).val('');
                 });
                 if (dropdowns.includes('ssh')) {
                     $('#s_pagu_final').text('Rp -');

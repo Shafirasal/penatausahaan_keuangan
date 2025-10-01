@@ -30,39 +30,48 @@ class RealisasiTatakelolaController extends Controller
         ];
 
         $activeMenu = 'realisasi';
+
+        // List semua program untuk dropdown
         $listProgram = MasterProgramModel::select('id_program', 'kode_program', 'nama_program')
-            ->get()
-            ->map(function ($program) {
-                $program->kode_program = formatKode($program->kode_program, 'program');
-                return $program;
-            });
-    
-
-        // ambil program berdasarkan kode (lock ke "4.01.07")
-        $program = MasterProgramModel::where('kode_program', '40107')->first();
-        // simpan juga format kodenya
-        if ($program) {
+        ->get()
+        ->map(function ($program) {
             $program->kode_program_formatted = formatKode($program->kode_program, 'program');
-        }
+            return $program;
+        });
+        // simpan juga format kodenya
+        // if ($program) {
+        //     $program->kode_program_formatted = formatKode($program->kode_program, 'program');
+        // }
 
-        // ambil kegiatan berdasarkan kode (lock ke "4.01.07.1.02")
-        $kegiatan = MasterKegiatanModel::where('kode_kegiatan', '40107102')->first();
-        if ($kegiatan) {
+        
+        // List semua kegiatan untuk dropdown (unlock)
+    $listKegiatan = MasterKegiatanModel::select('id_kegiatan', 'id_program', 'kode_kegiatan', 'nama_kegiatan')
+        ->get()
+        ->map(function ($kegiatan) {
             $kegiatan->kode_kegiatan_formatted = formatKode($kegiatan->kode_kegiatan, 'kegiatan');
-        }
+            return $kegiatan;
+        });
+        // if ($kegiatan) {
+        //     $kegiatan->kode_kegiatan_formatted = formatKode($kegiatan->kode_kegiatan, 'kegiatan');
+        // }
 
         // Hitung pagu dan sisa awal
-        if ($kegiatan) {
-            $pagu = $kegiatan->p2 ?? $kegiatan->p1;
+        // if ($kegiatan) {
+        //     $pagu = $kegiatan->p2 ?? $kegiatan->p1;
 
-            $real = RealisasiModel::where('id_kegiatan', $kegiatan->id_kegiatan)
-                ->sum('nilai_realisasi');
+        //     $real = RealisasiModel::where('id_kegiatan', $kegiatan->id_kegiatan)
+        //         ->sum('nilai_realisasi');
 
-            $sisa = (float)$pagu - (float)$real;
-        } else {
-            $pagu = 0;
-            $sisa = 0;
-        }
+        //     $sisa = (float)$pagu - (float)$real;
+        // } else {
+        //     $pagu = 0;
+        //     $sisa = 0;
+        // }
+        // Inisialisasi nilai default (kosong)
+        $program = null;
+        $kegiatan = null;
+        $pagu = 0;
+        $sisa = 0;
 
         $tahunSekarang = now()->year;
         $tahunRange    = range(2013, $tahunSekarang + 3);
@@ -72,6 +81,7 @@ class RealisasiTatakelolaController extends Controller
             'page',
             'activeMenu',
             'listProgram',
+            'listKegiatan',
             'program',
             'kegiatan',
             'pagu',
@@ -404,7 +414,7 @@ class RealisasiTatakelolaController extends Controller
                 return response()->json([
                     'status'  => false,
                     'message' => "Nilai realisasi tidak boleh melebihi sisa anggaran SSH.
-                              Sisa tersedia: Rp " . number_format($sisa, 0, ',', '.'),
+                            Sisa tersedia: Rp " . number_format($sisa, 0, ',', '.'),
                 ], 422);
             }
 
