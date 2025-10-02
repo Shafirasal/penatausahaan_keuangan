@@ -42,7 +42,7 @@
                             <select id="f_program" class="form-control">
                             <option value="">-- Pilih Program --</option>
                             @foreach ($listProgram as $prog)
-                                <option value="{{ $prog->id_program }}">{{ $prog->kode_program }} - {{ $prog->nama_program }}</option>
+                                <option value="{{ $prog->id_program }}">{{ $prog->kode_program_formatted }} - {{ $prog->nama_program }}</option>
                             @endforeach
                             </select>
                         </div>
@@ -141,7 +141,7 @@
         </div>
 
         {{-- ===================== FORM REALISASI ===================== --}}
-        <form action="{{ url('/realisasilpse/store') }}" method="POST" enctype="multipart/form-data" id="form-tambah">
+        <form action="{{ url('/realisasitatakelola/store') }}" method="POST" enctype="multipart/form-data" id="form-tambah">
             @csrf
             {{-- hidden IDs (HANYA DI DALAM FORM) --}}
             <input type="hidden" name="id_program" id="h_program">
@@ -266,32 +266,32 @@
                 allowClear: true,
                 width: '100%'
             };
-            
+
             // ========== INIT Select2 untuk filter ==========
             $('#f_program').select2({
                 placeholder: "-- Pilih Program --",
                 allowClear: true,
                 width: '100%'
             }).prop('disabled', false); // Enable program dropdown
-            
+
             $('#f_kegiatan').select2({
                 placeholder: "-- Pilih Kegiatan --",
                 allowClear: true,
                 width: '100%'
             }).prop('disabled', true); // Disabled sampai program dipilih
-            
+
             $('#f_sub').select2({
                 placeholder: "-- Pilih Sub Kegiatan --",
                 allowClear: true,
                 width: '100%'
             }).prop('disabled', true);
-            
+
             $('#f_rekening').select2({
                 placeholder: "-- Pilih Rekening --",
                 allowClear: true,
                 width: '100%'
             }).prop('disabled', true);
-            
+
             $('#f_ssh').select2({
                 placeholder: "-- Pilih SSH --",
                 allowClear: true,
@@ -301,24 +301,25 @@
             // ========== EVENT: PROGRAM CHANGE ==========
             $('#f_program').on('select2:select select2:clear', function(e) {
                 const programId = $(this).val();
-                
+
+                setSel('#f_program', '#s_program', '#h_program');
                 // Reset dropdown di bawahnya
                 resetDropdowns(['kegiatan', 'sub', 'rekening', 'ssh']);
-                
+
                 if (e.type === 'select2:select' && programId) {
                     // Filter kegiatan berdasarkan program
                     const filteredKegiatan = allKegiatan.filter(k => k.id_program == programId);
-                    
+
                     // Populate dropdown kegiatan
                     $('#f_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
-                    
+
                     filteredKegiatan.forEach(function(kegiatan) {
                         const text = `${kegiatan.kode_kegiatan_formatted} - ${kegiatan.nama_kegiatan}`;
                         const opt = new Option(text, kegiatan.id_kegiatan);
                         $(opt).attr('data-label', text);
                         $('#f_kegiatan').append(opt);
                     });
-                    
+
                     // Enable kegiatan dropdown
                     $('#f_kegiatan').select2('destroy').select2({
                         placeholder: '-- Pilih Kegiatan --',
@@ -331,15 +332,17 @@
             // ========== EVENT: KEGIATAN CHANGE ==========
             $('#f_kegiatan').on('select2:select select2:clear', function(e) {
                 const $opt = $(this).find('option:selected');
-                
+
+                setSel('#f_kegiatan', '#s_kegiatan', '#h_kegiatan');
+
                 // Reset dropdown di bawahnya
                 resetDropdowns(['sub', 'rekening', 'ssh']);
-                
+
                 if (e.type === 'select2:select' && $opt.length) {
                     const kegiatanId = $opt.val();
-                    
+
                     // Ambil summary kegiatan (pagu & sisa)
-                    $.get(`/realisasilpse/kegiatan/${kegiatanId}/summary`)
+                    $.get(`/realisasitatakelola/kegiatan/${kegiatanId}/summary`)
                         .done(function(resp) {
                             if (resp?.success) {
                                 const { total_pagu, sisa } = resp.data;
@@ -353,7 +356,7 @@
 
                     // Load sub kegiatan
                     setLoadingState('#f_sub', 'Loading...');
-                    $.get(`/realisasilpse/kegiatan/${kegiatanId}/sub_kegiatan`)
+                    $.get(`/realisasitatakelola/kegiatan/${kegiatanId}/sub_kegiatan`)
                         .done(function(resp) {
                             if (resp?.success) {
                                 populateSelect('#f_sub', resp.data, 'id_sub_kegiatan', 'kode_sub_kegiatan',
@@ -377,14 +380,14 @@
                 $(idHidden).val($(idSel).val() || '');
             }
 
-            // Set ringkasan awal dari display (program/kegiatan locked)
-            $('#s_program').text($('#f_program').data('label'));
-            $('#s_kegiatan').text($('#f_kegiatan').data('label'));
+            // // Set ringkasan awal dari display (program/kegiatan locked)
+            // $('#s_program').text($('#f_program').data('label'));
+            // $('#s_kegiatan').text($('#f_kegiatan').data('label'));
 
             // Ambil summary kegiatan (pagu & sisa saja)
             const kegiatanId = $('#h_kegiatan').val();
             if (kegiatanId) {
-                $.get(`/realisasilpse/kegiatan/${kegiatanId}/summary`)
+                $.get(`/realisasitatakelola/kegiatan/${kegiatanId}/summary`)
                     .done(function(resp) {
                         if (resp?.success) {
                             const {
@@ -397,7 +400,7 @@
                     });
 
                 // Load sub kegiatan awal
-                $.get(`/realisasilpse/kegiatan/${kegiatanId}/sub_kegiatan`)
+                $.get(`/realisasitatakelola/kegiatan/${kegiatanId}/sub_kegiatan`)
                     .done(function(resp) {
                         if (resp?.success) {
                             populateSelect('#f_sub', resp.data, 'id_sub_kegiatan', 'kode_sub_kegiatan',
@@ -428,7 +431,7 @@
 
                     const subId = $opt.val();
                     setLoadingState('#f_rekening', 'Loading...');
-                    $.get(`/realisasilpse/sub_kegiatan/${subId}/rekening`)
+                    $.get(`/realisasitatakelola/sub_kegiatan/${subId}/rekening`)
                         .done(function(resp) {
                             if (resp?.success) {
                                 populateSelect('#f_rekening', resp.data, 'id_rekening', 'kode_rekening',
@@ -460,7 +463,7 @@
 
                     const rekeningId = $opt.val();
                     setLoadingState('#f_ssh', 'Loading...');
-                    $.get(`/realisasilpse/rekening/${rekeningId}/ssh`)
+                    $.get(`/realisasitatakelola/rekening/${rekeningId}/ssh`)
                         .done(function(resp) {
                             if (resp?.success) {
                                 $('#f_ssh').empty().append(`<option value="">-- Pilih SSH --</option>`);
@@ -793,7 +796,7 @@
 
                                     const sshId = $('#h_ssh').val();
                                     if (sshId) {
-                                        $.get(`/realisasilpse/ssh/${sshId}/summary`, {
+                                        $.get(`/realisasitatakelola/ssh/${sshId}/summary`, {
                                                 _: Date.now()
                                             })
                                             .done(function(resp) {
@@ -902,7 +905,7 @@
                 historiTable = $('#tbl-histori').DataTable({
                     processing: true,
                     serverSide: true,
-                    ajax: `/realisasilpse/ssh/${sshId}/histori`,
+                    ajax: `/realisasitatakelola/ssh/${sshId}/histori`,
                     columns: [{
                             data: 'DT_RowIndex',
                             name: 'DT_RowIndex',

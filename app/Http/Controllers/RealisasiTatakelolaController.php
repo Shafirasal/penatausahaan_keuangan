@@ -26,7 +26,7 @@ class RealisasiTatakelolaController extends Controller
         ];
 
         $page = (object)[
-            'title' => 'Data Realisasi LPSE'
+            'title' => 'Data Realisasi Tata Kelola'
         ];
 
         $activeMenu = 'realisasi';
@@ -43,7 +43,7 @@ class RealisasiTatakelolaController extends Controller
         //     $program->kode_program_formatted = formatKode($program->kode_program, 'program');
         // }
 
-        
+
         // List semua kegiatan untuk dropdown (unlock)
     $listKegiatan = MasterKegiatanModel::select('id_kegiatan', 'id_program', 'kode_kegiatan', 'nama_kegiatan')
         ->get()
@@ -371,7 +371,7 @@ class RealisasiTatakelolaController extends Controller
             return $program;
         });
 
-        return view('realisasipbj.index', compact('breadcrumb', 'page', 'activeMenu', 'listProgram'));
+        return view('realisasi_tatakelola.index', compact('breadcrumb', 'page', 'activeMenu', 'listProgram'));
     }
 
     public function store(Request $request)
