@@ -12,10 +12,12 @@
   <!-- General CSS -->
   <link rel="stylesheet" href="{{ asset('stisla1/node_modules/bootstrap/dist/css/bootstrap.min.css') }}">
   <link rel="stylesheet" href="{{ asset('stisla1/node_modules/@fortawesome/fontawesome-free/css/all.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('stisla1/node_modules/ionicons201/css/ionicons.min.css') }}"> 
 
   <!-- Template CSS -->
   <link rel="stylesheet" href="{{ asset('stisla1/assets/css/style.css') }}">
   <link rel="stylesheet" href="{{ asset('stisla1/assets/css/components.css') }}">
+
 
     <!-- Template Select2 -->
   <link rel="stylesheet" href="{{ asset('stisla1/assets/select2/css/select2.min.css') }}">
