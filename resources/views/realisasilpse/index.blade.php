@@ -170,7 +170,7 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Nomor Dokumen</label>
+                                <label>Nomor Dokumen <span class="text-danger">*</span></label>
                                 <input type="text" name="no_dokumen" class="form-control"
                                     value="{{ old('no_dokumen') }}">
                             </div>
