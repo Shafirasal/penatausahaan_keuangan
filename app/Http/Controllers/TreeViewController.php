@@ -417,26 +417,53 @@ class TreeViewController extends Controller
 public function export_excel()
 {
     // Ambil data dengan join antar tabel
-    $data = DB::table('t_ssh AS ssh')
-        ->join('t_rekening AS rek', 'rek.id_rekening', '=', 'ssh.id_rekening')
-        ->join('t_master_sub_kegiatan AS sub', 'sub.id_sub_kegiatan', '=', 'ssh.id_sub_kegiatan')
-        ->leftJoin('t_transaksional_realisasi_anggaran AS rea', 'rea.id_ssh', '=', 'ssh.id_ssh')
-        ->select(
-            'sub.nama_sub_kegiatan',
-            'rek.nama_rekening',
-            'ssh.nama_ssh',
-            DB::raw('COALESCE(ssh.pagu1, 0) AS pagu1'),
-            DB::raw('COALESCE(ssh.pagu2, 0) AS pagu2'),
-            DB::raw('COALESCE(SUM(rea.nilai_realisasi), 0) AS total_realisasi'),
-            DB::raw('(CASE WHEN COALESCE(ssh.pagu2, 0) > 0 
-                        THEN COALESCE(ssh.pagu2, 0) 
-                        ELSE COALESCE(ssh.pagu1, 0) END 
-                    - COALESCE(SUM(rea.nilai_realisasi), 0)) AS sisa')
-        )
+    // $data = DB::table('t_ssh AS ssh')
+    //     ->join('t_rekening AS rek', 'rek.id_rekening', '=', 'ssh.id_rekening')
+    //     ->join('t_master_sub_kegiatan AS sub', 'sub.id_sub_kegiatan', '=', 'ssh.id_sub_kegiatan')
+    //     ->leftJoin('t_transaksional_realisasi_anggaran AS rea', 'rea.id_ssh', '=', 'ssh.id_ssh')
+    //     ->select(
+    //         'sub.nama_sub_kegiatan',
+    //         'rek.nama_rekening',
+    //         'ssh.nama_ssh',
+    //         DB::raw('COALESCE(ssh.pagu1, 0) AS pagu1'),
+    //         DB::raw('COALESCE(ssh.pagu2, 0) AS pagu2'),
+    //         DB::raw('COALESCE(SUM(rea.nilai_realisasi), 0) AS total_realisasi'),
+    //         DB::raw('(CASE WHEN COALESCE(ssh.pagu2, 0) > 0 
+    //                     THEN COALESCE(ssh.pagu2, 0) 
+    //                     ELSE COALESCE(ssh.pagu1, 0) END 
+    //                 - COALESCE(SUM(rea.nilai_realisasi), 0)) AS sisa')
+    //     )
 
-        ->groupBy('ssh.id_ssh')
-        ->orderBy('sub.nama_sub_kegiatan')
-        ->get();
+    //     ->groupBy('ssh.id_ssh')
+    //     ->orderBy('sub.nama_sub_kegiatan')
+    //     ->get();
+    $data = DB::table('t_ssh AS ssh')
+    ->join('t_rekening AS rek', 'rek.id_rekening', '=', 'ssh.id_rekening')
+    ->join('t_master_sub_kegiatan AS sub', 'sub.id_sub_kegiatan', '=', 'ssh.id_sub_kegiatan')
+    ->leftJoin('t_transaksional_realisasi_anggaran AS rea', 'rea.id_ssh', '=', 'ssh.id_ssh')
+    ->select(
+        'sub.nama_sub_kegiatan',
+        'rek.nama_rekening',
+        'ssh.nama_ssh',
+        DB::raw('COALESCE(ssh.pagu1, 0) AS pagu1'),
+        DB::raw('COALESCE(ssh.pagu2, 0) AS pagu2'),
+        DB::raw('COALESCE(SUM(rea.nilai_realisasi), 0) AS total_realisasi'),
+        DB::raw('(CASE WHEN COALESCE(ssh.pagu2, 0) > 0 
+                    THEN COALESCE(ssh.pagu2, 0) 
+                    ELSE COALESCE(ssh.pagu1, 0) END 
+                - COALESCE(SUM(rea.nilai_realisasi), 0)) AS sisa')
+    )
+    ->groupBy(
+        'ssh.id_ssh',
+        'sub.nama_sub_kegiatan',
+        'rek.nama_rekening',
+        'ssh.nama_ssh',
+        'ssh.pagu1',
+        'ssh.pagu2'
+    )
+    ->orderBy('sub.nama_sub_kegiatan')
+    ->get();
+
 
     // Siapkan spreadsheet
     $spreadsheet = new Spreadsheet();
