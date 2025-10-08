@@ -41,6 +41,7 @@ class TreeViewController extends Controller
 
         $tahunSekarang = now()->year;
         $tahunRange = range(2013, $tahunSekarang + 3);
+        
 
         // view: resources/views/tree_view/index.blade.php
         return view('tree_view.index', compact('breadcrumb', 'page', 'activeMenu', 'listProgram', 'tahunSekarang', 'tahunRange'));
@@ -155,6 +156,7 @@ class TreeViewController extends Controller
             ->addColumn('sisa', fn($row) => number_format((float)$row->sisa_total, 0, ',', '.'))
             ->rawColumns(['expand', 'uraian'])
             ->toJson();
+
     }
 
     public function listRekeningBySubKegiatan($id_sub_kegiatan, Request $request)
@@ -414,7 +416,7 @@ class TreeViewController extends Controller
 
 
 
-public function export_excel()
+public function export_excel(Request $request)
 {
     // Ambil data dengan join antar tabel
     // $data = DB::table('t_ssh AS ssh')
@@ -437,6 +439,8 @@ public function export_excel()
     //     ->groupBy('ssh.id_ssh')
     //     ->orderBy('sub.nama_sub_kegiatan')
     //     ->get();
+
+    $tahun = $request->tahun ?? now()->year;
     $data = DB::table('t_ssh AS ssh')
     ->join('t_rekening AS rek', 'rek.id_rekening', '=', 'ssh.id_rekening')
     ->join('t_master_sub_kegiatan AS sub', 'sub.id_sub_kegiatan', '=', 'ssh.id_sub_kegiatan')
@@ -453,6 +457,7 @@ public function export_excel()
                     ELSE COALESCE(ssh.pagu1, 0) END 
                 - COALESCE(SUM(rea.nilai_realisasi), 0)) AS sisa')
     )
+    ->whereYear('ssh.tahun', $tahun) 
     ->groupBy(
         'ssh.id_ssh',
         'sub.nama_sub_kegiatan',
@@ -515,7 +520,7 @@ public function export_excel()
     }
      $sheet->setTitle('Data Anggaran'); // set title sheet
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-        $filename = 'Data Aanggaran ' . date('Y-m-d H:i:s') . '.xlsx';
+        $filename = 'Data Anggaran ' . date('Y-m-d H:i:s') . '.xlsx';
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '"');
         header('Cache-Control: max-age=0');
