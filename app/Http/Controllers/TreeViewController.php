@@ -10,6 +10,8 @@ use App\Models\SshModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Yajra\DataTables\Facades\DataTables;
 
 
@@ -409,4 +411,97 @@ class TreeViewController extends Controller
 
         return response($html);
     }
+
+
+
+public function export_excel()
+{
+    // Ambil data dengan join antar tabel
+    $data = DB::table('t_ssh AS ssh')
+        ->join('t_rekening AS rek', 'rek.id_rekening', '=', 'ssh.id_rekening')
+        ->join('t_master_sub_kegiatan AS sub', 'sub.id_sub_kegiatan', '=', 'ssh.id_sub_kegiatan')
+        ->leftJoin('t_transaksional_realisasi_anggaran AS rea', 'rea.id_ssh', '=', 'ssh.id_ssh')
+        ->select(
+            'sub.nama_sub_kegiatan',
+            'rek.nama_rekening',
+            'ssh.nama_ssh',
+            DB::raw('COALESCE(ssh.pagu1, 0) AS pagu1'),
+            DB::raw('COALESCE(ssh.pagu2, 0) AS pagu2'),
+            DB::raw('COALESCE(SUM(rea.nilai_realisasi), 0) AS total_realisasi'),
+            DB::raw('(CASE WHEN COALESCE(ssh.pagu2, 0) > 0 
+                        THEN COALESCE(ssh.pagu2, 0) 
+                        ELSE COALESCE(ssh.pagu1, 0) END 
+                    - COALESCE(SUM(rea.nilai_realisasi), 0)) AS sisa')
+        )
+
+        ->groupBy('ssh.id_ssh')
+        ->orderBy('sub.nama_sub_kegiatan')
+        ->get();
+
+    // Siapkan spreadsheet
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+
+    // Header kolom
+    $headers = [
+        'A1' => 'No',
+        'B1' => 'Nama Sub Kegiatan',
+        'C1' => 'Nama Rekening',
+        'D1' => 'Nama SSH',
+        'E1' => 'Pagu 1',
+        'F1' => 'Pagu 2',
+        'G1' => 'Realisasi',
+        'H1' => 'Sisa'
+    ];
+
+    foreach ($headers as $cell => $text) {
+        $sheet->setCellValue($cell, $text);
+    }
+
+    $sheet->getStyle('A1:G1')->getFont()->setBold(true);
+
+    // Isi data
+    $no = 1;
+    $baris = 2;
+    foreach ($data as $item) {
+    $pagu_dipakai = $item->pagu2 > 0 ? $item->pagu2 : $item->pagu1;
+    $sisa = $pagu_dipakai - $item->total_realisasi;
+
+
+        $sheet->setCellValue('A'.$baris, $no);
+        $sheet->setCellValue('B'.$baris, $item->nama_sub_kegiatan);
+        $sheet->setCellValue('C'.$baris, $item->nama_rekening);
+        $sheet->setCellValue('D'.$baris, $item->nama_ssh);
+        $sheet->setCellValue('E'.$baris, $item->pagu1);
+        $sheet->setCellValue('F'.$baris, $item->pagu2);
+        $sheet->setCellValue('G'.$baris, $item->total_realisasi);
+        $sheet->setCellValue('H'.$baris, $sisa);
+
+
+        $no++;
+        $baris++;
+    }
+
+    // Auto width kolom
+    foreach (range('A', 'H') as $col) {
+        $sheet->getColumnDimension($col)->setAutoSize(true);
+    }
+     $sheet->setTitle('Data Anggaran'); // set title sheet
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $filename = 'Data Aanggaran ' . date('Y-m-d H:i:s') . '.xlsx';
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        header('Cache-Control: max-age=1');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified:' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        header('Pragma: public');
+        $writer->save('php://output');
+        exit;
+}
+
+
+
+
 }

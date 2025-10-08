@@ -16,6 +16,12 @@
                 <div class="card">
                     <div class="card-header">
                         <h4>{{ $page->title ?? 'Data Rekening ➜ SSH (Tree)' }}</h4>
+                        <div class="card-header-action ml-auto">
+                            <a href="{{ url('/tree_view/export_excel') }}" class="btn btn-primary">
+                                <i class="fas fa-file-excel"></i> Export Excel
+                            </a>
+                        </div>
+
                     </div>
 
                     <div class="card-body">

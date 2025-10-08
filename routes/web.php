@@ -219,6 +219,7 @@ Route::prefix('tree_view')->group(function () {
     Route::get('/{id_rekening}/ssh', [TreeViewController::class, 'listSshByRekening']);
     Route::get('/program/{id_program}/kegiatan', [TreeViewController::class, 'getKegiatanByProgram']);
     Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan', [TreeViewController::class, 'getSubKegiatanByKegiatan']);
+    Route::get('/export_excel', [TreeViewController::class, 'export_excel']); 
 });
 
 
