@@ -102,18 +102,24 @@ class TreeViewController extends Controller
                   AND YEAR(t_ssh.tahun) = {$tahun}) AS p2"),
                 // Total realisasi dipisah subquery agar tidak duplikasi
                 DB::raw("(SELECT COALESCE(SUM(nilai_realisasi),0)
-                  FROM t_transaksional_realisasi_anggaran r
-                  WHERE r.id_sub_kegiatan = t_master_sub_kegiatan.id_sub_kegiatan) AS total_realisasi")
+                FROM t_transaksional_realisasi_anggaran r
+                WHERE r.id_sub_kegiatan = t_master_sub_kegiatan.id_sub_kegiatan 
+                AND YEAR(r.tanggal_realisasi) = {$tahun}) AS total_realisasi")
+
             ])
-            ->addSelect(DB::raw("(
-        (SELECT COALESCE(SUM(CASE WHEN pagu2 > 0 THEN pagu2 ELSE pagu1 END),0)
-         FROM t_ssh WHERE t_ssh.id_sub_kegiatan = t_master_sub_kegiatan.id_sub_kegiatan
-         AND YEAR(t_ssh.tahun) = {$tahun})
-        -
-        (SELECT COALESCE(SUM(nilai_realisasi),0)
-         FROM t_transaksional_realisasi_anggaran r
-         WHERE r.id_sub_kegiatan = t_master_sub_kegiatan.id_sub_kegiatan)
-    ) as sisa_total"))
+                ->addSelect(DB::raw("(
+                    (SELECT COALESCE(SUM(CASE WHEN pagu2 > 0 THEN pagu2 ELSE pagu1 END),0)
+                    FROM t_ssh 
+                    WHERE t_ssh.id_sub_kegiatan = t_master_sub_kegiatan.id_sub_kegiatan
+                    AND YEAR(t_ssh.tahun) = {$tahun})
+                    -
+                    (SELECT COALESCE(SUM(nilai_realisasi),0)
+                    FROM t_transaksional_realisasi_anggaran r
+                    WHERE r.id_sub_kegiatan = t_master_sub_kegiatan.id_sub_kegiatan 
+                    AND YEAR(r.tanggal_realisasi) = {$tahun})
+                ) AS sisa_total"))
+
+
             ->when($id_program, fn($x) => $x->where('t_master_sub_kegiatan.id_program', $id_program))
             ->when($id_kegiatan, fn($x) => $x->where('t_master_sub_kegiatan.id_kegiatan', $id_kegiatan))
             ->when($id_sub_kegiatan, fn($x) => $x->where('t_master_sub_kegiatan.id_sub_kegiatan', $id_sub_kegiatan));
