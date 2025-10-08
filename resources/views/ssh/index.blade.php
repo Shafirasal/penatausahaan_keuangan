@@ -21,6 +21,12 @@
                                 <i class="fas fa-plus"></i> Tambah
                             </button>
                         </div>
+                        <div class="card-header-action ml-2">
+                            <button onclick="modalAction(`{{ url('/ssh/import') }}`)" class="btn btn-info"
+                                style="background-color: #EF5428; border-color: #EF5428;"> <i
+                                    class="fas fa-file-import"></i>
+                                Import</button>
+                        </div>
 
                     </div>
 

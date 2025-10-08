@@ -11,6 +11,8 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Yajra\DataTables\Facades\DataTables;
 use function formatKode;
 
@@ -269,5 +271,165 @@ class SSHController extends Controller
             });
 
         return response()->json($rekening);
+    }
+
+    public function import()
+    {
+        return view('ssh.import');
+    }
+
+    public function import_ajax(Request $request)
+    {
+        // Pastikan request adalah AJAX
+        if (!($request->ajax() || $request->wantsJson())) {
+            return redirect('/');
+        }
+
+        // Validasi file upload
+        $rules = [
+            'file_ssh' => ['required', 'mimes:xlsx', 'max:4096'],
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validasi Gagal',
+                'msgField' => $validator->errors()
+            ]);
+        }
+
+        // Ambil file
+        $file = $request->file('file_ssh');
+
+        try {
+            // Baca file Excel
+            $reader = IOFactory::createReader('Xlsx');
+            $reader->setReadDataOnly(true);
+            $spreadsheet = $reader->load($file->getRealPath());
+
+            // Ambil sheet "Data"
+            $sheet = $spreadsheet->getSheetByName('Data');
+            if (!$sheet) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Sheet "Data" tidak ditemukan dalam file Excel.'
+                ]);
+            }
+
+            $data = $sheet->toArray(null, true, true, true); // true agar angka panjang tidak dipotong
+
+            $insert = [];
+            $invalid_rows = [];
+
+            if (count($data) > 1) {
+                foreach ($data as $baris => $value) {
+                    if ($baris == 1) continue; // Lewati header
+
+                    // Ambil data dari kolom Excel
+                    $kode_ssh         = trim((string)$value['A']);
+                    $kode_program     = trim((string)$value['B']);
+                    $kode_kegiatan    = trim((string)$value['C']);
+                    $kode_sub_kegiatan = trim((string)$value['D']);
+                    $kode_rekening    = trim((string)$value['E']);
+                    $nama_ssh         = trim((string)$value['F']);
+                    $pagu1            = (int)$value['G'];
+                    $pagu2            = (int)$value['H'];
+                    // Konversi kolom tahun agar selalu berbentuk YYYY-MM-DD
+                    if (is_numeric($value['I'])) {
+                        // Jika berupa serial Excel (misal 45842)
+                        try {
+                            $tahun = Date::excelToDateTimeObject($value['I'])->format('Y-m-d');
+                        } catch (\Exception $e) {
+                            $tahun = null;
+                        }
+                    } else {
+                        // Jika berupa string tanggal
+                        $tahun = trim((string)$value['I']);
+                        $timestamp = strtotime($tahun);
+                        $tahun = $timestamp ? date('Y-m-d', $timestamp) : null;
+                    }
+
+                    // Hilangkan karakter non-digit dari kode
+                    $kode_ssh = preg_replace('/[^0-9]/', '', $kode_ssh);
+                    $kode_program = preg_replace('/[^0-9]/', '', $kode_program);
+                    $kode_kegiatan = preg_replace('/[^0-9]/', '', $kode_kegiatan);
+                    $kode_sub_kegiatan = preg_replace('/[^0-9]/', '', $kode_sub_kegiatan);
+                    $kode_rekening = preg_replace('/[^0-9]/', '', $kode_rekening);
+
+                    if (empty($kode_ssh)) continue;
+
+                    // Cari ID referensi berdasarkan kode HIRARKIS
+                    $program = MasterProgramModel::where('kode_program', $kode_program)->first();
+
+                    $kegiatan = null;
+                    if ($program) {
+                        $kegiatan = MasterKegiatanModel::where('kode_kegiatan', $kode_kegiatan)
+                            ->where('id_program', $program->id_program)
+                            ->first();
+                    }
+
+                    $sub = null;
+                    if ($kegiatan) {
+                        $sub = MasterSubKegiatanModel::where('kode_sub_kegiatan', $kode_sub_kegiatan)
+                            ->where('id_kegiatan', $kegiatan->id_kegiatan)
+                            ->first();
+                    }
+
+                    $rekening = null;
+                    if ($sub) {
+                        $rekening = RekeningModel::where('kode_rekening', $kode_rekening)
+                            ->where('id_sub_kegiatan', $sub->id_sub_kegiatan)
+                            ->first();
+                    }
+
+                    // Jika semua referensi valid → siapkan untuk insert
+                    if ($program && $kegiatan && $sub && $rekening) {
+                        $insert[] = [
+                            'kode_ssh' => $kode_ssh,
+                            'id_program' => $program->id_program,
+                            'id_kegiatan' => $kegiatan->id_kegiatan,
+                            'id_sub_kegiatan' => $sub->id_sub_kegiatan,
+                            'id_rekening' => $rekening->id_rekening,
+                            'nama_ssh' => $nama_ssh,
+                            'pagu1' => $pagu1,
+                            'pagu2' => $pagu2,
+                            'tahun' => $tahun,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    } else {
+                        $invalid_rows[] = [
+                            'baris' => $baris,
+                            'kode_ssh' => $kode_ssh,
+                            'note' => 'Kode referensi tidak ditemukan di salah satu tabel master'
+                        ];
+                    }
+                }
+
+                // Insert data valid
+                if (count($insert) > 0) {
+                    SshModel::insertOrIgnore($insert);
+                }
+
+                // Buat response hasil
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Import selesai. ' . count($insert) . ' data berhasil diimport, ' . count($invalid_rows) . ' baris dilewati.',
+                    'invalid_rows' => $invalid_rows
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'File Excel tidak memiliki data.'
+                ]);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Terjadi kesalahan saat memproses file: ' . $th->getMessage()
+            ]);
+        }
+        return redirect('/');
     }
 }
