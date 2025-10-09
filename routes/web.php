@@ -184,6 +184,8 @@ Route::middleware(['web', 'session.auth'])->group(function () {
         Route::put('/{id}/update', [RekeningController::class, 'update']);
         Route::delete('/{id}/delete', [RekeningController::class, 'delete']);
         Route::get('/{id}/confirm', [RekeningController::class, 'confirm']);
+        Route::get('/import', [RekeningController::class, 'import']);
+        Route::post('/import_ajax', [RekeningController::class, 'import_ajax']);
 
         // Cascading select (seperti provinsi → kabupaten → dst)
         Route::get('/program/{id_program}/kegiatan', [RekeningController::class, 'getKegiatanByProgram']);
