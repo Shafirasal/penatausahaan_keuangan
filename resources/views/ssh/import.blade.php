@@ -21,8 +21,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" data-dismiss="modal" class="btn" style="color: #EF5428; background-color: white; border-color: #EF5428;">Batal</button>
-                <button type="submit" class="btn" style="color: white; background-color: #EF5428; border-color: #EF5428;">Kirim</button>
+                <button type="button" data-dismiss="modal" class="btn btn-danger btn-sm">Batal</button>
+                <button type="submit" class="btn btn-primary btn-sm">Simpan</button>
             </div>
         </div>
     </div>
