@@ -158,82 +158,84 @@ $(document).ready(function () {
     });
 
     // FIX: Cascading Program → Kegiatan (sama seperti sub_kegiatan)
-    $('#id_program').on('select2:select select2:clear', function (e) {
-        const programId = $(this).val();
+    //$('#id_program').on('select2:select select2:clear', function (e) {
+    //    const programId = $(this).val();
 
-        if (e.type === 'select2:select' && programId) {
+    //    if (e.type === 'select2:select' && programId) {
             // Tampilkan Loading di Select2
-            $('#id_kegiatan').empty().append('<option value="">Loading...</option>');
-            $('#id_kegiatan').prop('disabled', true).trigger('change');
-            $('#id_sub_kegiatan').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
-            $('#id_sub_kegiatan').prop('disabled', true).trigger('change');
+    //        $('#id_kegiatan').empty().append('<option value="">Loading...</option>');
+    //        $('#id_kegiatan').prop('disabled', true).trigger('change');
+    //        $('#id_sub_kegiatan').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
+    //        $('#id_sub_kegiatan').prop('disabled', true).trigger('change');
 
             // Update placeholder Select2 ke Loading
-            $('#id_kegiatan').select2('destroy').select2({
-                placeholder: "Loading...",
-                allowClear: true,
-                width: '100%',
-                dropdownParent: $('#myModal')
-            }).prop('disabled', true);
+    //        $('#id_kegiatan').select2('destroy').select2({
+    //            placeholder: "Loading...",
+    //            allowClear: true,
+        //        width: '100%',
+        //        dropdownParent: $('#myModal')
+        //    }).prop('disabled', true);
 
             // Reset sub kegiatan dengan placeholder normal
-            $('#id_sub_kegiatan').select2('destroy').select2({
-                placeholder: "Pilih Sub Kegiatan",
-                allowClear: true,
-                width: '100%',
-                dropdownParent: $('#myModal')
-            }).prop('disabled', true);
+        //    $('#id_sub_kegiatan').select2('destroy').select2({
+        //        placeholder: "Pilih Sub Kegiatan",
+        //        allowClear: true,
+        //        width: '100%',
+        //        dropdownParent: $('#myModal')
+        //    }).prop('disabled', true);
 
-            $.get(`/master_rekening/program/${programId}/kegiatan`, function (data) {
+        //    $.get(`/master_rekening/program/${programId}/kegiatan`, function (data) {
                 // Clear options dan tambah default
-                $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
+        //        $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
 
                 // Tambah data kegiatan
-                data.forEach(item => {
-                    let optionText = item.kode_kegiatan ?
-                        `${item.kode_kegiatan} - ${item.nama_kegiatan}` :
-                        item.nama_kegiatan;
-                    $('#id_kegiatan').append(new Option(optionText, item.id_kegiatan));
-                });
+        //        data.forEach(item => {
+        //            let optionText = item.kode_kegiatan ?
+        //                `${item.kode_kegiatan} - ${item.nama_kegiatan}` :
+        //                item.nama_kegiatan;
+        //            $('#id_kegiatan').append(new Option(optionText, item.id_kegiatan));
+        //        });
 
-                // Reinitialize Select2 dengan placeholder normal
-                $('#id_kegiatan').select2('destroy').select2({
-                    placeholder: "-- Pilih Kegiatan --",
-                    allowClear: true,
-                    width: '100%',
-                    dropdownParent: $('#myModal')
-                }).prop('disabled', false);
+        //        // Reinitialize Select2 dengan placeholder normal
+        //        $('#id_kegiatan').select2('destroy').select2({
+        //            placeholder: "-- Pilih Kegiatan --",
+        //            allowClear: true,
+        //            width: '100%',
+        //            dropdownParent: $('#myModal')
+        //        }).prop('disabled', false);
 
-            }).fail(function () {
-                alert('Gagal memuat data kegiatan');
-                $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
-                $('#id_kegiatan').select2('destroy').select2({
-                    placeholder: "-- Pilih Kegiatan --",
-                    allowClear: true,
-                    width: '100%',
-                    dropdownParent: $('#myModal')
-                }).prop('disabled', true);
-            });
+        //    }).fail(function () {
+        //        alert('Gagal memuat data kegiatan');
+        //        $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
+        //        $('#id_kegiatan').select2('destroy').select2({
+        //            placeholder: "-- Pilih Kegiatan --",
+        //            allowClear: true,
+        //            width: '100%',
+        //            dropdownParent: $('#myModal')
+        //        }).prop('disabled', true);
+        // Fungsi umum untuk memuat data ke Select2
 
-        } else {
-            // Reset kegiatan dan sub kegiatan saat program di-clear
-            $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
-            $('#id_kegiatan').select2('destroy').select2({
-                placeholder: "Pilih Kegiatan",
-                allowClear: true,
-                width: '100%',
-                dropdownParent: $('#myModal')
-            }).prop('disabled', true);
 
-            $('#id_sub_kegiatan').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
-            $('#id_sub_kegiatan').select2('destroy').select2({
-                placeholder: "Pilih Sub Kegiatan",
-                allowClear: true,
-                width: '100%',
-                dropdownParent: $('#myModal')
-            }).prop('disabled', true);
-        }
-    });
+//        } else {
+//            // Reset kegiatan dan sub kegiatan saat program di-clear
+//            $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
+//            $('#id_kegiatan').select2('destroy').select2({
+//                placeholder: "Pilih Kegiatan",
+//                allowClear: true,
+//                width: '100%',
+//                dropdownParent: $('#myModal')
+//            }).prop('disabled', true);
+
+//            $('#id_sub_kegiatan').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
+//            $('#id_sub_kegiatan').select2('destroy').select2({
+//                placeholder: "Pilih Sub Kegiatan",
+//                allowClear: true,
+//                width: '100%',
+//                dropdownParent: $('#myModal')
+//            }).prop('disabled', true);
+//        }
+//    });
+
 
 // // FIX: Cascading Program → Kegiatan (menggunakan formatted_kode)
 // $('#id_program').on('select2:select select2:clear', function (e) {
@@ -314,64 +316,184 @@ $(document).ready(function () {
 // });
 
 // FIX: Cascading Kegiatan → Sub Kegiatan (menggunakan formatted_kode)
-$('#id_kegiatan').on('select2:select select2:clear', function (e) {
-    const kegiatanId = $(this).val();
+//$('#id_kegiatan').on('select2:select select2:clear', function (e) {
+//    const kegiatanId = $(this).val();
 
-    if (e.type === 'select2:select' && kegiatanId) {
+//    if (e.type === 'select2:select' && kegiatanId) {
         // Tampilkan Loading di Select2
-        $('#id_sub_kegiatan').empty().append('<option value="">Loading...</option>');
-        $('#id_sub_kegiatan').prop('disabled', true).trigger('change');
+//        $('#id_sub_kegiatan').empty().append('<option value="">Loading...</option>');
+//        $('#id_sub_kegiatan').prop('disabled', true).trigger('change');
 
         // Update placeholder Select2 ke Loading
-        $('#id_sub_kegiatan').select2('destroy').select2({
+//        $('#id_sub_kegiatan').select2('destroy').select2({
+//            placeholder: "Loading...",
+//            allowClear: true,
+//            width: '100%',
+//            dropdownParent: $('#myModal')
+//        }).prop('disabled', true);
+
+//        $.get(`/master_rekening/kegiatan/${kegiatanId}/sub_kegiatan`, function (data) {
+            // Clear options dan tambah default
+//            $('#id_sub_kegiatan').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
+
+            // Tambah data sub kegiatan - GUNAKAN formatted_kode dari backend
+//            data.forEach(item => {
+//                let optionText = item.kode_sub_kegiatan ?
+//                    `${item.kode_sub_kegiatan} - ${item.nama_sub_kegiatan}` :
+//                    item.nama_sub_kegiatan;
+//                $('#id_sub_kegiatan').append(new Option(optionText, item.id_sub_kegiatan));
+//            });
+
+//            // Reinitialize Select2 dengan placeholder normal
+//            $('#id_sub_kegiatan').select2('destroy').select2({
+//                placeholder: "-- Pilih Sub Kegiatan --",
+//                allowClear: true,
+//                width: '100%',
+//                dropdownParent: $('#myModal')
+//            }).prop('disabled', false);
+
+//        }).fail(function () {
+//            alert('Gagal memuat data sub kegiatan');
+//            $('#id_sub_kegiatan').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
+//            $('#id_sub_kegiatan').select2('destroy').select2({
+//                placeholder: "-- Pilih Sub Kegiatan --",
+//                allowClear: true,
+//                width: '100%',
+//                dropdownParent: $('#myModal')
+//            }).prop('disabled', true);
+//        });
+
+//    } else {
+//        // Reset sub kegiatan saat kegiatan di-clear
+//        $('#id_sub_kegiatan').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
+//        $('#id_sub_kegiatan').select2('destroy').select2({
+//            placeholder: "Pilih Sub Kegiatan",
+//            allowClear: true,
+//            width: '100%',
+//            dropdownParent: $('#myModal')
+//        }).prop('disabled', true);
+//    }
+//});
+
+// Fungsi umum untuk memuat data ke dalam Select2
+    function loadOptions(url, id, target, placeholderText = "-- Pilih Opsi --") {
+        const select = $('#' + target);
+
+        // Tampilkan loading sementara
+        select.empty()
+            .append('<option value="">Loading...</option>')
+            .prop('disabled', true)
+            .trigger('change');
+
+        // Re-inisialisasi Select2 dengan placeholder Loading
+        select.select2('destroy').select2({
             placeholder: "Loading...",
             allowClear: true,
             width: '100%',
             dropdownParent: $('#myModal')
-        }).prop('disabled', true);
-
-        $.get(`/master_rekening/kegiatan/${kegiatanId}/sub_kegiatan`, function (data) {
-            // Clear options dan tambah default
-            $('#id_sub_kegiatan').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
-
-            // Tambah data sub kegiatan - GUNAKAN formatted_kode dari backend
-            data.forEach(item => {
-                let optionText = item.kode_sub_kegiatan ?
-                    `${item.kode_sub_kegiatan} - ${item.nama_sub_kegiatan}` :
-                    item.nama_sub_kegiatan;
-                $('#id_sub_kegiatan').append(new Option(optionText, item.id_sub_kegiatan));
-            });
-
-            // Reinitialize Select2 dengan placeholder normal
-            $('#id_sub_kegiatan').select2('destroy').select2({
-                placeholder: "-- Pilih Sub Kegiatan --",
-                allowClear: true,
-                width: '100%',
-                dropdownParent: $('#myModal')
-            }).prop('disabled', false);
-
-        }).fail(function () {
-            alert('Gagal memuat data sub kegiatan');
-            $('#id_sub_kegiatan').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
-            $('#id_sub_kegiatan').select2('destroy').select2({
-                placeholder: "-- Pilih Sub Kegiatan --",
-                allowClear: true,
-                width: '100%',
-                dropdownParent: $('#myModal')
-            }).prop('disabled', true);
         });
 
-    } else {
-        // Reset sub kegiatan saat kegiatan di-clear
-        $('#id_sub_kegiatan').empty().append('<option value="">-- Pilih Sub Kegiatan --</option>');
-        $('#id_sub_kegiatan').select2('destroy').select2({
+        // Request data dari server
+        $.get(`${url}/${id}`, function (data) {
+            select.empty().append(`<option value="">${placeholderText}</option>`);
+            data.forEach(item => {
+                // Tentukan format teks (jika ada kode + nama)
+                const text = item.kode_kegiatan
+                    ? `${item.kode_kegiatan} - ${item.nama_kegiatan}`
+                    : item.kode_sub_kegiatan
+                    ? `${item.kode_sub_kegiatan} - ${item.nama_sub_kegiatan}`
+                    : item.nama_kegiatan || item.nama_sub_kegiatan || item.nama;
+
+                // Tentukan value ID (bisa id_kegiatan atau id_sub_kegiatan)
+                const value = item.id_kegiatan || item.id_sub_kegiatan || item.id;
+                select.append(new Option(text, value));
+            });
+
+            // Re-enable Select2 dengan placeholder normal
+            select.select2('destroy').select2({
+                placeholder: placeholderText,
+                allowClear: true,
+                width: '100%',
+                dropdownParent: $('#myModal')
+            }).prop('disabled', false).trigger('change');
+
+        }).fail(() => {
+            alert(`Gagal memuat data untuk ${placeholderText.toLowerCase()}`);
+            select.empty().append(`<option value="">${placeholderText}</option>`);
+            select.select2('destroy').select2({
+                placeholder: placeholderText,
+                allowClear: true,
+                width: '100%',
+                dropdownParent: $('#myModal')
+            }).prop('disabled', true).trigger('change');
+        });
+    }
+
+    // Cascading Program → Kegiatan
+    $('#id_program').on('select2:select select2:clear', function (e) {
+        const idProgram = $(this).val();
+        const kegiatanSelect = $('#id_kegiatan');
+        const subKegiatanSelect = $('#id_sub_kegiatan');
+
+        // Reset kegiatan & sub kegiatan
+        kegiatanSelect.empty()
+            .append('<option value="">-- Pilih Kegiatan --</option>')
+            .prop('disabled', true)
+            .trigger('change');
+
+        subKegiatanSelect.empty()
+            .append('<option value="">-- Pilih Sub Kegiatan --</option>')
+            .prop('disabled', true)
+            .trigger('change');
+
+        // Re-inisialisasi Select2
+        kegiatanSelect.select2('destroy').select2({
+            placeholder: "Pilih Kegiatan",
+            allowClear: true,
+            width: '100%',
+            dropdownParent: $('#myModal')
+        });
+
+        subKegiatanSelect.select2('destroy').select2({
             placeholder: "Pilih Sub Kegiatan",
             allowClear: true,
             width: '100%',
             dropdownParent: $('#myModal')
-        }).prop('disabled', true);
-    }
-});
+        });
+
+        // Jika program dipilih → muat kegiatan
+        if (e.type === 'select2:select' && idProgram) {
+            loadOptions('/master_rekening/program', idProgram + '/kegiatan', 'id_kegiatan', '-- Pilih Kegiatan --');
+        }
+    });
+
+    // ===========================================================
+    // 🔹 Cascading Kegiatan → Sub Kegiatan
+    $('#id_kegiatan').on('select2:select select2:clear', function (e) {
+        const idKegiatan = $(this).val();
+        const subKegiatanSelect = $('#id_sub_kegiatan');
+
+        // Reset sub kegiatan
+        subKegiatanSelect.empty()
+            .append('<option value="">-- Pilih Sub Kegiatan --</option>')
+            .prop('disabled', true)
+            .trigger('change');
+
+        subKegiatanSelect.select2('destroy').select2({
+            placeholder: "Pilih Sub Kegiatan",
+            allowClear: true,
+            width: '100%',
+            dropdownParent: $('#myModal')
+        });
+
+        // Jika kegiatan dipilih → muat sub kegiatan
+        if (e.type === 'select2:select' && idKegiatan) {
+            loadOptions('/master_rekening/kegiatan', idKegiatan + '/sub_kegiatan', 'id_sub_kegiatan', '-- Pilih Sub Kegiatan --');
+        }
+    });
+
+
+
 
 // IF EDIT MODE: Populate KEGIATAN & SUB KEGIATAN (menggunakan formatted_kode)
 const selectedProgram = $('#id_program').val();
