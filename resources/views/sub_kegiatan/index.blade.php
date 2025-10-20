@@ -106,6 +106,44 @@
       width: '100%'
     });
 
+
+    //fungsi helper
+   function loadKegiatanOptions(programId) {
+        const select = $('#kegiatan_filter');
+        
+        // Show loading state
+        select.empty().append('<option value="">Loading...</option>').prop('disabled', true).trigger('change');
+        
+        $.ajax({
+            url: "{{ url('/master_sub_kegiatan/program') }}/" + programId + "/kegiatan",
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                // Clear dan tambah default option
+                select.empty().append('<option value="">-- Pilih Kegiatan --</option>');
+                
+                // Populate data
+                $.each(data, function(index, kegiatan) {
+                    const text = kegiatan.kode_kegiatan 
+                        ? `${kegiatan.kode_kegiatan} - ${kegiatan.nama_kegiatan}`
+                        : kegiatan.nama_kegiatan;
+                    select.append(new Option(text, kegiatan.id_kegiatan));
+                });
+                
+                // Enable select
+                select.prop('disabled', false).trigger('change');
+            },
+            error: function() {
+                // Reset ke state awal saat error
+                select.empty()
+                    .append('<option value="">-- Pilih Kegiatan --</option>')
+                    .prop('disabled', true)
+                    .trigger('change');
+                alert('Gagal memuat data kegiatan');
+            }
+        });
+    }
+
     // Inisialisasi DataTable
     dataMasterSubKegiatan = $('#table_master_sub_kegiatan').DataTable({
       processing: false,
@@ -128,40 +166,64 @@
     });
 
     // Event handler untuk filter Program
+    // $('#program_filter').on('change', function() {
+    //   var programId = $(this).val();
+      
+    //   // Reset dan disable kegiatan filter
+    //   $('#kegiatan_filter').empty().append('<option value="">-- Pilih Kegiatan --</option>').prop('disabled', true).trigger('change');
+      
+    //   if (programId) {
+    //     // Load kegiatan berdasarkan program yang dipilih
+    //     $.ajax({
+    //       url: "{{ url('/master_sub_kegiatan/program') }}/" + programId + "/kegiatan",
+    //       type: 'GET',
+    //       dataType: 'json',
+    //       success: function(data) {
+    //         $('#kegiatan_filter').prop('disabled', false);
+    //         $.each(data, function(index, kegiatan) {
+    //           // ✅ TAMBAHAN: Tampilkan kode_kegiatan yang sudah diformat dari controller
+    //           $('#kegiatan_filter').append('<option value="' + kegiatan.id_kegiatan + '">' + kegiatan.kode_kegiatan + ' - ' + kegiatan.nama_kegiatan + '</option>');
+    //         });
+    //       },
+    //       error: function() {
+    //         alert('Gagal memuat data kegiatan');
+    //       }
+    //     });
+    //   }
+      
+    //   // Reload DataTable
+    //   dataMasterSubKegiatan.ajax.reload();
+    // });
+
+    // // Event handler untuk filter Kegiatan
+    // $('#kegiatan_filter').on('change', function() {
+    //   dataMasterSubKegiatan.ajax.reload();
+    // });
+
+ // EVENT HANDLER kea punya pak prima
     $('#program_filter').on('change', function() {
-      var programId = $(this).val();
-      
-      // Reset dan disable kegiatan filter
-      $('#kegiatan_filter').empty().append('<option value="">-- Pilih Kegiatan --</option>').prop('disabled', true).trigger('change');
-      
-      if (programId) {
-        // Load kegiatan berdasarkan program yang dipilih
-        $.ajax({
-          url: "{{ url('/master_sub_kegiatan/program') }}/" + programId + "/kegiatan",
-          type: 'GET',
-          dataType: 'json',
-          success: function(data) {
-            $('#kegiatan_filter').prop('disabled', false);
-            $.each(data, function(index, kegiatan) {
-              // ✅ TAMBAHAN: Tampilkan kode_kegiatan yang sudah diformat dari controller
-              $('#kegiatan_filter').append('<option value="' + kegiatan.id_kegiatan + '">' + kegiatan.kode_kegiatan + ' - ' + kegiatan.nama_kegiatan + '</option>');
-            });
-          },
-          error: function() {
-            alert('Gagal memuat data kegiatan');
-          }
-        });
-      }
-      
-      // Reload DataTable
-      dataMasterSubKegiatan.ajax.reload();
+        const programId = $(this).val();
+        const kegiatanSelect = $('#kegiatan_filter');
+        
+        if (programId) {
+            // Load kegiatan berdasarkan program
+            loadKegiatanOptions(programId);
+        } else {
+            // Reset saat program di-clear
+            kegiatanSelect.empty()
+                .append('<option value="">-- Pilih Kegiatan --</option>')
+                .prop('disabled', true)
+                .trigger('change');
+        }
+        
+        // Reload DataTable
+        dataMasterSubKegiatan.ajax.reload();
     });
 
     // Event handler untuk filter Kegiatan
     $('#kegiatan_filter').on('change', function() {
-      dataMasterSubKegiatan.ajax.reload();
+        dataMasterSubKegiatan.ajax.reload();
     });
-
   });
 </script>
 @endpush
