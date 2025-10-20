@@ -190,15 +190,15 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Tanggal Realisasi <span class="text-danger">*</span></label>
-                                <input type="date" name="tanggal_realisasi" class="form-control"
-                                    value="{{ now()->toDateString() }}" required>
+                                <input type="date" id="tanggal_realisasi" name="tanggal_realisasi"
+                                    class="form-control" value="{{ now()->toDateString() }}" required>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>File Upload</label>
-                                <input type="file" name="file" class="form-control">
+                                <input type="file" id="file" name="file" class="form-control">
                             </div>
                         </div>
 
@@ -425,8 +425,8 @@
                 $('#error_realisasi').text('').addClass('d-none');
             });
 
-            // validasi di input realisasi
-            $('#i_nilai').on('blur', function() {
+            // validasi di input realisasi (pakai event delegation)
+            $(document).on('input', '#i_nilai', function() {
                 let val = $(this).val().replace(/\./g, '').replace(',', '.');
                 let nilai = parseFloat(val) || 0;
 
@@ -435,10 +435,19 @@
                         .text("Nilai realisasi melebihi sisa anggaran (Rp " + sisaGlobal.toLocaleString(
                             "id-ID") + ")")
                         .removeClass('d-none');
+
+                    // disable input tanggal & file
+                    $('#tanggal_realisasi').prop('disabled', true);
+                    $('#file').prop('disabled', true);
                 } else {
                     $('#error_realisasi').text('').addClass('d-none');
+
+                    // aktifkan kembali input tanggal & file
+                    $('#tanggal_realisasi').prop('disabled', false);
+                    $('#file').prop('disabled', false);
                 }
             });
+
             // resetDropdowns: hapus reset #s_realisasi
             function resetDropdowns(dropdowns) {
                 const config = {
@@ -750,7 +759,7 @@
                                     if ($field.length) {
                                         const $group = $field.hasClass(
                                                 'select2-hidden-accessible') ?
-                                                $field.next('.select2').closest(
+                                            $field.next('.select2').closest(
                                                 '.form-group') : $field.closest(
                                                 '.form-group');
                                         const $err = $(
@@ -767,7 +776,7 @@
                                         }
                                     }
                                     $('#error-' + field).text(messages[
-                                    0]); // kalau ada span manual
+                                        0]); // kalau ada span manual
                                 });
                                 Swal.fire({
                                     icon: 'error',
@@ -837,22 +846,22 @@
                             name: 'tanggal_realisasi'
                         },
 
-                {
-                    data: 'file',
-                    className: '',
-                    render: function (data, type, row) {
-                    if (!data) return '-';
+                        {
+                            data: 'file',
+                            className: '',
+                            render: function(data, type, row) {
+                                if (!data) return '-';
 
-                    // Ambil nama file dari path
-                    const fileName = data.split('/').pop().replace(/^\d{10}_/, '');
+                                // Ambil nama file dari path
+                                const fileName = data.split('/').pop().replace(/^\d{10}_/, '');
 
-                    return `
+                                return `
                         <a href="/storage/${data}" download="${fileName}" title="Klik untuk download">
                         ${fileName}
                         </a>
                     `;
-                    }
-                }
+                            }
+                        }
                     ]
                 });
             }
