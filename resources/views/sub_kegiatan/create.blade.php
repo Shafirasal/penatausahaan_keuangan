@@ -150,65 +150,99 @@
             $('#error-' + id).text('');
         });
 
-        // FIX: Menggunakan Select2 events untuk cascading
-        $('#id_program').on('select2:select select2:clear', function(e) {
-            const programId = $(this).val();
+        // FIX: Menggunakan Select2 events untuk cascading, DIGANTI PADA KODE DIBAWAHHH
+        // $('#id_program').on('select2:select select2:clear', function(e) {
+        //     const programId = $(this).val();
             
-            if (e.type === 'select2:select' && programId) {
-                // Tampilkan Loading di Select2
-                $('#id_kegiatan').empty().append('<option value="">Loading...</option>');
-                $('#id_kegiatan').prop('disabled', true).trigger('change');
+        //     if (e.type === 'select2:select' && programId) {
+        //         // Tampilkan Loading di Select2
+        //         $('#id_kegiatan').empty().append('<option value="">Loading...</option>');
+        //         $('#id_kegiatan').prop('disabled', true).trigger('change');
                 
-                // Update placeholder Select2 ke Loading
-                $('#id_kegiatan').select2('destroy').select2({
-                    placeholder: "Loading...",
-                    allowClear: true,
-                    width: '100%',
-                    dropdownParent: $('#myModal')
-                }).prop('disabled', true);
+        //         // Update placeholder Select2 ke Loading
+        //         $('#id_kegiatan').select2('destroy').select2({
+        //             placeholder: "Loading...",
+        //             allowClear: true,
+        //             width: '100%',
+        //             dropdownParent: $('#myModal')
+        //         }).prop('disabled', true);
 
-                $.get(`/master_sub_kegiatan/program/${programId}/kegiatan`, function(data) {
-                    // Clear options dan tambah default
-                    $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
+        //         $.get(`/master_sub_kegiatan/program/${programId}/kegiatan`, function(data) {
+        //             // Clear options dan tambah default
+        //             $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
                     
-                    // Tambah data kegiatan
-                    data.forEach(item => {
-                        let optionText = item.kode_kegiatan ? 
-                            `${item.kode_kegiatan} - ${item.nama_kegiatan}` : 
-                            item.nama_kegiatan;
-                        $('#id_kegiatan').append(new Option(optionText, item.id_kegiatan));
-                    });
+        //             // Tambah data kegiatan
+        //             data.forEach(item => {
+        //                 let optionText = item.kode_kegiatan ? 
+        //                     `${item.kode_kegiatan} - ${item.nama_kegiatan}` : 
+        //                     item.nama_kegiatan;
+        //                 $('#id_kegiatan').append(new Option(optionText, item.id_kegiatan));
+        //             });
                     
-                    // Reinitialize Select2 dengan placeholder normal
-                    $('#id_kegiatan').select2('destroy').select2({
-                        placeholder: "-- Pilih Kegiatan --",
-                        allowClear: true,
-                        width: '100%',
-                        dropdownParent: $('#myModal')
-                    }).prop('disabled', false);
+        //             // Reinitialize Select2 dengan placeholder normal
+        //             $('#id_kegiatan').select2('destroy').select2({
+        //                 placeholder: "-- Pilih Kegiatan --",
+        //                 allowClear: true,
+        //                 width: '100%',
+        //                 dropdownParent: $('#myModal')
+        //             }).prop('disabled', false);
                     
-                }).fail(function() {
-                    alert('Gagal memuat data kegiatan');
-                    $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
-                    $('#id_kegiatan').select2('destroy').select2({
-                        placeholder: "-- Pilih Kegiatan --",
-                        allowClear: true,
-                        width: '100%',
-                        dropdownParent: $('#myModal')
-                    }).prop('disabled', true);
-                });
+        //         }).fail(function() {
+        //             alert('Gagal memuat data kegiatan');
+        //             $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
+        //             $('#id_kegiatan').select2('destroy').select2({
+        //                 placeholder: "-- Pilih Kegiatan --",
+        //                 allowClear: true,
+        //                 width: '100%',
+        //                 dropdownParent: $('#myModal')
+        //             }).prop('disabled', true);
+        //         });
                 
-            } else {
-                // Reset kegiatan saat program di-clear
-                $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
-                $('#id_kegiatan').select2('destroy').select2({
-                    placeholder: "Pilih Kegiatan",
-                    allowClear: true,
-                    width: '100%',
-                    dropdownParent: $('#myModal')
-                }).prop('disabled', true);
-            }
+        //     } else {
+        //         // Reset kegiatan saat program di-clear
+        //         $('#id_kegiatan').empty().append('<option value="">-- Pilih Kegiatan --</option>');
+        //         $('#id_kegiatan').select2('destroy').select2({
+        //             placeholder: "Pilih Kegiatan",
+        //             allowClear: true,
+        //             width: '100%',
+        //             dropdownParent: $('#myModal')
+        //         }).prop('disabled', true);
+        //     }
+        // });
+
+        // Fungsi bantu untuk memuat data kegiatan saat cascading (reusable & pendek), PROSES CASCADING DATA
+        function loadOptions(url, id, target) {
+            $.get(`${url}/${id}/kegiatan`, function(data) {
+                const select = $('#' + target);
+                select.empty().append('<option value="">-- Pilih Kegiatan --</option>');
+                data.forEach(item => {
+                    const text = item.kode_kegiatan 
+                        ? `${item.kode_kegiatan} - ${item.nama_kegiatan}`
+                        : item.nama_kegiatan;
+                    select.append(new Option(text, item.id_kegiatan));
+                });
+                select.prop('disabled', false).trigger('change');
+            }).fail(() => {
+                alert('Gagal memuat data kegiatan');
+            });
+        }
+
+        // Event cascading antara Program → Kegiatan
+        $('#id_program').on('select2:select select2:clear', function(e) {
+            const id = $(this).val();
+            const target = $('#id_kegiatan');
+
+            target.empty()
+                .append('<option value="">-- Pilih Kegiatan --</option>')
+                .prop('disabled', !id)
+                .trigger('change');
+
+            if (id) loadOptions('/master_rekening/program', id, 'id_kegiatan');
         });
+
+
+
+
 
         // IF EDIT MODE: Populate KEGIATAN & SUB KEGIATAN
         const selectedProgram = $('#id_program').val();
