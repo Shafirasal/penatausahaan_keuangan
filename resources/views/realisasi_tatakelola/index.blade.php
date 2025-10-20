@@ -189,7 +189,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Tanggal Realisasi <span class="text-danger">*</span></label>
-                                <input type="date" name="tanggal_realisasi" class="form-control"
+                                <input type="date" id="tanggal_realisasi" name="tanggal_realisasi" class="form-control"
                                     value="{{ now()->toDateString() }}" required>
                             </div>
                         </div>
@@ -197,7 +197,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>File Upload</label>
-                                <input type="file" name="file" class="form-control">
+                                <input type="file" id="file" name="file" class="form-control">
                             </div>
                         </div>
 
@@ -518,7 +518,7 @@
             });
 
             // validasi di input realisasi
-            $('#i_nilai').on('blur', function() {
+            $(document).on('input', '#i_nilai', function() {
                 let val = $(this).val().replace(/\./g, '').replace(',', '.');
                 let nilai = parseFloat(val) || 0;
 
@@ -527,8 +527,15 @@
                         .text("Nilai realisasi melebihi sisa anggaran (Rp " + sisaGlobal.toLocaleString(
                             "id-ID") + ")")
                         .removeClass('d-none');
+                    // disable input tanggal & file
+                    $('#tanggal_realisasi').prop('disabled', true);
+                    $('#file').prop('disabled', true);
                 } else {
                     $('#error_realisasi').text('').addClass('d-none');
+
+                    // aktifkan kembali input tanggal & file
+                    $('#tanggal_realisasi').prop('disabled', false);
+                    $('#file').prop('disabled', false);
                 }
             });
 
