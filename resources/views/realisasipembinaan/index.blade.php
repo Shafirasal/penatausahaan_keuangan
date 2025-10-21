@@ -318,10 +318,17 @@
                             resetSelect('#f_sub', '-- Pilih Sub Kegiatan --');
                         }
                     })
-                    .fail(function() {
-                        alert('Gagal memuat data sub kegiatan.');
-                        resetSelect('#f_sub', '-- Pilih Sub Kegiatan --');
-                    });
+                    // .fail(function() {
+                    //     alert('Gagal memuat data sub kegiatan.');
+                    //     resetSelect('#f_sub', '-- Pilih Sub Kegiatan --');
+                    // });
+                .fail(function() {
+                Swal.fire({
+                    icon: 'error',
+                    text: 'Gagal memuat data sub kegiatan',
+                });
+                resetSelect('#f_sub', '-- Pilih Sub Kegiatan --');
+            });
             }
 
             // Sub -> Rekening
