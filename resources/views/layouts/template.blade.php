@@ -18,6 +18,8 @@
   <link rel="stylesheet" href="{{ asset('stisla1/assets/css/style.css') }}">
   <link rel="stylesheet" href="{{ asset('stisla1/assets/css/components.css') }}">
 
+  <!--Chart Js -->
+  <link rel="stylesheet" href="{{ asset('stisla1/node_modules/chart.js/dist/Chart.min.css') }}"> 
 
     <!-- Template Select2 -->
   <link rel="stylesheet" href="{{ asset('stisla1/assets/select2/css/select2.min.css') }}">
@@ -93,6 +95,9 @@
 
     <!-- SweetAlert2 CDN -->
 <script src="{{ asset('stisla1/assets/js/sweetalert2.all.min.js') }}"></script>
+
+<!-- Chart js -->
+<script src="{{ asset('stisla1/node_modules/chart.js/dist/Chart.min.js') }}"></script>
 
   <!-- AJAX CSRF Setup -->
   <script>
