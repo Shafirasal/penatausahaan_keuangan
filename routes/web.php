@@ -21,6 +21,7 @@ use App\Http\Controllers\RealisasilpseController;
 use App\Http\Controllers\RealisasiPembinaanController;
 use App\Http\Controllers\SSHController;
 use App\Http\Controllers\TreeViewController;
+use Illuminate\Routing\RouteGroup;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -88,20 +89,6 @@ Route::middleware(['web', 'session.auth'])->group(function () {
         Route::delete('/{id}/delete', [RiwayatPendidikanController::class, 'delete']);
     });
 
-    Route::prefix('user')->name('user.')->group(function () {
-        Route::get('/', [UserController::class, 'index']);
-        Route::post('/list', [UserController::class, 'list']);
-        Route::get('/create', [UserController::class, 'create']);
-        Route::post('/store', [UserController::class, 'store']);
-        Route::get('/{id}/show', [UserController::class, 'show']);  // Perbaikan URL
-        Route::get('/{id}/edit', [UserController::class, 'edit']);
-        Route::put('/{id}/update', [UserController::class, 'update']); // Perbaikan URL
-        Route::get('/{id}/confirm', [UserController::class, 'confirm']);
-        Route::delete('/{id}/delete', [UserController::class, 'delete']);
-        Route::get('/import', [UserController::class, 'import']);
-        Route::post('/import_ajax', [UserController::class, 'import_ajax']);
-    });
-
     // Riwayat Kepegawaian
     Route::prefix('riwayat_kepegawaian')->name('riwayat_kepegawaian.')->group(function () {
         Route::post('/list', [RiwayatKepegawaianController::class, 'list']);
@@ -115,113 +102,131 @@ Route::middleware(['web', 'session.auth'])->group(function () {
         Route::delete('/{id}/delete', [RiwayatKepegawaianController::class, 'delete']);
     });
 
-    // Pegawai
-    Route::prefix('pegawai')->name('pegawai.')->group(function () {
-        Route::post('/list', [PegawaiController::class, 'list']);
-        Route::get('/', [PegawaiController::class, 'index']);
-        Route::get('/create', [PegawaiController::class, 'create']);
-        Route::post('/store', [PegawaiController::class, 'store']);
-        Route::post('/check_nip', [PegawaiController::class, 'checkNip']);
-        Route::get('/{nip}/show', [PegawaiController::class, 'show']);
-        Route::get('/{nip}/edit', [PegawaiController::class, 'edit']);
-        Route::put('/{nip}/update', [PegawaiController::class, 'update']);
-        Route::get('/{nip}/confirm', [PegawaiController::class, 'confirm']);
-        Route::delete('/{nip}/delete', [PegawaiController::class, 'delete']);
 
-        Route::get('/provinsi/{id_provinsi}/kabupaten', [PegawaiController::class, 'getKabupatenByProvinsi']);
-        Route::get('/kabupaten/{id_kabupaten}/kecamatan', [PegawaiController::class, 'getKecamatanByKabupaten']);
-        Route::get('/kecamatan/{id_kecamatan}/kelurahan', [PegawaiController::class, 'getKelurahanByKecamatan']);
+
+
+    Route::group(['middleware' => ['cek.level:admin']], function () {
+        Route::prefix('user')->name('user.')->group(function () {
+            Route::get('/', [UserController::class, 'index']);
+            Route::post('/list', [UserController::class, 'list']);
+            Route::get('/create', [UserController::class, 'create']);
+            Route::post('/store', [UserController::class, 'store']);
+            Route::get('/{id}/show', [UserController::class, 'show']);  // Perbaikan URL
+            Route::get('/{id}/edit', [UserController::class, 'edit']);
+            Route::put('/{id}/update', [UserController::class, 'update']); // Perbaikan URL
+            Route::get('/{id}/confirm', [UserController::class, 'confirm']);
+            Route::delete('/{id}/delete', [UserController::class, 'delete']);
+            Route::get('/import', [UserController::class, 'import']);
+            Route::post('/import_ajax', [UserController::class, 'import_ajax']);
+        });
+
+        // Pegawai
+        Route::prefix('pegawai')->name('pegawai.')->group(function () {
+            Route::post('/list', [PegawaiController::class, 'list']);
+            Route::get('/', [PegawaiController::class, 'index']);
+            Route::get('/create', [PegawaiController::class, 'create']);
+            Route::post('/store', [PegawaiController::class, 'store']);
+            Route::post('/check_nip', [PegawaiController::class, 'checkNip']);
+            Route::get('/{nip}/show', [PegawaiController::class, 'show']);
+            Route::get('/{nip}/edit', [PegawaiController::class, 'edit']);
+            Route::put('/{nip}/update', [PegawaiController::class, 'update']);
+            Route::get('/{nip}/confirm', [PegawaiController::class, 'confirm']);
+            Route::delete('/{nip}/delete', [PegawaiController::class, 'delete']);
+
+            Route::get('/provinsi/{id_provinsi}/kabupaten', [PegawaiController::class, 'getKabupatenByProvinsi']);
+            Route::get('/kabupaten/{id_kabupaten}/kecamatan', [PegawaiController::class, 'getKecamatanByKabupaten']);
+            Route::get('/kecamatan/{id_kecamatan}/kelurahan', [PegawaiController::class, 'getKelurahanByKecamatan']);
+        });
+        // master program
+        Route::prefix('master_program')->name('master_program.')->group(function () {
+            Route::post('/list', [MasterProgramController::class, 'list']);
+            Route::get('/', [MasterProgramController::class, 'index']);
+            Route::get('/create', [MasterProgramController::class, 'create']);
+            Route::post('/store', [MasterProgramController::class, 'store']);
+            Route::get('/{id}/show', [MasterProgramController::class, 'show']);
+            Route::get('/{id}/edit', [MasterProgramController::class, 'edit']);
+            Route::put('/{id}/update', [MasterProgramController::class, 'update']);
+            Route::get('/{id}/confirm', [MasterProgramController::class, 'confirm']);
+            Route::delete('/{id}/delete', [MasterProgramController::class, 'delete']);
+        });
+
+        // master kegiatan
+        Route::prefix('master_kegiatan')->name('master_kegiatan.')->group(function () {
+            Route::post('/list', [MasterKegiatanController::class, 'list']);
+            Route::get('/', [MasterKegiatanController::class, 'index']);
+            Route::get('/create', [MasterKegiatanController::class, 'create']);
+            Route::post('/store', [MasterKegiatanController::class, 'store']);
+            Route::get('/{id}/show', [MasterKegiatanController::class, 'show']);
+            Route::get('/{id}/edit', [MasterKegiatanController::class, 'edit']);
+            Route::put('/{id}/update', [MasterKegiatanController::class, 'update']);
+            Route::get('/{id}/confirm', [MasterKegiatanController::class, 'confirm']);
+            Route::delete('/{id}/delete', [MasterKegiatanController::class, 'delete']);
+        });
+        // master subkegiatan
+        Route::prefix('master_sub_kegiatan')->name('master_sub_kegiatan.')->group(function () {
+            Route::post('/list', [MasterSubKegiatanController::class, 'list']);
+            Route::get('/', [MasterSubKegiatanController::class, 'index']);
+            Route::get('/create', [MasterSubKegiatanController::class, 'create']);
+            Route::post('/store', [MasterSubKegiatanController::class, 'store']);
+            Route::get('/{id}/edit', [MasterSubKegiatanController::class, 'edit']);
+            Route::put('/{id}/update', [MasterSubKegiatanController::class, 'update']);
+            Route::get('/{id}/confirm', [MasterSubKegiatanController::class, 'confirm']);
+            Route::delete('/{id}/delete', [MasterSubKegiatanController::class, 'delete']);
+
+            Route::get('/program/{id_program}/kegiatan', [MasterSubKegiatanController::class, 'getKegiatanByProgram']);
+        });
+
+
+
+        Route::prefix('master_rekening')->name('rekening.')->group(function () {
+
+            Route::post('/list', [RekeningController::class, 'list']);
+            Route::get('/', [RekeningController::class, 'index']);
+            Route::get('/create', [RekeningController::class, 'create']);
+            Route::post('/store', [RekeningController::class, 'store']);
+            Route::get('/{id}/edit', [RekeningController::class, 'edit']);
+            Route::put('/{id}/update', [RekeningController::class, 'update']);
+            Route::delete('/{id}/delete', [RekeningController::class, 'delete']);
+            Route::get('/{id}/confirm', [RekeningController::class, 'confirm']);
+            Route::get('/import', [RekeningController::class, 'import']);
+            Route::post('/import_ajax', [RekeningController::class, 'import_ajax']);
+
+            // Cascading select (seperti provinsi → kabupaten → dst)
+            Route::get('/program/{id_program}/kegiatan', [RekeningController::class, 'getKegiatanByProgram']);
+            Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan', [RekeningController::class, 'getSubKegiatanByKegiatan']);
+        });
+
+        Route::prefix('ssh')->name('ssh.')->group(function () {
+
+            Route::post('/list', [SSHController::class, 'list']);
+            Route::get('/', [SSHController::class, 'index']);
+            Route::get('/create', [SSHController::class, 'create']);
+            Route::post('/store', [SSHController::class, 'store']);
+            Route::get('/{id}/edit', [SSHController::class, 'edit']);
+            Route::put('/{id}/update', [SSHController::class, 'update']);
+            Route::get('/{id}/confirm', [SSHController::class, 'confirm']);
+            Route::delete('/{id}/delete', [SSHController::class, 'delete']);
+            Route::get('/import', [SSHController::class, 'import']);
+            Route::post('/import_ajax', [SSHController::class, 'import_ajax']);
+
+            // Cascading select (seperti provinsi → kabupaten → dst)
+            Route::get('/program/{id_program}/kegiatan', [SSHController::class, 'getKegiatanByProgram']);
+            Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan', [SSHController::class, 'getSubKegiatanByKegiatan']);
+            Route::get('/sub_kegiatan/{id_sub_kegiatan}/rekening', [SSHController::class, 'getRekeningBySubKegiatan']);
+        });
     });
 
-    // master program
-    Route::prefix('master_program')->name('master_program.')->group(function () {
-        Route::post('/list', [MasterProgramController::class, 'list']);
-        Route::get('/', [MasterProgramController::class, 'index']);
-        Route::get('/create', [MasterProgramController::class, 'create']);
-        Route::post('/store', [MasterProgramController::class, 'store']);
-        Route::get('/{id}/show', [MasterProgramController::class, 'show']);
-        Route::get('/{id}/edit', [MasterProgramController::class, 'edit']);
-        Route::put('/{id}/update', [MasterProgramController::class, 'update']);
-        Route::get('/{id}/confirm', [MasterProgramController::class, 'confirm']);
-        Route::delete('/{id}/delete', [MasterProgramController::class, 'delete']);
-    });
-
-    // master kegiatan
-    Route::prefix('master_kegiatan')->name('master_kegiatan.')->group(function () {
-        Route::post('/list', [MasterKegiatanController::class, 'list']);
-        Route::get('/', [MasterKegiatanController::class, 'index']);
-        Route::get('/create', [MasterKegiatanController::class, 'create']);
-        Route::post('/store', [MasterKegiatanController::class, 'store']);
-        Route::get('/{id}/show', [MasterKegiatanController::class, 'show']);
-        Route::get('/{id}/edit', [MasterKegiatanController::class, 'edit']);
-        Route::put('/{id}/update', [MasterKegiatanController::class, 'update']);
-        Route::get('/{id}/confirm', [MasterKegiatanController::class, 'confirm']);
-        Route::delete('/{id}/delete', [MasterKegiatanController::class, 'delete']);
-    });
-    // master subkegiatan
-    Route::prefix('master_sub_kegiatan')->name('master_sub_kegiatan.')->group(function () {
-        Route::post('/list', [MasterSubKegiatanController::class, 'list']);
-        Route::get('/', [MasterSubKegiatanController::class, 'index']);
-        Route::get('/create', [MasterSubKegiatanController::class, 'create']);
-        Route::post('/store', [MasterSubKegiatanController::class, 'store']);
-        Route::get('/{id}/edit', [MasterSubKegiatanController::class, 'edit']);
-        Route::put('/{id}/update', [MasterSubKegiatanController::class, 'update']);
-        Route::get('/{id}/confirm', [MasterSubKegiatanController::class, 'confirm']);
-        Route::delete('/{id}/delete', [MasterSubKegiatanController::class, 'delete']);
-
-        Route::get('/program/{id_program}/kegiatan', [MasterSubKegiatanController::class, 'getKegiatanByProgram']);
-    });
-
-
-
-    Route::prefix('master_rekening')->name('rekening.')->group(function () {
-
-        Route::post('/list', [RekeningController::class, 'list']);
-        Route::get('/', [RekeningController::class, 'index']);
-        Route::get('/create', [RekeningController::class, 'create']);
-        Route::post('/store', [RekeningController::class, 'store']);
-        Route::get('/{id}/edit', [RekeningController::class, 'edit']);
-        Route::put('/{id}/update', [RekeningController::class, 'update']);
-        Route::delete('/{id}/delete', [RekeningController::class, 'delete']);
-        Route::get('/{id}/confirm', [RekeningController::class, 'confirm']);
-        Route::get('/import', [RekeningController::class, 'import']);
-        Route::post('/import_ajax', [RekeningController::class, 'import_ajax']);
-
-        // Cascading select (seperti provinsi → kabupaten → dst)
-        Route::get('/program/{id_program}/kegiatan', [RekeningController::class, 'getKegiatanByProgram']);
-        Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan', [RekeningController::class, 'getSubKegiatanByKegiatan']);
-    });
-
-    Route::prefix('ssh')->name('ssh.')->group(function () {
-
-        Route::post('/list', [SSHController::class, 'list']);
-        Route::get('/', [SSHController::class, 'index']);
-        Route::get('/create', [SSHController::class, 'create']);
-        Route::post('/store', [SSHController::class, 'store']);
-        Route::get('/{id}/edit', [SSHController::class, 'edit']);
-        Route::put('/{id}/update', [SSHController::class, 'update']);
-        Route::get('/{id}/confirm', [SSHController::class, 'confirm']);
-        Route::delete('/{id}/delete', [SSHController::class, 'delete']);
-        Route::get('/import', [SSHController::class, 'import']);
-        Route::post('/import_ajax', [SSHController::class, 'import_ajax']);
-
-        // Cascading select (seperti provinsi → kabupaten → dst)
-        Route::get('/program/{id_program}/kegiatan', [SSHController::class, 'getKegiatanByProgram']);
-        Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan', [SSHController::class, 'getSubKegiatanByKegiatan']);
-        Route::get('/sub_kegiatan/{id_sub_kegiatan}/rekening', [SSHController::class, 'getRekeningBySubKegiatan']);
-    });
-
-
-
-    Route::prefix('tree_view')->group(function () {
-        Route::get('/', [TreeViewController::class, 'index']);
-        Route::post('/list-sub_kegiatan', [TreeViewController::class, 'listSubKegiatan']);
-        // Route::post('/list-rekening', [TreeViewController::class, 'listRekening']);
-        Route::get('/{id_sub_kegiatan}/rekening', [TreeViewController::class, 'listRekeningBySubKegiatan']);
-        Route::get('/{id_rekening}/ssh', [TreeViewController::class, 'listSshByRekening']);
-        Route::get('/program/{id_program}/kegiatan', [TreeViewController::class, 'getKegiatanByProgram']);
-        Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan', [TreeViewController::class, 'getSubKegiatanByKegiatan']);
-        Route::get('/export_excel', [TreeViewController::class, 'export_excel']);
+    Route::group(['middleware' => ['cek.level:admin,operator']], function () {
+        Route::prefix('tree_view')->group(function () {
+            Route::get('/', [TreeViewController::class, 'index']);
+            Route::post('/list-sub_kegiatan', [TreeViewController::class, 'listSubKegiatan']);
+            // Route::post('/list-rekening', [TreeViewController::class, 'listRekening']);
+            Route::get('/{id_sub_kegiatan}/rekening', [TreeViewController::class, 'listRekeningBySubKegiatan']);
+            Route::get('/{id_rekening}/ssh', [TreeViewController::class, 'listSshByRekening']);
+            Route::get('/program/{id_program}/kegiatan', [TreeViewController::class, 'getKegiatanByProgram']);
+            Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan', [TreeViewController::class, 'getSubKegiatanByKegiatan']);
+            Route::get('/export_excel', [TreeViewController::class, 'export_excel']);
+        });
     });
 
 
@@ -321,9 +326,4 @@ Route::middleware(['web', 'session.auth'])->group(function () {
 
         Route::get('/ssh/{id}/histori', [RealisasiTatakelolaController::class, 'histori']);
     });
-
-
-    Route::get('whoami', function () {
-        return dd(Auth::user());
-    })->name('whoami');
 });
