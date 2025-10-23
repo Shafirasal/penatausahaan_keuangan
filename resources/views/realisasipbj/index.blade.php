@@ -178,7 +178,6 @@
                                 <label>Nilai Realisasi (Rp) <span class="text-danger">*</span></label>
                                 <input type="text" name="nilai_realisasi" id="i_nilai" class="form-control"
                                     placeholder="1.000,00" required>
-                                <small class="form-text text-muted">Gunakan koma untuk pemisah desimal.</small>
                                 <small id="error_realisasi" class="text-danger d-none"></small>
                             </div>
                         </div>
@@ -186,15 +185,16 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Tanggal Realisasi <span class="text-danger">*</span></label>
-                                <input type="date" name="tanggal_realisasi" class="form-control"
+                                <input type="date" id="tanggal_realisasi" name="tanggal_realisasi" class="form-control"
                                     value="{{ now()->toDateString() }}" required>
+                                <small class="form-text text-muted">Periksa lagi tanggal realisasi Anda</small>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>File Upload</label>
-                                <input type="file" name="file" class="form-control">
+                                <input type="file" id="file" name="file" class="form-control" required>
                             </div>
                         </div>
                     </div>
@@ -410,7 +410,7 @@
             });
 
             // validasi di input realisasi
-            $('#i_nilai').on('blur', function() {
+            $(document).on('input', '#i_nilai', function() {
                 let val = $(this).val().replace(/\./g, '').replace(',', '.');
                 let nilai = parseFloat(val) || 0;
 
@@ -419,8 +419,16 @@
                         .text("Nilai realisasi melebihi sisa anggaran (Rp " + sisaGlobal.toLocaleString(
                             "id-ID") + ")")
                         .removeClass('d-none');
+
+                    // disable input tanggal & file
+                    $('#tanggal_realisasi').prop('disabled', true);
+                    $('#file').prop('disabled', true);
                 } else {
                     $('#error_realisasi').text('').addClass('d-none');
+
+                    // disable input tanggal & file
+                    $('#tanggal_realisasi').prop('disabled', false);
+                    $('#file').prop('disabled', false);
                 }
             });
 
@@ -559,41 +567,41 @@
                         filesize: 5 * 1024 * 1024
                     }
                 },
-                messages: {
-                    id_program: {
-                        required: "Program wajib dipilih."
-                    },
-                    id_kegiatan: {
-                        required: "Kegiatan wajib dipilih."
-                    },
-                    id_sub_kegiatan: {
-                        required: "Sub kegiatan wajib dipilih."
-                    },
-                    id_rekening: {
-                        required: "Rekening wajib dipilih."
-                    },
-                    id_ssh: {
-                        required: "SSH wajib dipilih."
-                    },
-                    jenis_realisasi: {
-                        required: "Jenis realisasi wajib dipilih."
-                    },
-                    no_dokumen: {
-                        maxlength: "Maksimal 50 karakter."
-                    },
-                    nilai_realisasi: {
-                        required: "Nilai realisasi wajib diisi.",
-                        number: "Masukkan angka yang valid.",
-                        min: "Nilai realisasi harus lebih dari 0."
-                    },
-                    tanggal_realisasi: {
-                        required: "Tanggal realisasi wajib diisi."
-                    },
-                    file: {
-                        extension: "Format file harus pdf, jpg, jpeg, png, doc, atau docx.",
-                        filesize: "Ukuran file maksimum 5 MB."
-                    }
-                },
+                // messages: {
+                //     id_program: {
+                //         required: "Program wajib dipilih."
+                //     },
+                //     id_kegiatan: {
+                //         required: "Kegiatan wajib dipilih."
+                //     },
+                //     id_sub_kegiatan: {
+                //         required: "Sub kegiatan wajib dipilih."
+                //     },
+                //     id_rekening: {
+                //         required: "Rekening wajib dipilih."
+                //     },
+                //     id_ssh: {
+                //         required: "SSH wajib dipilih."
+                //     },
+                //     jenis_realisasi: {
+                //         required: "Jenis realisasi wajib dipilih."
+                //     },
+                //     no_dokumen: {
+                //         maxlength: "Maksimal 50 karakter."
+                //     },
+                //     nilai_realisasi: {
+                //         required: "Nilai realisasi wajib diisi.",
+                //         number: "Masukkan angka yang valid.",
+                //         min: "Nilai realisasi harus lebih dari 0."
+                //     },
+                //     tanggal_realisasi: {
+                //         required: "Tanggal realisasi wajib diisi."
+                //     },
+                //     file: {
+                //         extension: "Format file harus pdf, jpg, jpeg, png, doc, atau docx.",
+                //         filesize: "Ukuran file maksimum 5 MB."
+                //     }
+                // },
                 errorElement: 'span',
                 errorPlacement: function(error, element) {
                     error.addClass('invalid-feedback');
