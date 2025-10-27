@@ -376,6 +376,7 @@ class RekeningSeeder extends Seeder
                         ['kode_rekening' => '510202070057', 'nama_rekening' => 'Belanja Sewa Tanaman'],
                         ['kode_rekening' => '510202090014', 'nama_rekening' => 'Belanja Jasa Konsultansi Berorientasi Layanan-Jasa Khusus'],
                         ['kode_rekening' => '510202150005', 'nama_rekening' => 'Belanja Sewa Aset Tidak Berwujud-Software'],
+                        ['kode_rekening' => '510203020132', 'nama_rekening' => 'Belanja Sewa Aset Tidak Berwujud-Belanja Pemeliharaan Alat Studio, Komunikasi, dan Pemancar-Alat Studio-Peralatan Studio Audio'],
                     ],
                 ],
                 '40101109' => [
