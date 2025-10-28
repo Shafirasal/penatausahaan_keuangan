@@ -47,7 +47,8 @@
                                <li><a class="nav-link" href="{{ url('/master_sub_kegiatan') }}">Master Sub-Kegiatan</a></li>
                                <li><a class="nav-link" href="{{ url('/master_rekening') }}">Master Rekening</a></li>
                                <li><a class="nav-link" href="{{ url('/ssh') }}">Master SSH</a></li>
-                          @elseif (in_array(auth()->user()->level, ['admin', 'pimpinan']))
+                               @endif
+                          @if (in_array(auth()->user()->level, ['admin', 'pimpinan']))
                                <li><a class="nav-link" href="{{ url('tree_view') }}">List DPA</a></li>
                            @endif
                        </ul>
