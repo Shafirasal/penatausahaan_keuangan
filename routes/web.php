@@ -49,16 +49,14 @@ Route::middleware(['web', 'session.auth'])->group(function () {
     })->name('profile.change_password');
     Route::put('/profile/change-password', [ProfileController::class, 'updatePassword'])->name('profile.update_password');
 
+
     Route::prefix('general_dashboard')->name('general_dashboard.')->group(function () {
         Route::get('/', [GeneralDashboardController::class, 'index']);
         Route::get('/grafik', [GeneralDashboardController::class, 'grafik']);
         Route::get('/rekap', [GeneralDashboardController::class, 'rekap']);
     });
 
-
-
     // Jabatan Struktural
-    Route::group(['middleware' => ['cek.level:admin,operator, pegawai, pimpinan']], function () {
     Route::prefix('jabatan_struktural')->name('jabatan_struktural.')->group(function () {
         Route::post('/list', [JabatanStrukturalController::class, 'list']);
         Route::get('/', [JabatanStrukturalController::class, 'index']);
@@ -110,7 +108,7 @@ Route::middleware(['web', 'session.auth'])->group(function () {
         Route::delete('/{id}/delete', [RiwayatKepegawaianController::class, 'delete']);
     });
 
-});
+
 
 
     Route::group(['middleware' => ['cek.level:admin']], function () {
@@ -127,7 +125,7 @@ Route::middleware(['web', 'session.auth'])->group(function () {
             Route::get('/import', [UserController::class, 'import']);
             Route::post('/import_ajax', [UserController::class, 'import_ajax']);
         });
-
+   
         // Pegawai
         Route::prefix('pegawai')->name('pegawai.')->group(function () {
             Route::post('/list', [PegawaiController::class, 'list']);
@@ -145,7 +143,10 @@ Route::middleware(['web', 'session.auth'])->group(function () {
             Route::get('/kabupaten/{id_kabupaten}/kecamatan', [PegawaiController::class, 'getKecamatanByKabupaten']);
             Route::get('/kecamatan/{id_kecamatan}/kelurahan', [PegawaiController::class, 'getKelurahanByKecamatan']);
         });
+
+});
         // master program
+        Route::group(['middleware' => ['cek.level:admin,operator']], function () {
         Route::prefix('master_program')->name('master_program.')->group(function () {
             Route::post('/list', [MasterProgramController::class, 'list']);
             Route::get('/', [MasterProgramController::class, 'index']);
@@ -222,9 +223,9 @@ Route::middleware(['web', 'session.auth'])->group(function () {
             Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan', [SSHController::class, 'getSubKegiatanByKegiatan']);
             Route::get('/sub_kegiatan/{id_sub_kegiatan}/rekening', [SSHController::class, 'getRekeningBySubKegiatan']);
         });
-    });
-
-    Route::group(['middleware' => ['cek.level:admin,pimpinan']], function () {
+ 
+});
+        Route::group(['middleware' => ['cek.level:admin,pimpinan']], function () {
         Route::prefix('tree_view')->group(function () {
             Route::get('/', [TreeViewController::class, 'index']);
             Route::post('/list-sub_kegiatan', [TreeViewController::class, 'listSubKegiatan']);
@@ -235,31 +236,32 @@ Route::middleware(['web', 'session.auth'])->group(function () {
             Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan', [TreeViewController::class, 'getSubKegiatanByKegiatan']);
             Route::get('/export_excel', [TreeViewController::class, 'export_excel']);
         });
-    });
 
-    Route::group(['middleware' => ['cek.level:operator, admin']], function () {
-    Route::prefix('realisasipbj')->group(function () {
-        // DataTables
-        Route::post('/list', [RealisasipbjController::class, 'list']);
+});
 
-        // CRUD
-        Route::get('/', [RealisasipbjController::class, 'index']);
-        Route::get('/create', [RealisasipbjController::class, 'create']);
-        Route::post('/store', [RealisasipbjController::class, 'store']);
-        Route::get('/{id}/edit', [RealisasipbjController::class, 'edit']);
-        Route::put('/{id}/update', [RealisasipbjController::class, 'update']);
-        Route::get('/{id}/confirm', [RealisasipbjController::class, 'confirm']);
-        Route::delete('/{id}/delete', [RealisasipbjController::class, 'delete']);
+        Route::group(['middleware' => ['cek.level:admin,operator']], function () {
+        Route::prefix('realisasipbj')->group(function () {
+            // DataTables
+            Route::post('/list', [RealisasipbjController::class, 'list']);
 
-        // Cascading select + Summary
-        Route::get('/program/{id_program}/kegiatan',        [RealisasipbjController::class, 'getKegiatanByProgram']);
-        Route::get('/kegiatan/{id_kegiatan}/summary',       [RealisasipbjController::class, 'getSummaryByKegiatan']);
-        Route::get('/ssh/{id_ssh}/summary',                 [RealisasipbjController::class, 'getSummaryBySsh']);
-        Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan',  [RealisasipbjController::class, 'getSubKegiatanByKegiatan']);
-        Route::get('/sub_kegiatan/{id_sub_kegiatan}/rekening', [RealisasipbjController::class, 'getRekeningBySubKegiatan']);
-        Route::get('/rekening/{id_rekening}/ssh',           [RealisasipbjController::class, 'getSshByRekening']);
-        Route::get('/ssh/{id}/histori', [RealisasipbjController::class, 'histori']);
-    });
+            // CRUD
+            Route::get('/', [RealisasipbjController::class, 'index']);
+            Route::get('/create', [RealisasipbjController::class, 'create']);
+            Route::post('/store', [RealisasipbjController::class, 'store']);
+            Route::get('/{id}/edit', [RealisasipbjController::class, 'edit']);
+            Route::put('/{id}/update', [RealisasipbjController::class, 'update']);
+            Route::get('/{id}/confirm', [RealisasipbjController::class, 'confirm']);
+            Route::delete('/{id}/delete', [RealisasipbjController::class, 'delete']);
+
+            // Cascading select + Summary
+            Route::get('/program/{id_program}/kegiatan',        [RealisasipbjController::class, 'getKegiatanByProgram']);
+            Route::get('/kegiatan/{id_kegiatan}/summary',       [RealisasipbjController::class, 'getSummaryByKegiatan']);
+            Route::get('/ssh/{id_ssh}/summary',                 [RealisasipbjController::class, 'getSummaryBySsh']);
+            Route::get('/kegiatan/{id_kegiatan}/sub_kegiatan',  [RealisasipbjController::class, 'getSubKegiatanByKegiatan']);
+            Route::get('/sub_kegiatan/{id_sub_kegiatan}/rekening', [RealisasipbjController::class, 'getRekeningBySubKegiatan']);
+            Route::get('/rekening/{id_rekening}/ssh',           [RealisasipbjController::class, 'getSshByRekening']);
+            Route::get('/ssh/{id}/histori', [RealisasipbjController::class, 'histori']);
+        });
 
 
     Route::prefix('realisasilpse')->group(function () {
@@ -334,6 +336,6 @@ Route::middleware(['web', 'session.auth'])->group(function () {
 
         Route::get('/ssh/{id}/histori', [RealisasiTatakelolaController::class, 'histori']);
     });
-
 });
+
 });
