@@ -58,6 +58,7 @@ Route::middleware(['web', 'session.auth'])->group(function () {
 
 
     // Jabatan Struktural
+    Route::group(['middleware' => ['cek.level:admin,operator, pegawai, pimpinan']], function () {
     Route::prefix('jabatan_struktural')->name('jabatan_struktural.')->group(function () {
         Route::post('/list', [JabatanStrukturalController::class, 'list']);
         Route::get('/', [JabatanStrukturalController::class, 'index']);
@@ -109,7 +110,7 @@ Route::middleware(['web', 'session.auth'])->group(function () {
         Route::delete('/{id}/delete', [RiwayatKepegawaianController::class, 'delete']);
     });
 
-
+});
 
 
     Route::group(['middleware' => ['cek.level:admin']], function () {
@@ -223,7 +224,7 @@ Route::middleware(['web', 'session.auth'])->group(function () {
         });
     });
 
-    Route::group(['middleware' => ['cek.level:admin,operator']], function () {
+    Route::group(['middleware' => ['cek.level:admin,pimpinan']], function () {
         Route::prefix('tree_view')->group(function () {
             Route::get('/', [TreeViewController::class, 'index']);
             Route::post('/list-sub_kegiatan', [TreeViewController::class, 'listSubKegiatan']);
@@ -236,7 +237,7 @@ Route::middleware(['web', 'session.auth'])->group(function () {
         });
     });
 
-
+    Route::group(['middleware' => ['cek.level:operator, admin']], function () {
     Route::prefix('realisasipbj')->group(function () {
         // DataTables
         Route::post('/list', [RealisasipbjController::class, 'list']);
@@ -333,4 +334,6 @@ Route::middleware(['web', 'session.auth'])->group(function () {
 
         Route::get('/ssh/{id}/histori', [RealisasiTatakelolaController::class, 'histori']);
     });
+
+});
 });
