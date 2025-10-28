@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GeneralDashboardController;
 use App\Http\Controllers\MasterProgramController;
 
 use App\Http\Controllers\RealisasipbjController;
@@ -47,6 +48,12 @@ Route::middleware(['web', 'session.auth'])->group(function () {
         return view('profile.change_password');
     })->name('profile.change_password');
     Route::put('/profile/change-password', [ProfileController::class, 'updatePassword'])->name('profile.update_password');
+
+    Route::prefix('general_dashboard')->name('general_dashboard.')->group(function () {
+        Route::get('/', [GeneralDashboardController::class, 'index']);
+        Route::get('/grafik', [GeneralDashboardController::class, 'grafik']);
+        Route::get('/rekap', [GeneralDashboardController::class, 'rekap']);
+    });
 
 
 
