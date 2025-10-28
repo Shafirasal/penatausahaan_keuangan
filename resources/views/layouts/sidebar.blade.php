@@ -13,7 +13,7 @@
                <li class="nav-item dropdown">
                    <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Dashboard</span></a>
                    <ul class="dropdown-menu">
-                       <li><a class="nav-link" href="{{ url('/dashboard') }}">General Dashboard</a></li>
+                       <li><a class="nav-link" href="{{ url('/dashboard') }}">Profile</a></li>
                    </ul>
                </li>
                <li class="menu-header">Master Data</li>
@@ -27,10 +27,6 @@
                         @endif
 
                        @if (in_array(auth()->user()->level, ['admin', 'operator', 'pimpinan', 'pegawai']))
-                           <li><a class="nav-link" href="{{ url('/riwayat_pendidikan') }}">Riwayat Pendidikan</a></li>
-                           <li><a class="nav-link" href="{{ url('/jabatan_fungsional') }}">Jabatan Fungsional</a></li>
-                           <li><a class="nav-link" href="{{ url('/jabatan_struktural') }}">Jabatan Struktural</a></li>
-                           <li><a class="nav-link" href="{{ url('/riwayat_kepegawaian') }}">Riwayat Pegawai</a></li>
                            <li><a class="nav-link" href="{{ url('/riwayat_pendidikan') }}">Riwayat Pendidikan</a></li>
                            <li><a class="nav-link" href="{{ url('/jabatan_fungsional') }}">Jabatan Fungsional</a></li>
                            <li><a class="nav-link" href="{{ url('/jabatan_struktural') }}">Jabatan Struktural</a></li>
