@@ -25,7 +25,7 @@ class UserController extends Controller
         ];
 
         $activeMenu = 'user';
-        $level = ['pegawai', 'admin', 'operator'];
+        $level = ['pegawai', 'admin', 'operator', 'pimpinan'];
 
         return view('user.index', [
             'breadcrumb' => $breadcrumb,
@@ -73,7 +73,7 @@ public function create()
     {
         $request->validate([
         'nip' => 'required|string|max:20|unique:t_user,nip',
-        'level' => 'required|in:pegawai,admin,operator',
+        'level' => 'required|in:pegawai,admin,operator,pimpinan',
         'password' => 'required|min:5|max:225',
         ]);
 
@@ -241,7 +241,7 @@ public function update(Request $request, $id)
 
         // Aturan dasar (wajib)
         $rules = [
-            'level' => 'required|in:pegawai,admin,operator',
+            'level' => 'required|in:pegawai,admin,operator,pimpinan',
         ];
 
         // Jika password baru diisi, tambahkan validasi password

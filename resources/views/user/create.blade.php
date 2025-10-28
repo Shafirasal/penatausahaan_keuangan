@@ -152,6 +152,7 @@
                         <option value="pegawai">Pegawai</option>
                         <option value="admin">Admin</option>
                         <option value="operator">Operator</option>
+                        <option value="pimpinan">Pimpinan</option>
                     </select>
                     <small id="error-level" class="error-text form-text text-danger"></small>
                 </div>
