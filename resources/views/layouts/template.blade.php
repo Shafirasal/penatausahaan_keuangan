@@ -97,9 +97,11 @@
 <script src="{{ asset('stisla1/assets/js/sweetalert2.all.min.js') }}"></script>
 
 <!-- Chart js -->
-<script src="{{ asset('stisla1/node_modules/chart.js/dist/Chart.min.js') }}"></script>
-<script src="{{ asset('stisla1/js/page/dist/modules-chartjs.js') }}"></script>
 <script src="{{ asset('stisla1/modules/chart.min.js') }}"></script>
+<script src="{{ asset('stisla1/node_modules/chart.js/dist/Chart.min.js') }}"></script>
+{{-- <script src="{{ asset('stisla1/js/page/dist/modules-chartjs.js') }}"></script> --}}
+{{-- <script src="{{ asset('stisla1/assets/js/page/modules-chartjs.js') }}"></script> --}}
+
 
   <!-- AJAX CSRF Setup -->
   <script>
