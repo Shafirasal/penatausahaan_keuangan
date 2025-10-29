@@ -98,6 +98,8 @@
 
 <!-- Chart js -->
 <script src="{{ asset('stisla1/node_modules/chart.js/dist/Chart.min.js') }}"></script>
+<script src="{{ asset('stisla1/js/page/dist/modules-chartjs.js') }}"></script>
+<script src="{{ asset('stisla1/modules/chart.min.js') }}"></script>
 
   <!-- AJAX CSRF Setup -->
   <script>
