@@ -13,7 +13,8 @@
                <li class="nav-item dropdown">
                    <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Dashboard</span></a>
                    <ul class="dropdown-menu">
-                       <li><a class="nav-link" href="{{ url('/dashboard') }}">Profile</a></li>
+                       <li><a class="nav-link" href="{{ url('/dashboard') }}">Informasi Pegawai</a></li>
+                        <li><a class="nav-link" href="{{ url('/general_dashboard') }}">General Dashboard</a></li>
                    </ul>
                </li>
                <li class="menu-header">Master Data</li>
