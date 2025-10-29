@@ -305,39 +305,57 @@
       </div>
     </div>
 
-    <section id="pelayanan" class="content-section">
-      <div class="container">
-        <div class="row text-center mb-5" data-aos="fade-up">
-            <div class="col">
-                <h2 style="font-weight: 600;">Pelayanan Kami</h2>
-                <p class="text-muted">Layanan utama yang kami sediakan untuk mendukung proses pengadaan.</p>
-            </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up">
-            <div class="custom-card">
-              <i class="fas fa-briefcase fa-3x"></i>
-              <h5>Bagian PBJ</h5>
-              <p>Membantu proses pengadaan barang dan jasa secara efisien, transparan, dan akuntabel.</p>
-            </div>
+<section id="pelayanan" class="content-section">
+  <div class="container">
+    <div class="row text-center mb-5" data-aos="fade-up">
+      <div class="col">
+        <h2 style="font-weight: 600;">Pelayanan Kami</h2>
+        <p class="text-muted">Layanan utama yang kami sediakan untuk mendukung proses pengadaan.</p>
+      </div>
+    </div>
+    <div class="row">
+      <!-- PBJ -->
+      <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up">
+        <div class="custom-card">
+          <i class="fas fa-briefcase fa-3x"></i>
+          <h5>Bagian PBJ</h5>
+          <p>Membantu proses pengadaan barang dan jasa secara efisien, transparan, dan akuntabel.</p>
+          <div class="progress mt-3" style="height: 10px;">
+            <div id="pbj-progress" class="progress-bar bg-success" style="width: 0%"></div>
           </div>
-          <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
-            <div class="custom-card">
-              <i class="fas fa-network-wired fa-3x"></i>
-              <h5>Bagian LPSE</h5>
-              <p>Menyediakan layanan pengadaan secara elektronik untuk kemudahan dan jangkauan yang lebih luas.</p>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
-            <div class="custom-card">
-              <i class="fas fa-users fa-3x"></i>
-              <h5>Bagian Pembinaan</h5>
-              <p>Memberikan pembinaan dan advokasi untuk meningkatkan kompetensi sumber daya manusia.</p>
-            </div>
-          </div>
+          <small id="pbj-text" class="text-muted">0% terealisasi</small>
         </div>
       </div>
-    </section>
+
+      <!-- LPSE -->
+      <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="custom-card">
+          <i class="fas fa-network-wired fa-3x"></i>
+          <h5>Bagian LPSE</h5>
+          <p>Menyediakan layanan pengadaan secara elektronik untuk kemudahan dan jangkauan yang lebih luas.</p>
+          <div class="progress mt-3" style="height: 10px;">
+            <div id="lpse-progress" class="progress-bar bg-info" style="width: 0%"></div>
+          </div>
+          <small id="lpse-text" class="text-muted">0% terealisasi</small>
+        </div>
+      </div>
+
+      <!-- Pembinaan -->
+      <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="custom-card">
+          <i class="fas fa-users fa-3x"></i>
+          <h5>Bagian Pembinaan</h5>
+          <p>Memberikan pembinaan dan advokasi untuk meningkatkan kompetensi sumber daya manusia.</p>
+          <div class="progress mt-3" style="height: 10px;">
+            <div id="pembinaan-progress" class="progress-bar bg-warning" style="width: 0%"></div>
+          </div>
+          <small id="pembinaan-text" class="text-muted">0% terealisasi</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
     {{-- <section id="kontak" class="content-section dark">
         <div class="container">
@@ -482,6 +500,28 @@
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 
   <script>
+document.addEventListener('DOMContentLoaded', function () {
+    fetch("{{ route('realisasi.pelayanan') }}")
+        .then(response => response.json())
+        .then(result => {
+            if (result.success && result.data) {
+                const data = result.data;
+
+                // Update PBJ
+                document.getElementById('pbj-progress').style.width = data.pbj.persentase_realisasi + '%';
+                document.getElementById('pbj-text').textContent = data.pbj.persentase_realisasi + '% terealisasi';
+
+                // Update LPSE
+                document.getElementById('lpse-progress').style.width = data.lpse.persentase_realisasi + '%';
+                document.getElementById('lpse-text').textContent = data.lpse.persentase_realisasi + '% terealisasi';
+
+                // Update Pembinaan
+                document.getElementById('pembinaan-progress').style.width = data.pembinaan.persentase_realisasi + '%';
+                document.getElementById('pembinaan-text').textContent = data.pembinaan.persentase_realisasi + '% terealisasi';
+            }
+        })
+        .catch(error => console.error('Gagal memuat data realisasi:', error));
+});
     // Lottie animasi
     var animation = lottie.loadAnimation({
       container: document.getElementById('lottie'),
