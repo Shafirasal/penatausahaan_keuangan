@@ -97,7 +97,7 @@
                             <div class="col-12 col-md-6 col-lg-6">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h4>Pie Chart</h4>
+                                        <h4>Persentase Total Realisasi Anggaran Per Kegiatan</h4>
                                     </div>
                                     <div class="card-body">
                                         <canvas id="myChart4"></canvas>
@@ -116,77 +116,54 @@
 @endsection
 
 @push('js')
+
 <script>
-// Data dari PHP Controller
-const chartData = @json($perbandinganPerTahun);
-
-// Persiapan data untuk Chart.js
-const labels = chartData.map(item => item.tahun);
-const anggaranData = chartData.map(item => item.total_anggaran);
-const realisasiData = chartData.map(item => item.total_realisasi);
-
-// Bar Chart - Anggaran vs Realisasi
-var ctx2 = document.getElementById("myChart2").getContext('2d');
-var myChart2 = new Chart(ctx2, {
-  type: 'bar',
-  data: {
-    labels: labels,
-    datasets: [
-      {
-        label: 'Total Anggaran',
-        data: anggaranData,
-        backgroundColor: '#6777ef',
-        borderColor: '#6777ef',
-        borderWidth: 2
-      },
-      {
-        label: 'Total Realisasi',
-        data: realisasiData,
-        backgroundColor: '#66bb6a',
-        borderColor: '#66bb6a',
-        borderWidth: 2
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: true,
-    legend: {
-      display: true,
-      position: 'top'
-    },
-    scales: {
-      yAxes: [{
-        gridLines: {
-          drawBorder: false,
-          color: '#f2f2f2',
-        },
-        ticks: {
-          beginAtZero: true,
-          callback: function(value) {
-            return 'Rp ' + value.toLocaleString('id-ID');
-          }
-        }
-      }],
-      xAxes: [{
-        gridLines: {
-          display: false
-        }
-      }]
-    },
-    tooltips: {
-      callbacks: {
-        label: function(tooltipItem, data) {
-          var label = data.datasets[tooltipItem.datasetIndex].label || '';
-          if (label) {
-            label += ': ';
-          }
-          label += 'Rp ' + tooltipItem.yLabel.toLocaleString('id-ID');
-          return label;
-        }
-      }
+$(document).ready(function() {
+    const ctx4 = document.getElementById("myChart4");
+    if (ctx4) {
+        const chartData = @json($realisasiPerKegiatanProgram2);
+        
+        const labels = chartData.map(item => item.nama_kegiatan);
+        const values = chartData.map(item => item.total_realisasi);
+        const percentages = chartData.map(item => item.persentase);
+        
+        const colors = ['#6777ef', '#fc544b', '#ffa426', '#63ed7a', '#191d21', '#3abaf4', '#feb019', '#ff6178', '#5a8dee', '#39da8a'];
+        const backgroundColor = labels.map((_, index) => colors[index % colors.length]);
+        
+        new Chart(ctx4.getContext('2d'), {
+            type: 'pie',
+            data: {
+                datasets: [{
+                    data: values,
+                    backgroundColor: backgroundColor,
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }],
+                labels: labels
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                legend: { position: 'bottom' },
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            const currentValue = data.datasets[0].data[tooltipItem.index];
+                            const percentage = percentages[tooltipItem.index];
+                            const label = data.labels[tooltipItem.index];
+                            const formattedValue = new Intl.NumberFormat('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR',
+                                minimumFractionDigits: 0
+                            }).format(currentValue);
+                            
+                            return label + ': ' + formattedValue + ' (' + percentage + '%)';
+                        }
+                    }
+                }
+            }
+        });
     }
-  }
 });
 </script>
 @endpush
