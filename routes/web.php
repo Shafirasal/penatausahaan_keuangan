@@ -22,14 +22,12 @@ use App\Http\Controllers\RealisasilpseController;
 use App\Http\Controllers\RealisasiPembinaanController;
 use App\Http\Controllers\SSHController;
 use App\Http\Controllers\TreeViewController;
-use App\Http\Controllers\DashboardRealisasiController;
+// use App\Http\Controllers\DashboardRealisasiController;
 use Illuminate\Routing\RouteGroup;
 use Illuminate\Support\Facades\Auth;
 
 
 Route::redirect('/', '/login');
-Route::get('/realisasi/pelayanan', [DashboardRealisasiController::class, 'getPersentaseBagian'])
-    ->name('realisasi.pelayanan');
 
 // Login page (GET)
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -58,9 +56,6 @@ Route::middleware(['web', 'session.auth'])->group(function () {
         Route::get('/', [GeneralDashboardController::class, 'index']);
         Route::get('/grafik', [GeneralDashboardController::class, 'grafik']);
         Route::get('/rekap', [GeneralDashboardController::class, 'rekap']);
-        // Route::get('/dashboard/perbandingan', [GeneralDashboardController::class, 'getPerbandinganRealisasiSisaAnggaranPerTahun']);
-        // Route::get('/anggaran', [GeneralDashboardController::class, 'index'])->name('anggaran.index');
-
     });
 
     // Jabatan Struktural

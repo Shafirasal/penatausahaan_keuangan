@@ -145,37 +145,179 @@
         color: #fff;
     }
 
-    /* === STYLE KARTU BARU === */
-    .custom-card {
-        background: #FFFFFF;
-        border-radius: 16px;
-        padding: 30px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-        text-align: center;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center; /* Center content vertically */
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .custom-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
-    }
-    .custom-card i {
-        color: #a7283d; /* Warna ikon disamakan dengan tombol */
-        margin-bottom: 20px;
-    }
-    .custom-card h5 {
-        font-size: 22px;
-        font-weight: 600;
-        margin-bottom: 10px;
-    }
-    .custom-card p {
-        font-size: 16px;
-        line-height: 1.6;
-        color: #666;
-    }
+/* Custom Card Styles */
+.custom-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 30px 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.custom-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transform: scaleX(0);
+  transition: transform 0.4s ease;
+}
+
+.custom-card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.custom-card:hover::before {
+  transform: scaleX(1);
+}
+
+.card-title {
+  font-weight: 700;
+  color: #2c3e50;
+  font-size: 1.25rem;
+  margin-bottom: 12px;
+}
+
+.card-description {
+  font-size: 14px;
+  line-height: 1.7;
+  min-height: 65px;
+  color: #6c757d;
+}
+
+/* Realisasi Info Box */
+.realisasi-info {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  border: 1px solid #dee2e6;
+}
+
+.realisasi-info strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Progress Bar Styles */
+.progress {
+  background-color: #e9ecef;
+  overflow: visible;
+  border-radius: 10px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.progress-bar {
+  transition: width 0.1s linear;
+  font-size: 11px;
+  line-height: 12px;
+  border-radius: 10px;
+  position: relative;
+}
+
+.progress-bar-animated {
+  animation: progress-bar-stripes 1s linear infinite;
+}
+
+/* Total Card Styles */
+.total-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.total-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+.stat-box {
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.stat-box:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-3px);
+}
+
+.stat-box h4 {
+  font-size: 1.3rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .custom-card {
+    padding: 25px 20px;
+  }
+  
+  .card-description {
+    min-height: auto;
+    font-size: 13px;
+  }
+  
+  .realisasi-info {
+    font-size: 13px;
+    padding: 15px;
+  }
+  
+  .stat-box h4 {
+    font-size: 1.1rem;
+  }
+  
+  .total-card .card-body {
+    padding: 25px 20px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .stat-box {
+    padding: 12px;
+  }
+  
+  .stat-box h4 {
+    font-size: 1rem;
+  }
+}
+
+/* Icon Animations */
+.custom-card i {
+  transition: all 0.3s ease;
+}
+
+.custom-card:hover i {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Text Colors */
+.text-success { color: #28a745 !important; }
+.text-info { color: #17a2b8 !important; }
+.text-warning { color: #ffc107 !important; }
+.text-danger { color: #dc3545 !important; }
 
     footer {
       background: #111;
@@ -305,51 +447,195 @@
       </div>
     </div>
 
-<section id="pelayanan" class="content-section">
+{{-- Section Pelayanan dengan Data Realisasi Anggaran --}}
+<section id="pelayanan" class="content-section py-5">
   <div class="container">
+    {{-- Header Section --}}
     <div class="row text-center mb-5" data-aos="fade-up">
       <div class="col">
-        <h2 style="font-weight: 600;">Pelayanan Kami</h2>
+        <h2 style="font-weight: 600; color: #2c3e50;">Pelayanan Kami</h2>
         <p class="text-muted">Layanan utama yang kami sediakan untuk mendukung proses pengadaan.</p>
       </div>
     </div>
+    
+    {{-- Cards untuk 3 Bagian --}}
     <div class="row">
-      <!-- PBJ -->
+      {{-- PBJ Card --}}
       <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up">
-        <div class="custom-card">
-          <i class="fas fa-briefcase fa-3x"></i>
-          <h5>Bagian PBJ</h5>
-          <p>Membantu proses pengadaan barang dan jasa secara efisien, transparan, dan akuntabel.</p>
-          <div class="progress mt-3" style="height: 10px;">
-            <div id="pbj-progress" class="progress-bar bg-success" style="width: 0%"></div>
+        <div class="custom-card h-100">
+          <div class="text-center">
+            <i class="fas fa-briefcase fa-3x text-success mb-3"></i>
+            <h5 class="card-title">Bagian PBJ</h5>
+            <p class="text-muted card-description">Membantu proses pengadaan barang dan jasa secara efisien, transparan, dan akuntabel.</p>
           </div>
-          <small id="pbj-text" class="text-muted">0% terealisasi</small>
+          
+          <div class="realisasi-info mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-muted small">Total Pagu:</span>
+              <strong class="text-dark">Rp {{ number_format($dataBagian['pbj']['pagu'], 0, ',', '.') }}</strong>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-muted small">Realisasi:</span>
+              <strong class="text-success">Rp {{ number_format($dataBagian['pbj']['realisasi'], 0, ',', '.') }}</strong>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-muted small">Selisih:</span>
+              <strong class="text-danger">Rp {{ number_format($dataBagian['pbj']['selisih'], 0, ',', '.') }}</strong>
+            </div>
+          </div>
+          
+          <div class="progress mt-3" style="height: 12px; border-radius: 10px;">
+            <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" 
+                 role="progressbar" 
+                 style="width: 0%"
+                 data-target="{{ $dataBagian['pbj']['persentase'] }}"
+                 aria-valuenow="0" 
+                 aria-valuemin="0" 
+                 aria-valuemax="100">
+            </div>
+          </div>
+          <div class="text-center mt-2">
+            <small class="text-muted">
+              <strong class="text-success persentase-text">0%</strong> terealisasi
+            </small>
+          </div>
         </div>
       </div>
 
-      <!-- LPSE -->
+      {{-- LPSE Card --}}
       <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
-        <div class="custom-card">
-          <i class="fas fa-network-wired fa-3x"></i>
-          <h5>Bagian LPSE</h5>
-          <p>Menyediakan layanan pengadaan secara elektronik untuk kemudahan dan jangkauan yang lebih luas.</p>
-          <div class="progress mt-3" style="height: 10px;">
-            <div id="lpse-progress" class="progress-bar bg-info" style="width: 0%"></div>
+        <div class="custom-card h-100">
+          <div class="text-center">
+            <i class="fas fa-network-wired fa-3x text-info mb-3"></i>
+            <h5 class="card-title">Bagian LPSE</h5>
+            <p class="text-muted card-description">Menyediakan layanan pengadaan secara elektronik untuk kemudahan dan jangkauan yang lebih luas.</p>
           </div>
-          <small id="lpse-text" class="text-muted">0% terealisasi</small>
+          
+          <div class="realisasi-info mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-muted small">Total Pagu:</span>
+              <strong class="text-dark">Rp {{ number_format($dataBagian['lpse']['pagu'], 0, ',', '.') }}</strong>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-muted small">Realisasi:</span>
+              <strong class="text-info">Rp {{ number_format($dataBagian['lpse']['realisasi'], 0, ',', '.') }}</strong>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-muted small">Selisih:</span>
+              <strong class="text-danger">Rp {{ number_format($dataBagian['lpse']['selisih'], 0, ',', '.') }}</strong>
+            </div>
+          </div>
+          
+          <div class="progress mt-3" style="height: 12px; border-radius: 10px;">
+            <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" 
+                 role="progressbar" 
+                 style="width: 0%"
+                 data-target="{{ $dataBagian['lpse']['persentase'] }}"
+                 aria-valuenow="0" 
+                 aria-valuemin="0" 
+                 aria-valuemax="100">
+            </div>
+          </div>
+          <div class="text-center mt-2">
+            <small class="text-muted">
+              <strong class="text-info persentase-text">0%</strong> terealisasi
+            </small>
+          </div>
         </div>
       </div>
 
-      <!-- Pembinaan -->
+      {{-- Pembinaan Card --}}
       <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
-        <div class="custom-card">
-          <i class="fas fa-users fa-3x"></i>
-          <h5>Bagian Pembinaan</h5>
-          <p>Memberikan pembinaan dan advokasi untuk meningkatkan kompetensi sumber daya manusia.</p>
-          <div class="progress mt-3" style="height: 10px;">
-            <div id="pembinaan-progress" class="progress-bar bg-warning" style="width: 0%"></div>
+        <div class="custom-card h-100">
+          <div class="text-center">
+            <i class="fas fa-users fa-3x text-warning mb-3"></i>
+            <h5 class="card-title">Bagian Pembinaan</h5>
+            <p class="text-muted card-description">Memberikan pembinaan dan advokasi untuk meningkatkan kompetensi sumber daya manusia.</p>
           </div>
-          <small id="pembinaan-text" class="text-muted">0% terealisasi</small>
+          
+          <div class="realisasi-info mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-muted small">Total Pagu:</span>
+              <strong class="text-dark">Rp {{ number_format($dataBagian['pembinaan']['pagu'], 0, ',', '.') }}</strong>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-muted small">Realisasi:</span>
+              <strong class="text-warning">Rp {{ number_format($dataBagian['pembinaan']['realisasi'], 0, ',', '.') }}</strong>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-muted small">Selisih:</span>
+              <strong class="text-danger">Rp {{ number_format($dataBagian['pembinaan']['selisih'], 0, ',', '.') }}</strong>
+            </div>
+          </div>
+          
+          <div class="progress mt-3" style="height: 12px; border-radius: 10px;">
+            <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" 
+                 role="progressbar" 
+                 style="width: 0%"
+                 data-target="{{ $dataBagian['pembinaan']['persentase'] }}"
+                 aria-valuenow="0" 
+                 aria-valuemin="0" 
+                 aria-valuemax="100">
+            </div>
+          </div>
+          <div class="text-center mt-2">
+            <small class="text-muted">
+              <strong class="text-warning persentase-text">0%</strong> terealisasi
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    {{-- Total Keseluruhan Card --}}
+    <div class="row mt-5" data-aos="fade-up" data-aos-delay="300">
+      <div class="col-12">
+        <div class="card shadow-lg border-0 total-card">
+          <div class="card-body text-white p-4">
+            <div class="d-flex align-items-center mb-4">
+              <i class="fas fa-chart-pie fa-2x me-3"></i>
+              <h5 class="card-title mb-0 fw-bold">Total Keseluruhan Realisasi Anggaran</h5>
+            </div>
+            
+            <div class="row g-4">
+              <div class="col-md-3 col-6">
+                <div class="stat-box">
+                  <div class="text-white-50 small mb-1">Total Pagu</div>
+                  <h4 class="mb-0 fw-bold">Rp {{ number_format($totalKeseluruhan['pagu'], 0, ',', '.') }}</h4>
+                </div>
+              </div>
+              <div class="col-md-3 col-6">
+                <div class="stat-box">
+                  <div class="text-white-50 small mb-1">Total Realisasi</div>
+                  <h4 class="mb-0 fw-bold">Rp {{ number_format($totalKeseluruhan['realisasi'], 0, ',', '.') }}</h4>
+                </div>
+              </div>
+              <div class="col-md-3 col-6">
+                <div class="stat-box">
+                  <div class="text-white-50 small mb-1">Sisa Anggaran</div>
+                  <h4 class="mb-0 fw-bold">Rp {{ number_format($totalKeseluruhan['selisih'], 0, ',', '.') }}</h4>
+                </div>
+              </div>
+              <div class="col-md-3 col-6">
+                <div class="stat-box">
+                  <div class="text-white-50 small mb-1">Persentase</div>
+                  <h4 class="mb-0 fw-bold">{{ number_format($totalKeseluruhan['persentase'], 2, ',', '.') }}%</h4>
+                </div>
+              </div>
+            </div>
+            
+            <div class="progress mt-4" style="height: 15px; background-color: rgba(255,255,255,0.2); border-radius: 10px;">
+              <div class="progress-bar bg-light progress-bar-striped progress-bar-animated" 
+                   role="progressbar" 
+                   style="width: 0%"
+                   data-target="{{ $totalKeseluruhan['persentase'] }}"
+                   aria-valuenow="0" 
+                   aria-valuemin="0" 
+                   aria-valuemax="100">
+                <strong class="text-dark total-persentase-text">0%</strong>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -500,28 +786,69 @@
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 
   <script>
-document.addEventListener('DOMContentLoaded', function () {
-    fetch("{{ route('realisasi.pelayanan') }}")
-        .then(response => response.json())
-        .then(result => {
-            if (result.success && result.data) {
-                const data = result.data;
-
-                // Update PBJ
-                document.getElementById('pbj-progress').style.width = data.pbj.persentase_realisasi + '%';
-                document.getElementById('pbj-text').textContent = data.pbj.persentase_realisasi + '% terealisasi';
-
-                // Update LPSE
-                document.getElementById('lpse-progress').style.width = data.lpse.persentase_realisasi + '%';
-                document.getElementById('lpse-text').textContent = data.lpse.persentase_realisasi + '% terealisasi';
-
-                // Update Pembinaan
-                document.getElementById('pembinaan-progress').style.width = data.pembinaan.persentase_realisasi + '%';
-                document.getElementById('pembinaan-text').textContent = data.pembinaan.persentase_realisasi + '% terealisasi';
-            }
-        })
-        .catch(error => console.error('Gagal memuat data realisasi:', error));
-});
+    document.addEventListener('DOMContentLoaded', function() {
+        // Fungsi untuk animasi progress bar
+        function animateProgressBars() {
+            const progressBars = document.querySelectorAll('.progress-bar');
+            
+            progressBars.forEach(function(bar) {
+                const target = parseFloat(bar.getAttribute('data-target'));
+                const parentCard = bar.closest('.custom-card, .total-card');
+                const persentaseText = parentCard ? parentCard.querySelector('.persentase-text, .total-persentase-text') : null;
+                
+                // Animasi dengan interval untuk smooth transition
+                let current = 0;
+                const increment = target / 60; // 60 steps untuk animasi lebih smooth
+                const duration = 2000; // 2 detik
+                const stepTime = duration / 60;
+                
+                const animation = setInterval(function() {
+                    current += increment;
+                    
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(animation);
+                    }
+                    
+                    bar.style.width = current + '%';
+                    bar.setAttribute('aria-valuenow', current);
+                    
+                    // Update text persentase
+                    if (persentaseText) {
+                        persentaseText.textContent = current.toFixed(2) + '%';
+                    }
+                }, stepTime);
+            });
+        }
+        
+        // Trigger animasi setelah halaman load dengan delay
+        setTimeout(animateProgressBars, 500);
+        
+        // Optional: Re-trigger animasi saat scroll ke section
+        const section = document.getElementById('pelayanan');
+        if (section && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        // Reset progress bars
+                        const progressBars = section.querySelectorAll('.progress-bar');
+                        progressBars.forEach(bar => {
+                            bar.style.width = '0%';
+                            const text = bar.closest('.custom-card, .total-card').querySelector('.persentase-text, .total-persentase-text');
+                            if (text) text.textContent = '0%';
+                        });
+                        
+                        // Re-animate
+                        setTimeout(animateProgressBars, 300);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.3 });
+            
+            observer.observe(section);
+        }
+    });
+    
     // Lottie animasi
     var animation = lottie.loadAnimation({
       container: document.getElementById('lottie'),
