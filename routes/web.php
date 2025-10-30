@@ -22,11 +22,15 @@ use App\Http\Controllers\RealisasilpseController;
 use App\Http\Controllers\RealisasiPembinaanController;
 use App\Http\Controllers\SSHController;
 use App\Http\Controllers\TreeViewController;
+use App\Http\Controllers\DashboardRealisasiController;
 use Illuminate\Routing\RouteGroup;
 use Illuminate\Support\Facades\Auth;
 
 
 Route::redirect('/', '/login');
+Route::get('/realisasi/pelayanan', [DashboardRealisasiController::class, 'getPersentaseBagian'])
+    ->name('realisasi.pelayanan');
+
 // Login page (GET)
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 
