@@ -27,10 +27,12 @@ class GeneralDashboardController extends Controller
         $totalAnggaran = $this->getTotalAnggaran();
         $totalRealisasi = $this->getTotalRealisasi();
         $totalSisa = $totalAnggaran - $totalRealisasi; 
-        $perbandinganPerTahun = $this->getPerbandinganRealisasiSisaAnggaran();
+        // $perbandinganPerTahun = $this->getPerbandinganRealisasiSisaAnggaran();
+        // $persentaseRealisasiPerTahun = $this ->getPersentaseRealisasiPerTahun();
+        $realisasiPerKegiatanProgram2 = $this->getRealisasiPerKegiatanProgram2();
         
 
-        return view('dashboard.index', compact('breadcrumb', 'page', 'activeMenu', 'totalAnggaran', 'totalSisa', 'totalRealisasi', 'perbandinganPerTahun'));
+        return view('dashboard.index', compact('breadcrumb', 'page', 'activeMenu', 'totalAnggaran', 'totalSisa', 'totalRealisasi', 'realisasiPerKegiatanProgram2'));
     }
 
     /**
@@ -46,41 +48,32 @@ class GeneralDashboardController extends Controller
         return RealisasiModel::selectRaw('SUM(nilai_realisasi) as total')->value('total') ?? 0;
     }
 
-//   public function getPerbandinganRealisasiSisaAnggaran()
-//     {
-//         $sshData = SshModel::with('realisasi')->get();
-
-//         return $sshData->groupBy('tahun')->map(function ($items, $tahun) {
-//             $totalAnggaran = $items->sum(fn($item) => $item->pagu2 ?: $item->pagu1 ?: 0);
-//             $totalRealisasi = $items->sum(fn($item) => $item->realisasi->sum('nilai_realisasi'));
-//             $totalSisa = $totalAnggaran - $totalRealisasi;
-
-//             return [
-//                 'tahun' => $tahun,
-//                 'total_anggaran' => $totalAnggaran,
-//                 'total_realisasi' => $totalRealisasi,
-//                 'total_sisa' => $totalSisa,
-//             ];
-//         })->values();
-//     }
-
-    public function getPerbandinganRealisasiSisaAnggaran()
+    //menghitung presentase otal realisasi pada kegiatan di program id 2
+    public function getRealisasiPerKegiatanProgram2()
     {
-        return DB::table('t_ssh')
-            ->selectRaw('YEAR(t_ssh.tahun) as tahun')
-            ->selectRaw('SUM(COALESCE(NULLIF(t_ssh.pagu2, 0), t_ssh.pagu1, 0)) as total_anggaran')
-            ->selectRaw('COALESCE(SUM(r.nilai_realisasi), 0) as total_realisasi')
-            ->leftJoin('t_transaksional_realisasi_anggaran as r', 't_ssh.id_ssh', '=', 'r.id_ssh')
-            ->groupBy(DB::raw('YEAR(t_ssh.tahun)'))
-            ->orderBy('tahun')
-            ->get()
-            ->map(function($item) {
-                return [
-                    'tahun' => (int) $item->tahun,
-                    'total_anggaran' => (float) $item->total_anggaran,
-                    'total_realisasi' => (float) $item->total_realisasi,
-                    'total_sisa' => (float) ($item->total_anggaran - $item->total_realisasi),
-                ];
-            });
+    $data = DB::table('t_transaksional_realisasi_anggaran as tr')
+        ->join('t_master_kegiatan as k', 'tr.id_kegiatan', '=', 'k.id_kegiatan')
+        ->where('tr.id_program', 2)
+        ->select(
+            'k.nama_kegiatan',
+            DB::raw('SUM(tr.nilai_realisasi) as total_realisasi')
+        )
+        ->groupBy('tr.id_kegiatan', 'k.nama_kegiatan')
+        ->orderBy('total_realisasi', 'DESC')
+        ->get();
+
+    // Hitung total keseluruhan untuk persentase
+    $totalKeseluruhan = $data->sum('total_realisasi');
+
+    // Tambahkan persentase ke setiap item
+    $dataWithPercentage = $data->map(function ($item) use ($totalKeseluruhan) {
+        $item->persentase = $totalKeseluruhan > 0 
+            ? round(($item->total_realisasi / $totalKeseluruhan) * 100, 2) 
+            : 0;
+        return $item;
+    });
+
+    return $dataWithPercentage;
     }
+
 }

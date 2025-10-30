@@ -58,6 +58,9 @@ Route::middleware(['web', 'session.auth'])->group(function () {
         Route::get('/', [GeneralDashboardController::class, 'index']);
         Route::get('/grafik', [GeneralDashboardController::class, 'grafik']);
         Route::get('/rekap', [GeneralDashboardController::class, 'rekap']);
+        // Route::get('/dashboard/perbandingan', [GeneralDashboardController::class, 'getPerbandinganRealisasiSisaAnggaranPerTahun']);
+        // Route::get('/anggaran', [GeneralDashboardController::class, 'index'])->name('anggaran.index');
+
     });
 
     // Jabatan Struktural
