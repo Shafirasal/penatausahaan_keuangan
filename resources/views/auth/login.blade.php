@@ -410,7 +410,8 @@
     <header>
       <div class="container d-flex justify-content-between align-items-center">
         <div class="logo">
-          <a href="#"><img src="{{ asset('assets/logo_biro.png') }}" alt="Logo"></a>
+          <a href="#"><img src="{{ asset('assets/logo.png') }}" alt="Logo"></a>
+          <a href="#"><img src="{{ asset('assets/logo_monitrack.png') }}" width="80" height="100"alt="Logo"></a>
         </div>
         <nav>
           <ul class="nav">
@@ -424,7 +425,7 @@
 
     <div class="hero container">
       <div class="left">
-        <h1 class="hero-title">Selamat Datang di <span class="text-danger">Biro PBJ</span></h1>
+        <h1 class="hero-title">Selamat Datang di <span class="text-danger">MoniTrack</span></h1>
         <div id="lottie"></div>
       </div>
       <div class="right glass-card" id="loginSection">
