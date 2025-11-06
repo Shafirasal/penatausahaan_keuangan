@@ -438,11 +438,19 @@
             <i class="fas fa-user icon-input"></i>
             <input type="text" id="nip" name="nip" class="form-control input-icon" required>
           </div>
-          <div class="mb-3 position-relative">
+          {{-- <div class="mb-3 position-relative">
             <label for="password" class="form-label">Password</label>
             <i class="fas fa-lock icon-input"></i>
             <input type="password" id="password" name="password" class="form-control input-icon" required>
-          </div>
+          </div> --}}
+        <div class="mb-3 position-relative">
+          <label for="password" class="form-label">Password</label>
+          <i class="fas fa-lock icon-input"></i>
+          <input type="password" id="password" name="password" class="form-control input-icon pe-5" required>
+          <i class="fas fa-eye position-absolute" id="togglePassword"
+            style="top: 42px; right: 15px; cursor: pointer; color: #999;"></i>
+        </div>
+
           <button id="loginButton" type="submit" class="btn btn-danger w-100 btn-hover">Login</button>
         </form>
       </div>
@@ -928,6 +936,16 @@
         }
       });
     });
+
+    // Toggle show/hide password
+    document.getElementById('togglePassword').addEventListener('click', function () {
+      const passwordInput = document.getElementById('password');
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      this.classList.toggle('fa-eye');
+      this.classList.toggle('fa-eye-slash');
+    });
+
   </script>
 </body>
 </html>
