@@ -188,7 +188,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Tanggal Realisasi <span class="text-danger">*</span></label>
-                                <input type="date" name="tanggal_realisasi" class="form-control"
+                                <input type="date" id="tanggal_realisasi" name="tanggal_realisasi" class="form-control"
                                     value="{{ now()->toDateString() }}" required>
                                 <small class="form-text text-muted">Periksa lagi tanggal realisasi Anda</small>
                             </div>
@@ -197,7 +197,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>File Upload</label>
-                                <input type="file" name="file" class="form-control" required>
+                                <input type="file" id="file" name="file" class="form-control" required>
                             </div>
                         </div>
 

@@ -385,19 +385,33 @@ class SSHController extends Controller
 
                     // Jika semua referensi valid → siapkan untuk insert
                     if ($program && $kegiatan && $sub && $rekening) {
-                        $insert[] = [
-                            'kode_ssh' => $kode_ssh,
-                            'id_program' => $program->id_program,
-                            'id_kegiatan' => $kegiatan->id_kegiatan,
-                            'id_sub_kegiatan' => $sub->id_sub_kegiatan,
-                            'id_rekening' => $rekening->id_rekening,
-                            'nama_ssh' => $nama_ssh,
-                            'pagu1' => $pagu1,
-                            'pagu2' => $pagu2,
-                            'tahun' => $tahun,
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ];
+                        // ✅ Cek apakah kode_ssh sudah ada di rekening yang sama
+                        $exists = SshModel::where('kode_ssh', $kode_ssh)
+                            ->where('id_rekening', $rekening->id_rekening)
+                            ->exists();
+
+                        if (!$exists) {
+                            $insert[] = [
+                                'kode_ssh' => $kode_ssh,
+                                'id_program' => $program->id_program,
+                                'id_kegiatan' => $kegiatan->id_kegiatan,
+                                'id_sub_kegiatan' => $sub->id_sub_kegiatan,
+                                'id_rekening' => $rekening->id_rekening,
+                                'nama_ssh' => $nama_ssh,
+                                'pagu1' => $pagu1,
+                                'pagu2' => $pagu2,
+                                'tahun' => $tahun,
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ];
+                        } else {
+                            // Simpan baris yang duplikat
+                            $invalid_rows[] = [
+                                'baris' => $baris,
+                                'kode_ssh' => $kode_ssh,
+                                'note' => 'Kode SSH sudah ada pada rekening yang sama'
+                            ];
+                        }
                     } else {
                         $invalid_rows[] = [
                             'baris' => $baris,
