@@ -431,7 +431,20 @@
           data: 'aksi',
           className: 'text-center',
           orderable: false,
-          searchable: false
+          searchable: false,
+                    render: function(data, type, row) {
+            return `
+              <button onclick="modalAction('${data.show}')" class="btn btn-info btn-sm" title="Detail">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button onclick="modalAction('${data.edit}')" class="btn btn-warning btn-sm" title="Edit">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button onclick="modalAction('${data.delete}')" class="btn btn-danger btn-sm" title="Hapus">
+                <i class="fas fa-trash"></i>
+              </button>
+            `;
+          }
         }
       ]
     });

@@ -24,17 +24,17 @@ class AuthController extends Controller
     {
         // Ambil data realisasi untuk section pelayanan
         $dataBagian = $this->getRealisasiByBagian();
-        
+
         // Hitung total keseluruhan
         $totalKeseluruhan = [
             'pagu' => $dataBagian['pbj']['pagu'] + $dataBagian['lpse']['pagu'] + $dataBagian['pembinaan']['pagu'],
             'realisasi' => $dataBagian['pbj']['realisasi'] + $dataBagian['lpse']['realisasi'] + $dataBagian['pembinaan']['realisasi'],
         ];
         $totalKeseluruhan['selisih'] = $totalKeseluruhan['pagu'] - $totalKeseluruhan['realisasi'];
-        $totalKeseluruhan['persentase'] = $totalKeseluruhan['pagu'] > 0 
-            ? round(($totalKeseluruhan['realisasi'] / $totalKeseluruhan['pagu']) * 100, 2) 
+        $totalKeseluruhan['persentase'] = $totalKeseluruhan['pagu'] > 0
+            ? round(($totalKeseluruhan['realisasi'] / $totalKeseluruhan['pagu']) * 100, 2)
             : 0;
-        
+
         return view('auth.login', compact('dataBagian', 'totalKeseluruhan'));
     }
 
@@ -63,10 +63,18 @@ class AuthController extends Controller
         session()->put('nip', $user->nip);
         session()->put('level', $user->level);
 
-        return response()->json([
-            'redirect' => url('/dashboard'),
-            'message'  => 'Login berhasil.',
-        ]);
+        if ($user->level === 'pimpinan') {
+
+            return response()->json([
+                'redirect' => url('/general_dashboard'),
+                'message'  => 'Login berhasil.',
+            ]);
+        } else {
+            return response()->json([
+                'redirect' => url('/dashboard'),
+                'message'  => 'Login berhasil.',
+            ]);
+        }
     }
 
     /**
@@ -115,17 +123,17 @@ class AuthController extends Controller
             'lpse' => '40107102',
             'pembinaan' => '40107103'
         ];
-        
+
         $result = [];
-        
+
         foreach ($kodeKegiatan as $bagian => $kode) {
             $data = $this->hitungRealisasi($kode);
             $result[$bagian] = $data;
         }
-        
+
         return $result;
     }
-    
+
     /**
      * Menghitung total pagu, realisasi, selisih, dan persentase berdasarkan kode kegiatan
      */
@@ -138,7 +146,7 @@ class AuthController extends Controller
             })
             ->selectRaw('SUM(COALESCE(NULLIF(pagu2, 0), pagu1, 0)) as total')
             ->value('total') ?? 0;
-        
+
         // Ambil total realisasi dari t_transaksional_realisasi_anggaran
         // Menggunakan relasi: Realisasi -> SSH -> SubKegiatan -> Kegiatan
         $totalRealisasi = RealisasiModel::whereHas('ssh.sub_kegiatan.kegiatan', function($query) use ($kodeKegiatan) {
@@ -146,11 +154,11 @@ class AuthController extends Controller
             })
             ->selectRaw('SUM(COALESCE(nilai_realisasi, 0)) as total')
             ->value('total') ?? 0;
-        
+
         // Hitung selisih dan persentase
         $selisih = $totalPagu - $totalRealisasi;
         $persentase = $totalPagu > 0 ? round(($totalRealisasi / $totalPagu) * 100, 2) : 0;
-        
+
         return [
             'pagu' => $totalPagu,
             'realisasi' => $totalRealisasi,
