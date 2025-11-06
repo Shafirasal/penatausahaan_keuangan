@@ -30,9 +30,14 @@ class GeneralDashboardController extends Controller
         // $perbandinganPerTahun = $this->getPerbandinganRealisasiSisaAnggaran();
         // $persentaseRealisasiPerTahun = $this ->getPersentaseRealisasiPerTahun();
         $realisasiPerKegiatanProgram2 = $this->getRealisasiPerKegiatanProgram2();
+        $perbandinganAnggaranRealisasiSisa = $this->totalAnggaranRealisasiSisaPerkegiatan();
         
 
-        return view('dashboard.index', compact('breadcrumb', 'page', 'activeMenu', 'totalAnggaran', 'totalSisa', 'totalRealisasi', 'realisasiPerKegiatanProgram2'));
+        return view('dashboard.index', compact(
+    'breadcrumb', 'page', 'activeMenu', 'totalAnggaran',
+             'totalSisa', 'totalRealisasi', 'realisasiPerKegiatanProgram2', 'perbandinganAnggaranRealisasiSisa'
+            
+            ));
     }
 
     /**
@@ -76,4 +81,51 @@ class GeneralDashboardController extends Controller
     return $dataWithPercentage;
     }
 
+
+
+     public function totalAnggaranRealisasiSisaPerkegiatan()
+    {
+        $data = DB::table('t_master_kegiatan as k')
+            ->leftJoin('t_ssh as s', 's.id_kegiatan', '=', 'k.id_kegiatan')
+            ->leftJoinSub(
+                DB::table('t_transaksional_realisasi_anggaran')
+                    ->select('id_kegiatan', DB::raw('SUM(nilai_realisasi) as total_realisasi'))
+                    ->where('id_program', 2)
+                    ->groupBy('id_kegiatan'),
+                'tr',
+                function ($join) {
+                    $join->on('tr.id_kegiatan', '=', 'k.id_kegiatan');
+                }
+            )
+            ->select(
+                'k.id_kegiatan',
+                'k.nama_kegiatan',
+                DB::raw("
+                    SUM(
+                        CASE 
+                            WHEN s.pagu2 IS NOT NULL AND s.pagu2 > 0 THEN s.pagu2
+                            ELSE s.pagu1
+                        END
+                    ) AS total_anggaran
+                "),
+                DB::raw("COALESCE(SUM(DISTINCT tr.total_realisasi), 0) AS total_realisasi"),
+                DB::raw("
+                    (
+                        SUM(
+                            CASE 
+                                WHEN s.pagu2 IS NOT NULL AND s.pagu2 > 0 THEN s.pagu2
+                                ELSE s.pagu1
+                            END
+                        ) - COALESCE(SUM(DISTINCT tr.total_realisasi), 0)
+                    ) AS sisa_anggaran
+                ")
+            )
+            ->where('k.id_program', 2)
+            ->groupBy('k.id_kegiatan', 'k.nama_kegiatan')
+            ->orderBy('k.id_kegiatan')
+            ->get();
+
+       return $data;
+
+    }
 }
