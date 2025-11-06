@@ -588,7 +588,7 @@
     </div>
     
     {{-- Total Keseluruhan Card --}}
-    <div class="row mt-5" data-aos="fade-up" data-aos-delay="300">
+    {{-- <div class="row mt-5" data-aos="fade-up" data-aos-delay="300">
       <div class="col-12">
         <div class="card shadow-lg border-0 total-card">
           <div class="card-body text-white p-4">
@@ -638,7 +638,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> --}}
   </div>
 </section>
 
