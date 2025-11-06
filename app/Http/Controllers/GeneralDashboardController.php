@@ -31,11 +31,15 @@ class GeneralDashboardController extends Controller
         // $persentaseRealisasiPerTahun = $this ->getPersentaseRealisasiPerTahun();
         $realisasiPerKegiatanProgram2 = $this->getRealisasiPerKegiatanProgram2();
         $perbandinganAnggaranRealisasiSisa = $this->totalAnggaranRealisasiSisaPerkegiatan();
+        $totalPBJ = $this->getTotalAnggaranPBJ();
+        $totalLPSE = $this->getTotalAnggaranLPSE();
+        $totalPembinaan = $this->getTotalAnggaranPembinaan();
+
         
 
         return view('dashboard.index', compact(
     'breadcrumb', 'page', 'activeMenu', 'totalAnggaran',
-             'totalSisa', 'totalRealisasi', 'realisasiPerKegiatanProgram2', 'perbandinganAnggaranRealisasiSisa'
+             'totalSisa', 'totalRealisasi', 'realisasiPerKegiatanProgram2', 'perbandinganAnggaranRealisasiSisa', 'totalPBJ', 'totalLPSE', 'totalPembinaan'
             
             ));
     }
@@ -127,5 +131,59 @@ class GeneralDashboardController extends Controller
 
        return $data;
 
+    }
+
+        public function getTotalAnggaranPBJ()
+    {
+        $total = DB::table('t_master_kegiatan as k')
+            ->leftJoin('t_ssh as s', 's.id_kegiatan', '=', 'k.id_kegiatan')
+            ->where('k.nama_kegiatan', 'Pengelolaan Pengadaan Barang dan Jasa')
+            ->selectRaw("
+                SUM(
+                    CASE 
+                        WHEN s.pagu2 > 0 THEN s.pagu2
+                        ELSE s.pagu1
+                    END
+                ) AS total_anggaran
+            ")
+            ->value('total_anggaran');
+
+        return $total ?? 0; 
+    }
+
+        public function getTotalAnggaranLPSE()
+    {
+        $total = DB::table('t_master_kegiatan as k')
+            ->leftJoin('t_ssh as s', 's.id_kegiatan', '=', 'k.id_kegiatan')
+            ->where('k.nama_kegiatan', 'Pengelolaan Layanan Pengadaan Secara Elektronik')
+            ->selectRaw("
+                SUM(
+                    CASE 
+                        WHEN s.pagu2 > 0 THEN s.pagu2
+                        ELSE s.pagu1
+                    END
+                ) AS total_anggaran
+            ")
+            ->value('total_anggaran');
+
+        return $total ?? 0;
+    }
+
+        public function getTotalAnggaranPembinaan()
+    {
+        $total = DB::table('t_master_kegiatan as k')
+            ->leftJoin('t_ssh as s', 's.id_kegiatan', '=', 'k.id_kegiatan')
+            ->where('k.nama_kegiatan', 'Pembinaan Pengadaan')
+            ->selectRaw("
+                SUM(
+                    CASE 
+                        WHEN s.pagu2 > 0 THEN s.pagu2
+                        ELSE s.pagu1
+                    END
+                ) AS total_anggaran
+            ")
+            ->value('total_anggaran');
+
+        return $total ?? 0;
     }
 }

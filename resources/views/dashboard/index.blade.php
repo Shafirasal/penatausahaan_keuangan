@@ -70,12 +70,28 @@
                             </div>
                         </div>
 
+                        {{-- <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                            <div class="card card-statistic-1">
+                                <div class="card-icon bg-primary">
+                                    <i class="far fa-user"></i>
+                                </div>
+                                <div class="card-wrap">
+                                    <div class="card-header">
+                                        <h4>Total Anggaran PBJ</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5>Rp {{ number_format($totalPBJ, 0, ',', '.') }}</h5>
+                                    </div>
+                                </div>
+                               </div>
+                        </div> --}}
+                        
                         {{-- Chart Section --}}
                         <div class="row mt-4">
                             <div class="col-12 col-md-6 col-lg-6">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h4>Bar Chart</h4>
+                                        <h4>Perbandingan Anggaran Realisasi Sisa Perkegiatan</h4>
                                     </div>
                                     <div class="card-body">
                                         <canvas id="myChart2"></canvas>
