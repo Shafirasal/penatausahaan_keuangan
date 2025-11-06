@@ -895,7 +895,13 @@
                     _token: $('meta[name="csrf-token"]').attr('content') // penting!
                 },
                 success: function() {
-                    window.location.href = '/dashboard'; 
+                    console.log(response.redirect);  // Cek URL yang diterima
+
+                    if (response.redirect) {
+                        window.location.href = response.redirect;
+                    } else {
+                        alert(response.message);
+                    }
                 },
                 error: function(xhr) {
                   const message = xhr.responseJSON?.errors?.nip?.[0] || xhr.responseJSON?.message || 'Login gagal.';
