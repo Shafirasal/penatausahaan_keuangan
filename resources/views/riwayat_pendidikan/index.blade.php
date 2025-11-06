@@ -19,7 +19,7 @@
         <div class="section-header">
             <h1>{{ $page->title ?? 'Riwayat Pendidikan' }}</h1>
             <div class="section-header-button ml-auto">
-                <button onclick="modalAction(`{{ url('/riwayat-pendidikan/create') }}`)" class="btn btn-primary">
+                <button onclick="modalAction({{ url('/riwayat-pendidikan/create') }})" class="btn btn-primary">
                     <i class="fas fa-plus"></i> Tambah
                 </button>
             </div>
@@ -116,7 +116,7 @@
       <div class="card-header">
         <h4>Data Riwayat Pendidikan</h4>
         <div class="card-header-action ml-auto">
-          <button onclick="modalAction(`{{ url('/riwayat_pendidikan/create') }}`)" class="btn btn-primary">
+          <button onclick="modalAction({{ url('/riwayat_pendidikan/create') }})" class="btn btn-primary">
             <i class="fas fa-plus"></i> Tambah
           </button>
         </div>
@@ -209,7 +209,7 @@
       <div class="card-header">
         <h4>Data Riwayat Pendidikan</h4>
         <div class="card-header-action ml-auto">
-          <button onclick="modalAction(`{{ url('/riwayat_pendidikan/create') }}`)" class="btn btn-primary">
+          <button onclick="modalAction({{ url('/riwayat_pendidikan/create') }})" class="btn btn-primary">
             <i class="fas fa-plus"></i> Tambah
           </button>
         </div>
@@ -324,7 +324,7 @@
         <div class="card-header">
           <h4>Data Riwayat Pendidikan</h4>
           <div class="card-header-action ml-auto">
-            <button onclick="modalAction(`{{ url('/riwayat_pendidikan/create') }}`)" class="btn btn-primary">
+            <button onclick="modalAction({{ url('/riwayat_pendidikan/create') }})" class="btn btn-primary">
               <i class="fas fa-plus"></i> Tambah
             </button>
           </div>
@@ -431,24 +431,10 @@
           data: 'aksi',
           className: 'text-center',
           orderable: false,
-          searchable: false,
-                    render: function(data, type, row) {
-            return `
-              <button onclick="modalAction('${data.show}')" class="btn btn-info btn-sm" title="Detail">
-                <i class="fas fa-eye"></i>
-              </button>
-              <button onclick="modalAction('${data.edit}')" class="btn btn-warning btn-sm" title="Edit">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button onclick="modalAction('${data.delete}')" class="btn btn-danger btn-sm" title="Hapus">
-                <i class="fas fa-trash"></i>
-              </button>
-            `;
-          }
+          searchable: false
         }
       ]
     });
   });
 </script>
 @endpush
-

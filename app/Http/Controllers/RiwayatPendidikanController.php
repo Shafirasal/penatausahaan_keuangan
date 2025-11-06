@@ -54,12 +54,12 @@ class RiwayatPendidikanController extends Controller
             })
 
             ->addColumn('aksi', function ($row) {
-                return [
-                    'show' => url("/riwayat_pendidikan/{$row->id_pendidikan}/show"),
-                    'edit' => url("/riwayat_pendidikan/{$row->id_pendidikan}/edit"),
-                    'delete' => url("/riwayat_pendidikan/{$row->id_pendidikan}/confirm"),
-                ];
+                $btn = '<button onclick="modalAction(\'' . url('/riwayat_pendidikan/' . $row->id_pendidikan . '/show') . '\')" class="btn btn-info btn-sm">Detail</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/riwayat_pendidikan/' . $row->id_pendidikan . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/riwayat_pendidikan/' . $row->id_pendidikan . '/confirm') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
+                return $btn;
             })
+            ->rawColumns(['aksi'])
             ->toJson();
     }
 

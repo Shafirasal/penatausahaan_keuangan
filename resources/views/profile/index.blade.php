@@ -116,12 +116,5 @@
             $('#myModal').modal('show');
         });
     }
-    function reloadProfilePhoto(newUrl) {
-    const img = document.querySelector('img[alt="Foto Profil"]');
-    if (img) {
-        img.src = newUrl + '?t=' + new Date().getTime(); // untuk hindari cache
-    }
-}
-
 </script>
 @endpush
