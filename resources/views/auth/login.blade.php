@@ -735,10 +735,11 @@
           <div class="col-lg-3 col-md-6">
             <h5>Hubungi Kami</h5>
             <ul class="contact-list">
-              <li><i class="fas fa-phone-alt"></i><span>+62 813 1763 3727</span></li>
-              <li><i class="fab fa-whatsapp"></i><span>+62 813 1763 3727</span></li>
-              <li><i class="fas fa-envelope"></i><span>sipd@kemendagri.go.id</span></li>
+              <li><i class="fas fa-phone-alt"></i><span>031 - 3545235</span></li>
+              {{-- <li><i class="fab fa-whatsapp"></i><span>+62 813 1763 3727</span></li> --}}
+              <li><i class="fas fa-envelope"></i><span>ropbj@jatimprov.go.id</span></li>
             </ul>
+
           </div>
 
           <div class="col-lg-3 col-md-6">
@@ -761,9 +762,9 @@
           <div class="col-lg-3 col-md-6">
             <h5>Media Sosial</h5>
             <ul class="contact-list">
-              <li><i class="fab fa-instagram"></i><span>@sipdkemendagri</span></li>
-              <li><i class="fab fa-youtube"></i><span>sipdkemendagri</span></li>
-              <li><i class="fab fa-facebook"></i><span>sipdkemendagri</span></li>
+              <li><a href="https://www.instagram.com/biro.pbjatim?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank"><i class="fab fa-instagram"></i><span>@biro.pbjatim</span></a></li>
+              <li><a href="https://youtube.com/@biropengadaanbarangjasa7751?si=eSjwp0fgX2kgKxpO" target="_blank"><i class="fab fa-youtube"></i><span>biro pengadaan barang dan jasa</span></a></li>
+              <li><a href="https://ropbj.jatimprov.go.id/web/" target="_blank"><i class="fas fa-globe"></i><span>Biro PBJ Jatim</span></a></li>
             </ul>
           </div>
 
