@@ -894,7 +894,7 @@
                     password: password,
                     _token: $('meta[name="csrf-token"]').attr('content') // penting!
                 },
-                success: function() {
+                success: function(response) {
                     console.log(response.redirect);  // Cek URL yang diterima
 
                     if (response.redirect) {
