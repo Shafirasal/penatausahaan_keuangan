@@ -13,7 +13,7 @@
     </style>
     <section class="section">
         <div class="section-header">
-            <h1>Profil Pegawai</h1>
+            <h1>Informasi Pegawai</h1>
             @include('layouts.breadcrumb', ['list' => $breadcrumb->list ?? []])
         </div>
 
@@ -22,7 +22,7 @@
             {{-- BIODATA --}}
             <div class="card mb-4">
                 <div class="card-header" style="background-color:#a93542;">
-                    <h4>Biodata Pegawai</h4>
+                    <h4>Biodata</h4>
                 </div>
                 <div class="card-body">
                     <div class="row">
