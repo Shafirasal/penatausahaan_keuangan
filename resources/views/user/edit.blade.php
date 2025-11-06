@@ -174,6 +174,7 @@
                         <option value="pegawai" {{ $user->level == 'pegawai' ? 'selected' : '' }}>Pegawai</option>
                         <option value="admin" {{ $user->level == 'admin' ? 'selected' : '' }}>Admin</option>
                         <option value="operator" {{ $user->level == 'operator' ? 'selected' : '' }}>Operator</option>
+                        <option value="pimpinan" {{ $user->level == 'pimpinan' ? 'selected' : '' }}>Pimpinan</option>
                     </select>
                     <small id="error-level" class="error-text form-text text-danger"></small>
                 </div>
