@@ -7,7 +7,7 @@
 @section('content')
 
 @endsection --}}
-{{-- 
+{{--
 @extends('layouts.template')
 
 @section('title')
@@ -96,7 +96,7 @@
     </script>
 @endpush --}}
 
-{{-- 
+{{--
 
 @extends('layouts.template')
 
@@ -190,7 +190,7 @@
 </script>
 @endpush --}}
 
-{{-- 
+{{--
 @extends('layouts.template')
 
 @section('title')
@@ -214,7 +214,7 @@
           </button>
         </div>
       </div>
-      <div class="card-body p-0"> 
+      <div class="card-body p-0">
         <div class="table-responsive">
           <table class="table table-striped table-md mb-0" id="table_pendidikan" style="width: 100%">
             <thead>
@@ -234,7 +234,7 @@
       <div class="card-footer text-right">
         <nav class="d-inline-block">
           <ul class="pagination mb-0">
-          
+
           </ul>
         </nav>
       </div>
@@ -276,7 +276,7 @@
         { data: 'aksi', orderable: false, searchable: false }
       ],
       drawCallback: function () {
-        feather.replace(); 
+        feather.replace();
       }
     });
   }
@@ -305,9 +305,9 @@
 
 @push('css')
 <!-- DataTables Bootstrap 4 CSS -->
-{{-- 
+{{--
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css"> 
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
 --}}
 @endpush
 
@@ -324,7 +324,7 @@
         <div class="card-header">
           <h4>Data Riwayat Pendidikan</h4>
           <div class="card-header-action ml-auto">
-            <button onclick="modalAction({{ url('/riwayat_pendidikan/create') }})" class="btn btn-primary">
+            <button onclick="modalAction('{{ url('/riwayat_pendidikan/create') }}')" class="btn btn-primary">
               <i class="fas fa-plus"></i> Tambah
             </button>
           </div>
