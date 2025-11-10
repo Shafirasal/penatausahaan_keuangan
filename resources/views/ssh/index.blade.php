@@ -32,11 +32,13 @@
 
                     <div class="card-body">
 
-                        <div class="row mb-3">
-                            <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label for="program_filter"><strong>Nama Program:</strong></label>
+                            </div>
+                            <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label for="program_filter"><strong>Nama Program:</strong></label>
-                                    <select id="program_filter" class="form-control">
+                                    <select id="program_filter" class="form-control select2-compact">
                                         <option value="">-- Pilih Program --</option>
                                         @foreach ($listProgram as $program)
                                             {{-- ✅ TAMBAHAN: Tampilkan kode_program yang sudah diformat --}}
@@ -46,26 +48,38 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label for="kegiatan_filter"><strong>Nama Kegiatan:</strong></label>
+                            </div>
+                            <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label for="kegiatan_filter"><strong>Nama Kegiatan:</strong></label>
-                                    <select id="kegiatan_filter" class="form-control" disabled>
+                                    <select id="kegiatan_filter" class="form-control select2-compact" disabled>
                                         <option value="">-- Pilih Kegiatan --</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label for="sub_kegiatan_filter"><strong>Nama Sub Kegiatan:</strong></label>
+                            </div>
+                            <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label for="sub_kegiatan_filter"><strong>Nama Sub Kegiatan:</strong></label>
-                                    <select id="sub_kegiatan_filter" class="form-control" disabled>
+                                    <select id="sub_kegiatan_filter" class="form-control select2-compact" disabled>
                                         <option value="">-- Pilih Sub Kegiatan --</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label for="rekening_filter"><strong>Nama Rekening:</strong></label>
+                            </div>
+                            <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label for="rekening_filter"><strong>Nama Rekening:</strong></label>
-                                    <select id="rekening_filter" class="form-control" disabled>
+                                    <select id="rekening_filter" class="form-control select2-compact" disabled>
                                         <option value="">-- Pilih Rekening --</option>
                                     </select>
                                 </div>
