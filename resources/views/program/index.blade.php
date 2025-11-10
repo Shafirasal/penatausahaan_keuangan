@@ -25,11 +25,14 @@
 
         <div class="card-body">
           <!-- Filter Section -->
-          <div class="row mb-3">
-            <div class="col-md-6">
+          <div class="row">
+            <div class="col-sm-2">
+              <label for="program_filter"><strong>Nama Program:</strong></label>
+            </div>
+
+            <div class="col-sm-4">
               <div class="form-group">
-                <label for="program_filter"><strong>Nama Program:</strong></label>
-                <select id="program_filter" class="form-control">
+                <select id="program_filter" class="form-control select2-compact">
                   <option value="">-- Pilih Program --</option>
                   @foreach ($listProgram as $program)
                     <option value="{{ $program->id_program }}">{{ formatKode($program->kode_program, 'program') }} - {{ $program->nama_program }}</option>
