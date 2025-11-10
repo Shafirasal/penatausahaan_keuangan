@@ -18,6 +18,9 @@
   <link rel="stylesheet" href="{{ asset('stisla1/assets/css/style.css') }}">
   <link rel="stylesheet" href="{{ asset('stisla1/assets/css/components.css') }}">
 
+  {{-- Custom CSS --}}
+  <link rel="stylesheet" href="{{ asset('stisla1/assets/css/custom.css') }}">
+  
   <!--Chart Js -->
   <link rel="stylesheet" href="{{ asset('stisla1/node_modules/chart.js/dist/Chart.min.css') }}"> 
 
