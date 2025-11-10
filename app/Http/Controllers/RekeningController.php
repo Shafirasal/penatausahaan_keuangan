@@ -337,7 +337,14 @@ class RekeningController extends Controller
                         ->where('id_sub_kegiatan', $sub->id_sub_kegiatan)
                         ->first();
 
-                    if ($existing) continue;
+                    if ($existing) {
+                        $invalid_rows[] = [
+                            'baris' => $baris,
+                            'kode_rekening' => $kode_rekening,
+                            'note' => 'Kode rekening sudah ada untuk sub kegiatan ini'
+                        ];
+                        continue;
+                    }
 
                     // Jika semua referensi valid → siapkan untuk insert
                     if ($program && $kegiatan && $sub) {
@@ -358,7 +365,7 @@ class RekeningController extends Controller
                         ];
                     }
                 }
-
+                
                 // Insert data valid
                 if (count($insert) > 0) {
                     RekeningModel::insertOrIgnore($insert);
@@ -382,7 +389,6 @@ class RekeningController extends Controller
                 'message' => 'Terjadi kesalahan saat memproses file: ' . $th->getMessage()
             ]);
         }
-        return redirect('/');
     }
 
     // // 🔄 AJAX: Get Kegiatan berdasarkan Program

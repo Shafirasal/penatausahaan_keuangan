@@ -45,7 +45,7 @@
                     processData: false, // setting processData dan contentType ke false, untuk menghandle file
                     contentType: false,
                     success: function(response) {
-                        if (response.status) { // jika sukses
+                           if (response.status && !response.message.includes('0 data berhasil')) {
                             $('#myModal').modal('hide');
                             Swal.fire({
                                 icon: 'success',
@@ -58,6 +58,7 @@
                             $.each(response.msgField, function(prefix, val) {
                                 $('#error-' + prefix).text(val[0]);
                             });
+                             $('#myModal').modal('hide');
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Terjadi Kesalahan',
