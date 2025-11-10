@@ -31,8 +31,49 @@
 
                     <div class="card-body">
                         <!-- Filter Section -->
-                        <div class="row mb-3">
-                            <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label for="program_filter"><strong>Nama Program:</strong></label>
+                            </div>
+                            <div class="col-sm-6" >
+                                <div class="form-group">
+                                    <select id="program_filter" class="form-control">
+                                        <option value="">-- Pilih Program --</option>
+                                        @foreach ($listProgram as $program)
+                                            <option value="{{ $program->id_program }}">{{ $program->kode_program }} -
+                                                {{ $program->nama_program }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label for="kegiatan_filter"><strong>Nama Kegiatan:</strong></label>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <select id="kegiatan_filter" class="form-control" disabled>
+                                        <option value="">-- Pilih Kegiatan --</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label for="sub_kegiatan_filter"><strong>Nama Sub Kegiatan:</strong></label>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <select id="sub_kegiatan_filter" class="form-control" disabled>
+                                        <option value="">-- Pilih Sub Kegiatan --</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- <div class="row ">
+                            <div class="col-sm-5 gap-sm-3">
                                 <div class="form-group">
                                     <label for="program_filter"><strong>Nama Program:</strong></label>
                                     <select id="program_filter" class="form-control">
@@ -44,7 +85,9 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                        </div>
+                        <div class="row ">
+                            <div class="col-sm-5 gap-sm-3">
                                 <div class="form-group">
                                     <label for="kegiatan_filter"><strong>Nama Kegiatan:</strong></label>
                                     <select id="kegiatan_filter" class="form-control" disabled>
@@ -52,7 +95,9 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5 gap-sm-3">
                                 <div class="form-group">
                                     <label for="sub_kegiatan_filter"><strong>Nama Sub Kegiatan:</strong></label>
                                     <select id="sub_kegiatan_filter" class="form-control" disabled>
@@ -60,7 +105,8 @@
                                     </select>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
+
 
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-striped dt-responsive nowrap"
@@ -169,41 +215,41 @@
             });
 
             // Event handler untuk filter Program
-            $('#program_filter').on('change', function() {
-                var programId = $(this).val();
+            //$('#program_filter').on('change', function() {
+            //    var programId = $(this).val();
 
                 // Reset dan disable kegiatan dan sub kegiatan filter
-                $('#kegiatan_filter').empty().append('<option value="">-- Pilih Kegiatan --</option>').prop(
-                    'disabled', true).trigger('change');
-                $('#sub_kegiatan_filter').empty().append(
-                        '<option value="">-- Pilih Sub Kegiatan --</option>').prop('disabled', true)
-                    .trigger('change');
+            //    $('#kegiatan_filter').empty().append('<option value="">-- Pilih Kegiatan --</option>').prop(
+            //        'disabled', true).trigger('change');
+            //    $('#sub_kegiatan_filter').empty().append(
+            //            '<option value="">-- Pilih Sub Kegiatan --</option>').prop('disabled', true)
+            //        .trigger('change');
 
-                if (programId) {
+            //    if (programId) {
                     // Load kegiatan berdasarkan program yang dipilih
-                    $.ajax({
-                        url: "{{ url('/master_rekening/program') }}/" + programId + "/kegiatan",
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function(data) {
-                            $('#kegiatan_filter').prop('disabled', false);
-                            $.each(data, function(index, kegiatan) {
-                                // Tampilkan kode kegiatan yang sudah diformat dari controller
-                                $('#kegiatan_filter').append('<option value="' +
-                                    kegiatan.id_kegiatan + '">' + kegiatan
-                                    .kode_kegiatan + ' - ' + kegiatan
-                                    .nama_kegiatan + '</option>');
-                            });
-                        },
-                        error: function() {
-                            alert('Gagal memuat data kegiatan');
-                        }
-                    });
-                }
+            //        $.ajax({
+            //            url: "{{ url('/master_rekening/program') }}/" + programId + "/kegiatan",
+            //            type: 'GET',
+            //            dataType: 'json',
+            //            success: function(data) {
+            //                $('#kegiatan_filter').prop('disabled', false);
+            //                $.each(data, function(index, kegiatan) {
+            //                    // Tampilkan kode kegiatan yang sudah diformat dari controller
+            //                    $('#kegiatan_filter').append('<option value="' +
+            //                        kegiatan.id_kegiatan + '">' + kegiatan
+            //                        .kode_kegiatan + ' - ' + kegiatan
+            //                        .nama_kegiatan + '</option>');
+            //                });
+            //            },
+            //            error: function() {
+            //                alert('Gagal memuat data kegiatan');
+            //            }
+            //        });
+            //    }
 
                 // Reload DataTable
-                dataMasterRekening.ajax.reload();
-            });
+            //    dataMasterRekening.ajax.reload();
+            //});
 
             // Event handler untuk filter Kegiatan
             $('#kegiatan_filter').on('change', function() {
@@ -246,6 +292,160 @@
                 dataMasterRekening.ajax.reload();
             });
 
+            // Event handler untuk filter Program
+$('#program_filter').on('change', function() {
+    const programId = $(this).val();
+    const kegiatanSelect = $('#kegiatan_filter');
+    const subKegiatanSelect = $('#sub_kegiatan_filter');
+    
+    // Reset kegiatan dan sub kegiatan
+    resetSelect(kegiatanSelect, '-- Pilih Kegiatan --');
+    resetSelect(subKegiatanSelect, '-- Pilih Sub Kegiatan --');
+    
+    if (programId) {
+        // Load kegiatan berdasarkan program
+        loadKegiatanOptions(programId);
+    }
+    
+    // Reload DataTable
+    dataMasterRekening.ajax.reload();
+});
+
+// Event handler untuk filter Kegiatan
+$('#kegiatan_filter').on('change', function() {
+    const kegiatanId = $(this).val();
+    const subKegiatanSelect = $('#sub_kegiatan_filter');
+    
+    // Reset sub kegiatan
+    resetSelect(subKegiatanSelect, '-- Pilih Sub Kegiatan --');
+    
+    if (kegiatanId) {
+        // Load sub kegiatan berdasarkan kegiatan
+        loadSubKegiatanOptions(kegiatanId);
+    }
+    
+    // Reload DataTable
+    dataMasterRekening.ajax.reload();
+});
+
+// Event handler untuk filter Sub Kegiatan
+$('#sub_kegiatan_filter').on('change', function() {
+    dataMasterRekening.ajax.reload();
+});
+
+// Fungsi helper untuk reset select
+function resetSelect(selectElement, placeholderText) {
+    selectElement
+        .empty()
+        .append(`<option value="">${placeholderText}</option>`)
+        .prop('disabled', true)
+        .trigger('change');
+}
+
+// Fungsi untuk load kegiatan options
+function loadKegiatanOptions(programId) {
+    const kegiatanSelect = $('#kegiatan_filter');
+    
+    $.ajax({
+        url: `{{ url('/master_rekening/program') }}/${programId}/kegiatan`,
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            kegiatanSelect.prop('disabled', false);
+            $.each(data, function(index, kegiatan) {
+                kegiatanSelect.append(
+                    `<option value="${kegiatan.id_kegiatan}">
+                        ${kegiatan.kode_kegiatan} - ${kegiatan.nama_kegiatan}
+                    </option>`
+                );
+            });
+        },
+        error: function() {
+            alert('Gagal memuat data kegiatan');
+        }
+    });
+}
+
+// Fungsi untuk load sub kegiatan options
+function loadSubKegiatanOptions(kegiatanId) {
+    const subKegiatanSelect = $('#sub_kegiatan_filter');
+    
+    $.ajax({
+        url: `{{ url('/master_rekening/kegiatan') }}/${kegiatanId}/sub_kegiatan`,
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            subKegiatanSelect.prop('disabled', false);
+            $.each(data, function(index, subKegiatan) {
+                subKegiatanSelect.append(
+                    `<option value="${subKegiatan.id_sub_kegiatan}">
+                        ${subKegiatan.kode_sub_kegiatan} - ${subKegiatan.nama_sub_kegiatan}
+                    </option>`
+                );
+            });
+        },
+        error: function() {
+            alert('Gagal memuat data sub kegiatan');
+        }
+    });
+}
+
         });
     </script>
+    <style>
+    /* Select2 Container - lebih spesifik dengan ID */
+    .select2-container--default .select2-selection--single,
+    #select2-program_filter-container,
+    #select2-kegiatan_filter-container,
+    #select2-sub_kegiatan_filter-container {
+        height: 32px !important;
+        min-height: 32px !important;
+    }
+    
+    /* Select2 Selection Box */
+    .select2-container--default .select2-selection--single {
+        height: 32px !important;
+        border: 1px solid #e4e6fc !important;
+        border-radius: 0.25rem !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    
+    /* Select2 Rendered Text & Placeholder */
+    .select2-container--default .select2-selection--single .select2-selection__rendered,
+    .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        line-height: 30px !important;
+        height: 30px !important;
+        padding-left: 12px !important;
+        padding-right: 30px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        font-size: 13px !important;
+        color: #6c757d !important;
+        display: block !important;
+    }
+    
+    /* Select2 Arrow */
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 32px !important;
+        top: 0 !important;
+        right: 5px !important;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        margin-top: -2px !important;
+    }
+    
+    /* Select2 Focus State */
+    .select2-container--default.select2-container--focus .select2-selection--single {
+        border-color: #6777ef !important;
+        box-shadow: 0 0 0 0.2rem rgba(103, 119, 239, 0.25) !important;
+    }
+    
+    /* Select2 Dropdown */
+    .select2-container--default .select2-results__option {
+        padding: 8px 12px !important;
+        font-size: 14px !important;
+    }
+    </style>
 @endpush
