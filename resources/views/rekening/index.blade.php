@@ -37,11 +37,12 @@
                             </div>
                             <div class="col-sm-6" >
                                 <div class="form-group">
-                                    <select id="program_filter" class="form-control">
+                                    <select id="program_filter" class="form-control select2-compact">
                                         <option value="">-- Pilih Program --</option>
                                         @foreach ($listProgram as $program)
-                                            <option value="{{ $program->id_program }}">{{ $program->kode_program }} -
-                                                {{ $program->nama_program }}</option>
+                                            <option value="{{ $program->id_program }}">
+                                                {{ $program->kode_program }} - {{ $program->nama_program }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -53,7 +54,7 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <select id="kegiatan_filter" class="form-control" disabled>
+                                    <select id="kegiatan_filter" class="form-control select2-compact" disabled>
                                         <option value="">-- Pilih Kegiatan --</option>
                                     </select>
                                 </div>
@@ -65,7 +66,7 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <select id="sub_kegiatan_filter" class="form-control" disabled>
+                                    <select id="sub_kegiatan_filter" class="form-control select2-compact" disabled>
                                         <option value="">-- Pilih Sub Kegiatan --</option>
                                     </select>
                                 </div>
@@ -392,60 +393,4 @@ function loadSubKegiatanOptions(kegiatanId) {
 
         });
     </script>
-    <style>
-    /* Select2 Container - lebih spesifik dengan ID */
-    .select2-container--default .select2-selection--single,
-    #select2-program_filter-container,
-    #select2-kegiatan_filter-container,
-    #select2-sub_kegiatan_filter-container {
-        height: 32px !important;
-        min-height: 32px !important;
-    }
-    
-    /* Select2 Selection Box */
-    .select2-container--default .select2-selection--single {
-        height: 32px !important;
-        border: 1px solid #e4e6fc !important;
-        border-radius: 0.25rem !important;
-        display: flex !important;
-        align-items: center !important;
-    }
-    
-    /* Select2 Rendered Text & Placeholder */
-    .select2-container--default .select2-selection--single .select2-selection__rendered,
-    .select2-container--default .select2-selection--single .select2-selection__placeholder {
-        line-height: 30px !important;
-        height: 30px !important;
-        padding-left: 12px !important;
-        padding-right: 30px !important;
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-        font-size: 13px !important;
-        color: #6c757d !important;
-        display: block !important;
-    }
-    
-    /* Select2 Arrow */
-    .select2-container--default .select2-selection--single .select2-selection__arrow {
-        height: 32px !important;
-        top: 0 !important;
-        right: 5px !important;
-    }
-    
-    .select2-container--default .select2-selection--single .select2-selection__arrow b {
-        margin-top: -2px !important;
-    }
-    
-    /* Select2 Focus State */
-    .select2-container--default.select2-container--focus .select2-selection--single {
-        border-color: #6777ef !important;
-        box-shadow: 0 0 0 0.2rem rgba(103, 119, 239, 0.25) !important;
-    }
-    
-    /* Select2 Dropdown */
-    .select2-container--default .select2-results__option {
-        padding: 8px 12px !important;
-        font-size: 14px !important;
-    }
-    </style>
 @endpush
