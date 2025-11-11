@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RealisasiModel;
-use App\Models\SshModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\SshModel;
+use App\Models\RealisasiModel;
 
 class GeneralDashboardController extends Controller
 {
     /**
      * Halaman utama dashboard
      */
-    public function index()
+    public function index(Request $request)
     {
         $breadcrumb = (object) [
             'title' => 'General Dashboard',
@@ -24,70 +24,94 @@ class GeneralDashboardController extends Controller
         ];
 
         $activeMenu = 'General Dashboard';
-        $totalAnggaran = $this->getTotalAnggaran();
-        $totalRealisasi = $this->getTotalRealisasi();
-        $totalSisa = $totalAnggaran - $totalRealisasi; 
-        // $perbandinganPerTahun = $this->getPerbandinganRealisasiSisaAnggaran();
-        // $persentaseRealisasiPerTahun = $this ->getPersentaseRealisasiPerTahun();
-        $realisasiPerKegiatanProgram2 = $this->getRealisasiPerKegiatanProgram2();
-        $perbandinganAnggaranRealisasiSisa = $this->totalAnggaranRealisasiSisaPerkegiatan();
-        $totalPBJ = $this->getTotalAnggaranPBJ();
-        $totalLPSE = $this->getTotalAnggaranLPSE();
-        $totalPembinaan = $this->getTotalAnggaranPembinaan();
 
-        
+        // 🔹 Ambil tahun dari request atau gunakan default (tahun sekarang)
+        $tahunSekarang = date('Y');
+        $tahunDipilih = $request->get('tahun', $tahunSekarang);
+
+        // 🔹 Siapkan range tahun untuk dropdown (misalnya 4 tahun terakhir)
+        $tahunRange = range($tahunSekarang - 3, $tahunSekarang);
+
+        // 🔹 Panggil fungsi-fungsi dengan filter tahun
+        $totalAnggaran = $this->getTotalAnggaran($tahunDipilih);
+        $totalRealisasi = $this->getTotalRealisasi($tahunDipilih);
+        $totalSisa = $totalAnggaran - $totalRealisasi;
+
+        $realisasiPerKegiatanProgram2 = $this->getRealisasiPerKegiatanProgram2($tahunDipilih);
+        $perbandinganAnggaranRealisasiSisa = $this->totalAnggaranRealisasiSisaPerkegiatan($tahunDipilih);
+        $totalPBJ = $this->getTotalAnggaranPBJ($tahunDipilih);
+        $totalLPSE = $this->getTotalAnggaranLPSE($tahunDipilih);
+        $totalPembinaan = $this->getTotalAnggaranPembinaan($tahunDipilih);
 
         return view('dashboard.index', compact(
-    'breadcrumb', 'page', 'activeMenu', 'totalAnggaran',
-             'totalSisa', 'totalRealisasi', 'realisasiPerKegiatanProgram2', 'perbandinganAnggaranRealisasiSisa', 'totalPBJ', 'totalLPSE', 'totalPembinaan'
-            
-            ));
+            'breadcrumb',
+            'page',
+            'activeMenu',
+            'totalAnggaran',
+            'totalRealisasi',
+            'totalSisa',
+            'realisasiPerKegiatanProgram2',
+            'perbandinganAnggaranRealisasiSisa',
+            'totalPBJ',
+            'totalLPSE',
+            'totalPembinaan',
+            'tahunRange',
+            'tahunSekarang',
+            'tahunDipilih'
+        ));
     }
 
     /**
-     * Mengambil total anggaran dari tabel SSH
+     * 🔸 Total Anggaran (filter by tahun)
      */
-    public function getTotalAnggaran()
+    public function getTotalAnggaran($tahun)
     {
-        return SshModel::selectRaw('SUM(COALESCE(NULLIF(pagu2, 0), pagu1, 0)) as total')->value('total') ?? 0;
+        return SshModel::whereYear('created_at', $tahun)
+            ->selectRaw('SUM(COALESCE(NULLIF(pagu2, 0), pagu1, 0)) as total')
+            ->value('total') ?? 0;
     }
 
-    public function getTotalRealisasi()
+    /**
+     * 🔸 Total Realisasi (filter by tahun)
+     */
+    public function getTotalRealisasi($tahun)
     {
-        return RealisasiModel::selectRaw('SUM(nilai_realisasi) as total')->value('total') ?? 0;
+        return RealisasiModel::whereYear('tanggal_realisasi', $tahun)
+            ->selectRaw('SUM(nilai_realisasi) as total')
+            ->value('total') ?? 0;
     }
 
-    //menghitung presentase otal realisasi pada kegiatan di program id 2
-    public function getRealisasiPerKegiatanProgram2()
+    /**
+     * 🔸 Persentase realisasi per kegiatan (Program ID = 2, filter tahun)
+     */
+    public function getRealisasiPerKegiatanProgram2($tahun)
     {
-    $data = DB::table('t_transaksional_realisasi_anggaran as tr')
-        ->join('t_master_kegiatan as k', 'tr.id_kegiatan', '=', 'k.id_kegiatan')
-        ->where('tr.id_program', 2)
-        ->select(
-            'k.nama_kegiatan',
-            DB::raw('SUM(tr.nilai_realisasi) as total_realisasi')
-        )
-        ->groupBy('tr.id_kegiatan', 'k.nama_kegiatan')
-        ->orderBy('total_realisasi', 'DESC')
-        ->get();
+        $data = DB::table('t_transaksional_realisasi_anggaran as tr')
+            ->join('t_master_kegiatan as k', 'tr.id_kegiatan', '=', 'k.id_kegiatan')
+            ->where('tr.id_program', 2)
+            ->whereYear('tr.tanggal_realisasi', $tahun)
+            ->select(
+                'k.nama_kegiatan',
+                DB::raw('SUM(tr.nilai_realisasi) as total_realisasi')
+            )
+            ->groupBy('tr.id_kegiatan', 'k.nama_kegiatan')
+            ->orderBy('total_realisasi', 'DESC')
+            ->get();
 
-    // Hitung total keseluruhan untuk persentase
-    $totalKeseluruhan = $data->sum('total_realisasi');
+        $totalKeseluruhan = $data->sum('total_realisasi');
 
-    // Tambahkan persentase ke setiap item
-    $dataWithPercentage = $data->map(function ($item) use ($totalKeseluruhan) {
-        $item->persentase = $totalKeseluruhan > 0 
-            ? round(($item->total_realisasi / $totalKeseluruhan) * 100, 2) 
-            : 0;
-        return $item;
-    });
-
-    return $dataWithPercentage;
+        return $data->map(function ($item) use ($totalKeseluruhan) {
+            $item->persentase = $totalKeseluruhan > 0
+                ? round(($item->total_realisasi / $totalKeseluruhan) * 100, 2)
+                : 0;
+            return $item;
+        });
     }
 
-
-
-     public function totalAnggaranRealisasiSisaPerkegiatan()
+    /**
+     * 🔸 Total anggaran, realisasi, dan sisa per kegiatan (Program ID = 2, filter tahun)
+     */
+    public function totalAnggaranRealisasiSisaPerkegiatan($tahun)
     {
         $data = DB::table('t_master_kegiatan as k')
             ->leftJoin('t_ssh as s', 's.id_kegiatan', '=', 'k.id_kegiatan')
@@ -95,6 +119,7 @@ class GeneralDashboardController extends Controller
                 DB::table('t_transaksional_realisasi_anggaran')
                     ->select('id_kegiatan', DB::raw('SUM(nilai_realisasi) as total_realisasi'))
                     ->where('id_program', 2)
+                    ->whereYear('tanggal_realisasi', $tahun)
                     ->groupBy('id_kegiatan'),
                 'tr',
                 function ($join) {
@@ -106,7 +131,7 @@ class GeneralDashboardController extends Controller
                 'k.nama_kegiatan',
                 DB::raw("
                     SUM(
-                        CASE 
+                        CASE
                             WHEN s.pagu2 IS NOT NULL AND s.pagu2 > 0 THEN s.pagu2
                             ELSE s.pagu1
                         END
@@ -116,7 +141,7 @@ class GeneralDashboardController extends Controller
                 DB::raw("
                     (
                         SUM(
-                            CASE 
+                            CASE
                                 WHEN s.pagu2 IS NOT NULL AND s.pagu2 > 0 THEN s.pagu2
                                 ELSE s.pagu1
                             END
@@ -125,40 +150,26 @@ class GeneralDashboardController extends Controller
                 ")
             )
             ->where('k.id_program', 2)
+            ->whereYear('s.created_at', $tahun)
             ->groupBy('k.id_kegiatan', 'k.nama_kegiatan')
             ->orderBy('k.id_kegiatan')
             ->get();
 
-       return $data;
-
+        return $data;
     }
 
-        public function getTotalAnggaranPBJ()
+    /**
+     * 🔸 Total anggaran untuk kegiatan PBJ
+     */
+    public function getTotalAnggaranPBJ($tahun)
     {
         $total = DB::table('t_master_kegiatan as k')
             ->leftJoin('t_ssh as s', 's.id_kegiatan', '=', 'k.id_kegiatan')
             ->where('k.nama_kegiatan', 'Pengelolaan Pengadaan Barang dan Jasa')
+            ->whereYear('s.created_at', $tahun)
             ->selectRaw("
                 SUM(
-                    CASE 
-                        WHEN s.pagu2 > 0 THEN s.pagu2
-                        ELSE s.pagu1
-                    END
-                ) AS total_anggaran
-            ")
-            ->value('total_anggaran');
-
-        return $total ?? 0; 
-    }
-
-        public function getTotalAnggaranLPSE()
-    {
-        $total = DB::table('t_master_kegiatan as k')
-            ->leftJoin('t_ssh as s', 's.id_kegiatan', '=', 'k.id_kegiatan')
-            ->where('k.nama_kegiatan', 'Pengelolaan Layanan Pengadaan Secara Elektronik')
-            ->selectRaw("
-                SUM(
-                    CASE 
+                    CASE
                         WHEN s.pagu2 > 0 THEN s.pagu2
                         ELSE s.pagu1
                     END
@@ -169,14 +180,40 @@ class GeneralDashboardController extends Controller
         return $total ?? 0;
     }
 
-        public function getTotalAnggaranPembinaan()
+    /**
+     * 🔸 Total anggaran untuk kegiatan LPSE
+     */
+    public function getTotalAnggaranLPSE($tahun)
+    {
+        $total = DB::table('t_master_kegiatan as k')
+            ->leftJoin('t_ssh as s', 's.id_kegiatan', '=', 'k.id_kegiatan')
+            ->where('k.nama_kegiatan', 'Pengelolaan Layanan Pengadaan Secara Elektronik')
+            ->whereYear('s.created_at', $tahun)
+            ->selectRaw("
+                SUM(
+                    CASE
+                        WHEN s.pagu2 > 0 THEN s.pagu2
+                        ELSE s.pagu1
+                    END
+                ) AS total_anggaran
+            ")
+            ->value('total_anggaran');
+
+        return $total ?? 0;
+    }
+
+    /**
+     * 🔸 Total anggaran untuk kegiatan Pembinaan Pengadaan
+     */
+    public function getTotalAnggaranPembinaan($tahun)
     {
         $total = DB::table('t_master_kegiatan as k')
             ->leftJoin('t_ssh as s', 's.id_kegiatan', '=', 'k.id_kegiatan')
             ->where('k.nama_kegiatan', 'Pembinaan Pengadaan')
+            ->whereYear('s.created_at', $tahun)
             ->selectRaw("
                 SUM(
-                    CASE 
+                    CASE
                         WHEN s.pagu2 > 0 THEN s.pagu2
                         ELSE s.pagu1
                     END

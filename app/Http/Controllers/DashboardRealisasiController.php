@@ -13,28 +13,34 @@ class DashboardRealisasiController extends Controller
     /**
      * Halaman landing dengan data realisasi anggaran
      */
-    public function index()
+    public function index(request $request)
     {
-        // Ambil data realisasi untuk 3 bagian
-        $dataBagian = $this->getRealisasiByBagian();
-        
+        // Ambil tahun dari request (default = tahun sekarang)
+        $tahun = $request->get('tahun');
+
+        // Ambil data realisasi untuk 3 bagian berdasarkan tahun
+        $dataBagian = $this->getRealisasiByBagian($tahun);
         // Hitung total keseluruhan
         $totalKeseluruhan = [
             'pagu' => $dataBagian['pbj']['pagu'] + $dataBagian['lpse']['pagu'] + $dataBagian['pembinaan']['pagu'],
             'realisasi' => $dataBagian['pbj']['realisasi'] + $dataBagian['lpse']['realisasi'] + $dataBagian['pembinaan']['realisasi'],
         ];
         $totalKeseluruhan['selisih'] = $totalKeseluruhan['pagu'] - $totalKeseluruhan['realisasi'];
-        $totalKeseluruhan['persentase'] = $totalKeseluruhan['pagu'] > 0 
-            ? round(($totalKeseluruhan['realisasi'] / $totalKeseluruhan['pagu']) * 100, 2) 
+        $totalKeseluruhan['persentase'] = $totalKeseluruhan['pagu'] > 0
+            ? round(($totalKeseluruhan['realisasi'] / $totalKeseluruhan['pagu']) * 100, 2)
             : 0;
-        
-        return view('landing', compact('dataBagian', 'totalKeseluruhan'));
+
+        // Data untuk dropdown tahun (2013 sampai tahun sekarang + 3)
+        $tahunSekarang = now()->year;
+        $tahunRange = range(2013, $tahunSekarang + 3);
+
+        return view('landing', compact('dataBagian', 'totalKeseluruhan', 'tahun', 'tahunRange', 'tahunSekarang'));
     }
-    
+
     /**
      * Mengambil data realisasi untuk 3 bagian (PBJ, LPSE, Pembinaan)
      */
-    private function getRealisasiByBagian()
+    private function getRealisasiByBagian($tahun)
     {
         // Definisi kode kegiatan untuk setiap bagian
         $kodeKegiatan = [
@@ -42,42 +48,47 @@ class DashboardRealisasiController extends Controller
             'lpse' => '40107102',
             'pembinaan' => '40107103'
         ];
-        
+
         $result = [];
-        
+
         foreach ($kodeKegiatan as $bagian => $kode) {
-            $data = $this->hitungRealisasi($kode);
+            $data = $this->hitungRealisasi($kode, $tahun);
             $result[$bagian] = $data;
         }
-        
+
         return $result;
     }
-    
+
     /**
      * Menghitung total pagu, realisasi, selisih, dan persentase berdasarkan kode kegiatan
      */
-    private function hitungRealisasi($kodeKegiatan)
+    private function hitungRealisasi($kodeKegiatan, $tahun)
     {
         // Ambil total pagu dari t_ssh berdasarkan kode_kegiatan
         // Menggunakan relasi: SSH -> SubKegiatan -> Kegiatan
-        $totalPagu = SshModel::whereHas('sub_kegiatan.kegiatan', function($query) use ($kodeKegiatan) {
+        $totalPagu = SshModel::whereYear('tahun', $tahun)
+            ->whereHas('sub_kegiatan.kegiatan', function ($query) use ($kodeKegiatan) {
                 $query->where('kode_kegiatan', $kodeKegiatan);
             })
             ->selectRaw('SUM(COALESCE(NULLIF(pagu2, 0), pagu1, 0)) as total')
             ->value('total') ?? 0;
-        
+
         // Ambil total realisasi dari t_transaksional_realisasi_anggaran
         // Menggunakan relasi: Realisasi -> SSH -> SubKegiatan -> Kegiatan
-        $totalRealisasi = RealisasiModel::whereHas('ssh.sub_kegiatan.kegiatan', function($query) use ($kodeKegiatan) {
+        // Total realisasi (juga filter tahun)
+        $totalRealisasi = RealisasiModel::whereHas('ssh', function ($q) use ($tahun) {
+            $q->whereYear('tahun', $tahun);
+        })
+            ->whereHas('ssh.sub_kegiatan.kegiatan', function ($query) use ($kodeKegiatan) {
                 $query->where('kode_kegiatan', $kodeKegiatan);
             })
             ->selectRaw('SUM(COALESCE(nilai_realisasi, 0)) as total')
             ->value('total') ?? 0;
-        
+
         // Hitung selisih dan persentase
         $selisih = $totalPagu - $totalRealisasi;
         $persentase = $totalPagu > 0 ? round(($totalRealisasi / $totalPagu) * 100, 2) : 0;
-        
+
         return [
             'pagu' => $totalPagu,
             'realisasi' => $totalRealisasi,
@@ -85,7 +96,7 @@ class DashboardRealisasiController extends Controller
             'persentase' => $persentase
         ];
     }
-    
+
     /**
      * Method tambahan: Get total anggaran keseluruhan (semua SSH)
      */
@@ -94,7 +105,7 @@ class DashboardRealisasiController extends Controller
         return SshModel::selectRaw('SUM(COALESCE(NULLIF(pagu2, 0), pagu1, 0)) as total')
             ->value('total') ?? 0;
     }
-    
+
     /**
      * Method tambahan: Get total realisasi keseluruhan
      */
@@ -103,7 +114,7 @@ class DashboardRealisasiController extends Controller
         return RealisasiModel::selectRaw('SUM(COALESCE(nilai_realisasi, 0)) as total')
             ->value('total') ?? 0;
     }
-    
+
     /**
      * Method tambahan: Get perbandingan per tahun
      */
@@ -117,7 +128,7 @@ class DashboardRealisasiController extends Controller
             ->groupBy(DB::raw('YEAR(t_ssh.tahun)'))
             ->orderBy('tahun')
             ->get()
-            ->map(function($item) {
+            ->map(function ($item) {
                 return [
                     'tahun' => (int) $item->tahun,
                     'total_anggaran' => (float) $item->total_anggaran,
