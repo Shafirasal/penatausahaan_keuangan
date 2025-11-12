@@ -5,8 +5,6 @@
  * 
  */
 
-/*# sourceMappingURL=custom.css.map */
-
 /* ===================================================
    Custom Select2 Compact Style
    ================================================== */
@@ -107,6 +105,72 @@
 
 .select2-lg + .select2-container--default .select2-selection--single .select2-selection__arrow {
     height: 42px !important;
+}
+
+/* ===================================================
+   Custom Input & Textarea Compact Style
+   Untuk input/textarea biasa (readonly/disabled)
+   ================================================== */
+
+/* Input Compact (32px) */
+.form-control.input-compact,
+input.input-compact,
+textarea.input-compact {
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 0.375rem 0.75rem !important;
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+}
+
+/* Textarea Compact - auto height berdasarkan rows */
+textarea.input-compact {
+    height: auto !important;
+    min-height: 32px !important;
+}
+
+/* Input Extra Small (28px) */
+.form-control.input-xs,
+input.input-xs,
+textarea.input-xs {
+    height: 28px !important;
+    min-height: 28px !important;
+    padding: 0.25rem 0.5rem !important;
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+}
+
+textarea.input-xs {
+    height: auto !important;
+    min-height: 28px !important;
+}
+
+/* Input Large (42px) */
+.form-control.input-lg,
+input.input-lg,
+textarea.input-lg {
+    height: 42px !important;
+    min-height: 42px !important;
+    padding: 0.5rem 1rem !important;
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+}
+
+textarea.input-lg {
+    height: auto !important;
+    min-height: 42px !important;
+}
+
+/* Styling khusus untuk readonly & disabled */
+.form-control.input-compact[readonly],
+.form-control.input-compact[disabled],
+.form-control.input-xs[readonly],
+.form-control.input-xs[disabled],
+.form-control.input-lg[readonly],
+.form-control.input-lg[disabled] {
+    background-color: #f8f9fa !important;
+    cursor: not-allowed !important;
+    opacity: 0.8 !important;
 }
 
 /*# sourceMappingURL=custom.css.map */
