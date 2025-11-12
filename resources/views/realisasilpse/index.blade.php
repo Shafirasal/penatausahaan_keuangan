@@ -39,7 +39,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label><strong>Program</strong></label>
-                                    <input id="program_display" type="text" class="form-control"
+                                    <input id="program_display" type="text" class="form-control input-compact"
                                         value="{{ $program->kode_program_formatted }} - {{ $program->nama_program }}"
                                         data-label="{{ $program->kode_program_formatted }} - {{ $program->nama_program }}"
                                         readonly>
@@ -50,7 +50,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label><strong>Kegiatan</strong></label>
-                                    <input id="kegiatan_display" type="text" class="form-control"
+                                    <input id="kegiatan_display" type="text" class="form-control input-compact"
                                         value="{{ $kegiatan->kode_kegiatan_formatted }} - {{ $kegiatan->nama_kegiatan }}"
                                         data-label="{{ $kegiatan->kode_kegiatan_formatted }} - {{ $kegiatan->nama_kegiatan }}"
                                         readonly>
@@ -61,7 +61,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label><strong>Sub Kegiatan</strong></label>
-                                    <select id="f_sub" class="form-control" disabled>
+                                    <select id="f_sub" class="form-control select2-compact" disabled>
                                         <option value="">-- Pilih Sub Kegiatan --</option>
                                     </select>
                                 </div>
@@ -69,7 +69,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label><strong>Rekening</strong></label>
-                                    <select id="f_rekening" class="form-control" disabled>
+                                    <select id="f_rekening" class="form-control select2-compact" disabled>
                                         <option value="">-- Pilih Rekening --</option>
                                     </select>
                                 </div>
@@ -79,7 +79,7 @@
                             <div class="col-12">
                                 <div class="form-group mb-0">
                                     <label><strong>SSH</strong></label>
-                                    <select id="f_ssh" class="form-control" disabled>
+                                    <select id="f_ssh" class="form-control select2-compact" disabled>
                                         <option value="">-- Pilih SSH --</option>
                                     </select>
                                 </div>
@@ -89,16 +89,16 @@
                             <div class="col-sm-6 mt-3">
                                 <div class="form-group">
                                     <label><strong>Pagu</strong></label>
-                                    <div class="border rounded p-2 bg-light">
-                                        <p class="mb-0 font-weight-bold text-dark" id="s_pagu_final">Rp -</p>
+                                    <div class="border rounded p-2 bg-light" style="height: 32px; display: flex; align-items: center;">
+                                        <p class="mb-0 font-weight-bold" style="color: #6777ef;" id="s_pagu_final">Rp -</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-sm-6 mt-3">
                                 <div class="form-group">
                                     <label><strong>Sisa</strong></label>
-                                    <div class="border rounded p-2 bg-light">
-                                        <p class="mb-0 font-weight-bold text-dark" id="s_sisa">Rp -</p>
+                                    <div class="border rounded p-2 bg-light" style="height: 32px; display: flex; align-items: center;">
+                                        <p class="mb-0 font-weight-bold " style="color: #6777ef;" id="s_sisa">Rp -</p>
                                     </div>
                                 </div>
                             </div>

@@ -39,7 +39,7 @@
                         <div class="col-sm-6">
                         <div class="form-group">
                             <label><strong> Program</strong></label>
-                            <select id="f_program" class="form-control">
+                            <select id="f_program" class="form-control select2-compact">
                             <option value="">-- Pilih Program --</option>
                             @foreach ($listProgram as $prog)
                                 <option value="{{ $prog->id_program }}">{{ $prog->kode_program_formatted }} - {{ $prog->nama_program }}</option>
@@ -50,7 +50,7 @@
                         <div class="col-sm-6">
                         <div class="form-group">
                             <label><strong> Kegiatan</strong></label>
-                            <select id="f_kegiatan" class="form-control" disabled>
+                            <select id="f_kegiatan" class="form-control select2-compact" disabled>
                             <option value="">-- Pilih Kegiatan --</option>
                             </select>
                         </div>
@@ -61,7 +61,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label><strong>Sub Kegiatan</strong></label>
-                                    <select id="f_sub" class="form-control" disabled>
+                                    <select id="f_sub" class="form-control select2-compact" disabled>
                                         <option value="">-- Pilih Sub Kegiatan --</option>
                                     </select>
                                 </div>
@@ -69,7 +69,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label><strong>Rekening</strong></label>
-                                    <select id="f_rekening" class="form-control" disabled>
+                                    <select id="f_rekening" class="form-control select2-compact" disabled>
                                         <option value="">-- Pilih Rekening --</option>
                                     </select>
                                 </div>
@@ -79,7 +79,7 @@
                             <div class="col-12">
                                 <div class="form-group mb-0">
                                     <label><strong>SSH</strong></label>
-                                    <select id="f_ssh" class="form-control" disabled>
+                                    <select id="f_ssh" class="form-control select2-compact" disabled>
                                         <option value="">-- Pilih SSH --</option>
                                     </select>
                                 </div>
@@ -89,16 +89,16 @@
                             <div class="col-sm-6 mt-3">
                                 <div class="form-group">
                                     <label><strong>Pagu</strong></label>
-                                    <div class="border rounded p-2 bg-light">
-                                        <p class="mb-0 font-weight-bold text-dark" id="s_pagu_final">Rp -</p>
+                                    <div class="border rounded p-2 bg-light" style="height: 32px; display: flex; align-items: center;">
+                                        <p class="mb-0 font-weight-bold" style="color: #6777ef;" id="s_pagu_final">Rp -</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-sm-6 mt-3">
                                 <div class="form-group">
                                     <label><strong>Sisa</strong></label>
-                                    <div class="border rounded p-2 bg-light">
-                                        <p class="mb-0 font-weight-bold text-dark" id="s_sisa">Rp -</p>
+                                    <div class="border rounded p-2 bg-light" style="height: 32px; display: flex; align-items: center;">
+                                        <p class="mb-0 font-weight-bold" style="color: #6777ef;" id="s_sisa">Rp -</p>
                                     </div>
                                 </div>
                             </div>

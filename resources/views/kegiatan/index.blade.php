@@ -28,7 +28,7 @@
                             <div class="col-sm-2">
                                 <label for="program_nama" class="mb-0 mr-2" style="width: 160px;"><strong>Nama Program:</strong></label>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-10">
                                 <div class="form-group">
                                     <select id="program_nama" class="form-control select2-compact">
                                         <option value="">-- Pilih Program --</option>

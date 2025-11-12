@@ -29,7 +29,7 @@
             <div class="col-sm-2">
               <label for="program_filter"><strong>Nama Program:</strong></label>
             </div>
-              <div class="col-sm-4" >
+              <div class="col-sm-10" >
                 <div class="form-group">
                   <select id="program_filter" class="form-control select2-compact">
                     <option value="">-- Pilih Program --</option>
@@ -45,7 +45,7 @@
             <div class="col-sm-2">
               <label for="kegiatan_filter"><strong>Nama Kegiatan:</strong></label>
             </div>
-            <div class="col-sm-4" >
+            <div class="col-sm-10" >
               <div class="form-group">
                 <select id="kegiatan_filter" class="form-control select2-compact" disabled>
                   <option value="">-- Pilih Kegiatan --</option>

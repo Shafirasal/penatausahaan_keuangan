@@ -26,11 +26,13 @@
 
                     <div class="card-body">
                         {{-- FILTER --}}
-                        <div class="row mb-3">
-                            <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label><strong>Nama Program</strong></label>
+                            </div>
+                            <div class="col-md-10">
                                 <div class="form-group">
-                                    <label><strong>Nama Program</strong></label>
-                                    <select id="program_filter" class="form-control">
+                                    <select id="program_filter" class="form-control select2-compact">
                                         <option value="">-- Pilih Program --</option>
                                         @foreach ($listProgram as $program)
                                             <option value="{{ $program->id_program }}">
@@ -40,20 +42,27 @@
                                     </select>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label><strong>Nama Kegiatan</strong></label>
+                            </div>
+                            <div class="col-md-10">
                                 <div class="form-group">
-                                    <label><strong>Nama Kegiatan</strong></label>
-                                    <select id="kegiatan_filter" class="form-control" disabled>
+                                    <select id="kegiatan_filter" class="form-control select2-compact" disabled>
                                         <option value="">-- Pilih Kegiatan --</option>
                                     </select>
                                 </div>
                             </div>
-
-                            <div class="col-md-6">
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                            <label><strong>Nama Sub Kegiatan</strong></label>
+                            </div>
+                            <div class="col-md-10">
                                 <div class="form-group">
-                                    <label><strong>Nama Sub Kegiatan</strong></label>
-                                    <select id="sub_kegiatan_filter" class="form-control" disabled>
+                                    <select id="sub_kegiatan_filter" class="form-control select2-compact" disabled>
                                         <option value="">-- Pilih Sub Kegiatan --</option>
                                     </select>
                                 </div>

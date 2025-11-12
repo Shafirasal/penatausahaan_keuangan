@@ -319,6 +319,10 @@
 .text-warning { color: #ffc107 !important; }
 .text-danger { color: #dc3545 !important; }
 
+.text-orange {
+  color: #ff6600; /* atau kode warna oranye lain yang kamu suka */
+}
+
     footer {
       background: #111;
       color: #aaa;
@@ -600,7 +604,7 @@
     </div>
     
     {{-- Total Keseluruhan Card --}}
-    {{-- <div class="row mt-5" data-aos="fade-up" data-aos-delay="300">
+    <div class="row mt-5" data-aos="fade-up" data-aos-delay="300">
       <div class="col-12">
         <div class="card shadow-lg border-0 total-card">
           <div class="card-body text-white p-4">
@@ -650,7 +654,7 @@
           </div>
         </div>
       </div>
-    </div> --}}
+    </div>
   </div>
 </section>
 
