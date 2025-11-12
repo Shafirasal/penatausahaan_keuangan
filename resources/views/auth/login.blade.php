@@ -425,7 +425,10 @@
 
     <div class="hero container">
       <div class="left">
-        <h1 class="hero-title">Selamat Datang di <span class="text-danger">MoniTrack</span></h1>
+        <h1 class="hero-title">
+          Selamat Datang di 
+          <span class="text-danger">M</span><span class="text-orange">on</span><span class="text-danger">T</span><span class="text-orange">rac</span><span class="text-danger">K</span><span class="text-orange">eu</span>
+        </h1>
         <div id="lottie"></div>
       </div>
       <div class="right glass-card" id="loginSection">
