@@ -322,6 +322,9 @@
 .text-orange {
   color: #ff6600; /* atau kode warna oranye lain yang kamu suka */
 }
+/* Text Colors - Tambahan untuk Violet */
+.text-violet { color: #7c3aed !important; }
+.bg-violet { background-color: #7c3aed !important; }
 
     footer {
       background: #111;
@@ -477,7 +480,7 @@
     {{-- Cards untuk 3 Bagian --}}
     <div class="row">
       {{-- PBJ Card --}}
-      <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up">
+      <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up">
         <div class="custom-card h-100">
           <div class="text-center">
             <i class="fas fa-briefcase fa-3x text-success mb-3"></i>
@@ -519,7 +522,7 @@
       </div>
 
       {{-- LPSE Card --}}
-      <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+      <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
         <div class="custom-card h-100">
           <div class="text-center">
             <i class="fas fa-network-wired fa-3x text-info mb-3"></i>
@@ -561,7 +564,7 @@
       </div>
 
       {{-- Pembinaan Card --}}
-      <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+      <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
         <div class="custom-card h-100">
           <div class="text-center">
             <i class="fas fa-users fa-3x text-warning mb-3"></i>
@@ -597,6 +600,48 @@
           <div class="text-center mt-2">
             <small class="text-muted">
               <strong class="text-warning persentase-text">0%</strong> terealisasi
+            </small>
+          </div>
+        </div>
+      </div>
+
+    {{-- Tata Kelola Card --}}
+      <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
+        <div class="custom-card h-100">
+          <div class="text-center">
+            <i class="fas fa-clipboard-check fa-3x text-violet mb-3"></i>
+            <h5 class="card-title">Bagian Tata Kelola</h5>
+            <p class="text-muted card-description">Mengelola tata kelola pemerintahan daerah dengan baik dan akuntabel.</p>
+          </div>
+          
+          <div class="realisasi-info mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-muted small">Total Pagu:</span>
+              <strong class="text-dark">Rp {{ number_format($dataBagian['tatakelola']['pagu'], 0, ',', '.') }}</strong>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-muted small">Realisasi:</span>
+              <strong class="text-violet">Rp {{ number_format($dataBagian['tatakelola']['realisasi'], 0, ',', '.') }}</strong>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-muted small">Selisih:</span>
+              <strong class="text-danger">Rp {{ number_format($dataBagian['tatakelola']['selisih'], 0, ',', '.') }}</strong>
+            </div>
+          </div>
+          
+          <div class="progress mt-3" style="height: 12px; border-radius: 10px;">
+            <div class="progress-bar bg-violet progress-bar-striped progress-bar-animated" 
+                 role="progressbar" 
+                 style="width: 0%"
+                 data-target="{{ $dataBagian['tatakelola']['persentase'] }}"
+                 aria-valuenow="0" 
+                 aria-valuemin="0" 
+                 aria-valuemax="100">
+            </div>
+          </div>
+          <div class="text-center mt-2">
+            <small class="text-muted">
+              <strong class="text-violet persentase-text">0%</strong> terealisasi
             </small>
           </div>
         </div>
