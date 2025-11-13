@@ -8,6 +8,7 @@ use App\Models\RealisasiModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -22,19 +23,19 @@ class AuthController extends Controller
      */
     public function showLoginForm()
     {
-        // Ambil data realisasi untuk section pelayanan
+        // Ambil data realisasi untuk section pelayanan (4 bagian)
         $dataBagian = $this->getRealisasiByBagian();
-
-        // Hitung total keseluruhan
+        
+        // Hitung total keseluruhan (hanya 3 bagian: PBJ, LPSE, Pembinaan)
         $totalKeseluruhan = [
             'pagu' => $dataBagian['pbj']['pagu'] + $dataBagian['lpse']['pagu'] + $dataBagian['pembinaan']['pagu'],
             'realisasi' => $dataBagian['pbj']['realisasi'] + $dataBagian['lpse']['realisasi'] + $dataBagian['pembinaan']['realisasi'],
         ];
         $totalKeseluruhan['selisih'] = $totalKeseluruhan['pagu'] - $totalKeseluruhan['realisasi'];
-        $totalKeseluruhan['persentase'] = $totalKeseluruhan['pagu'] > 0
-            ? round(($totalKeseluruhan['realisasi'] / $totalKeseluruhan['pagu']) * 100, 2)
+        $totalKeseluruhan['persentase'] = $totalKeseluruhan['pagu'] > 0 
+            ? round(($totalKeseluruhan['realisasi'] / $totalKeseluruhan['pagu']) * 100, 2) 
             : 0;
-
+        
         return view('auth.login', compact('dataBagian', 'totalKeseluruhan'));
     }
 
@@ -63,18 +64,10 @@ class AuthController extends Controller
         session()->put('nip', $user->nip);
         session()->put('level', $user->level);
 
-        if ($user->level === 'pimpinan') {
-
-            return response()->json([
-                'redirect' => url('/general_dashboard'),
-                'message'  => 'Login berhasil.',
-            ]);
-        } else {
-            return response()->json([
-                'redirect' => url('/dashboard'),
-                'message'  => 'Login berhasil.',
-            ]);
-        }
+        return response()->json([
+            'redirect' => url('/dashboard'),
+            'message'  => 'Login berhasil.',
+        ]);
     }
 
     /**
@@ -113,52 +106,86 @@ class AuthController extends Controller
     }
 
     /**
-     * Mengambil data realisasi untuk 3 bagian (PBJ, LPSE, Pembinaan)
+     * Mengambil data realisasi untuk 4 bagian (PBJ, LPSE, Pembinaan, Tata Kelola)
      */
     private function getRealisasiByBagian()
     {
-        // Definisi kode kegiatan untuk setiap bagian
+        $result = [];
+        
+        // 3 Bagian berdasarkan kode_kegiatan
         $kodeKegiatan = [
             'pbj' => '40107101',
             'lpse' => '40107102',
             'pembinaan' => '40107103'
         ];
-
-        $result = [];
-
+        
         foreach ($kodeKegiatan as $bagian => $kode) {
-            $data = $this->hitungRealisasi($kode);
-            $result[$bagian] = $data;
+            $result[$bagian] = $this->hitungRealisasiByKegiatan($kode);
         }
-
+        
+        // Tata Kelola berdasarkan kode_program (semua kegiatan dalam program 40101)
+        $result['tatakelola'] = $this->hitungRealisasiByProgram('40101');
+        
         return $result;
     }
-
+    
     /**
-     * Menghitung total pagu, realisasi, selisih, dan persentase berdasarkan kode kegiatan
+     * Menghitung realisasi berdasarkan kode_kegiatan
      */
-    private function hitungRealisasi($kodeKegiatan)
+    private function hitungRealisasiByKegiatan($kodeKegiatan)
     {
-        // Ambil total pagu dari t_ssh berdasarkan kode_kegiatan
-        // Menggunakan relasi: SSH -> SubKegiatan -> Kegiatan
+        // Ambil total pagu
         $totalPagu = SshModel::whereHas('sub_kegiatan.kegiatan', function($query) use ($kodeKegiatan) {
                 $query->where('kode_kegiatan', $kodeKegiatan);
             })
             ->selectRaw('SUM(COALESCE(NULLIF(pagu2, 0), pagu1, 0)) as total')
             ->value('total') ?? 0;
-
-        // Ambil total realisasi dari t_transaksional_realisasi_anggaran
-        // Menggunakan relasi: Realisasi -> SSH -> SubKegiatan -> Kegiatan
+        
+        // Ambil total realisasi
         $totalRealisasi = RealisasiModel::whereHas('ssh.sub_kegiatan.kegiatan', function($query) use ($kodeKegiatan) {
                 $query->where('kode_kegiatan', $kodeKegiatan);
             })
             ->selectRaw('SUM(COALESCE(nilai_realisasi, 0)) as total')
             ->value('total') ?? 0;
-
-        // Hitung selisih dan persentase
+        
+        return $this->formatHasilRealisasi($totalPagu, $totalRealisasi);
+    }
+    
+    /**
+     * Menghitung realisasi berdasarkan kode_program (semua kegiatan dalam program tersebut)
+     */
+    private function hitungRealisasiByProgram($kodeProgram)
+    {
+        // Ambil total pagu dari semua kegiatan dalam program ini
+        $totalPagu = DB::table('t_ssh as s')
+            ->join('t_master_sub_kegiatan as sk', 's.id_sub_kegiatan', '=', 'sk.id_sub_kegiatan')
+            ->join('t_master_kegiatan as k', 'sk.id_kegiatan', '=', 'k.id_kegiatan')
+            ->join('t_master_program as p', 'k.id_program', '=', 'p.id_program')
+            ->where('p.kode_program', $kodeProgram)
+            ->selectRaw('SUM(COALESCE(NULLIF(s.pagu2, 0), s.pagu1, 0)) as total')
+            ->value('total') ?? 0;
+        
+        // Ambil total realisasi
+        $totalRealisasi = DB::table('t_transaksional_realisasi_anggaran as r')
+            ->join('t_ssh as s', 'r.id_ssh', '=', 's.id_ssh')
+            ->join('t_master_sub_kegiatan as sk', 's.id_sub_kegiatan', '=', 'sk.id_sub_kegiatan')
+            ->join('t_master_kegiatan as k', 'sk.id_kegiatan', '=', 'k.id_kegiatan')
+            ->join('t_master_program as p', 'k.id_program', '=', 'p.id_program')
+            ->where('p.kode_program', $kodeProgram)
+            ->selectRaw('SUM(COALESCE(r.nilai_realisasi, 0)) as total')
+            ->value('total') ?? 0;
+        
+        return $this->formatHasilRealisasi($totalPagu, $totalRealisasi);
+    }
+    
+    /**
+     * Format hasil perhitungan realisasi
+     */
+    private function formatHasilRealisasi($totalPagu, $totalRealisasi)
+    {
         $selisih = $totalPagu - $totalRealisasi;
         $persentase = $totalPagu > 0 ? round(($totalRealisasi / $totalPagu) * 100, 2) : 0;
-
+        
         return [
             'pagu' => $totalPagu,
             'realisasi' => $totalRealisasi,
