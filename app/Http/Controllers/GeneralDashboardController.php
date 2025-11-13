@@ -64,11 +64,27 @@ class GeneralDashboardController extends Controller
     /**
      * 🔸 Total Anggaran (filter by tahun)
      */
+    // public function getTotalAnggaran($tahun)
+    // {
+    //     return SshModel::whereYear('created_at', $tahun)
+    //         ->selectRaw('SUM(COALESCE(NULLIF(pagu2, 0), pagu1, 0)) as total')
+    //         ->value('total') ?? 0;
+    // }
     public function getTotalAnggaran($tahun)
     {
-        return SshModel::whereYear('created_at', $tahun)
-            ->selectRaw('SUM(COALESCE(NULLIF(pagu2, 0), pagu1, 0)) as total')
-            ->value('total') ?? 0;
+        return SshModel::selectRaw('
+            YEAR(created_at) AS tahun_data,
+            SUM(pagu1) AS total_pagu1,
+            SUM(pagu2) AS total_pagu2,
+            CASE
+                WHEN SUM(pagu2) = 0 AND SUM(pagu1) > 0 THEN SUM(pagu1)
+                WHEN SUM(pagu2) > 0 THEN SUM(pagu2)
+                ELSE 0
+            END AS total_dipakai
+        ')
+        ->groupByRaw('YEAR(created_at)')
+        ->whereYear('created_at', $tahun)
+        ->value('total_dipakai') ?? 0;
     }
 
     /**
