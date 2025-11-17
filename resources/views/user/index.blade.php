@@ -36,6 +36,7 @@
                 <th>Nama Pegawai</th>
                 <th>Username</th>
                 <th>Level</th>
+                <th>Bagian</th>
                 <th>Aksi</th>
               </tr>
             </thead>
@@ -81,6 +82,7 @@ dataUser = $('#table_user').DataTable({
         { data: 'nama_pegawai', className: '' },
         { data: 'nip', className: 'text-center' },
         { data: 'level', className: 'text-center' },
+        { data: 'bagian', className: 'text-center' },
         // { data: 'created_at', className: 'text-center' },
         // { data: 'updated_at', className: 'text-center' },
         { data: 'aksi', className: 'text-center', orderable: false, searchable: false }

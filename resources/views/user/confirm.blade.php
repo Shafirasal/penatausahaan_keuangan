@@ -43,6 +43,10 @@
                             <td class="col-9">{{ $user->level }}</td>
                         </tr>
                         <tr>
+                            <th class="text-right col-4">Bagian:</th>
+                            <td class="col-9">{{ $user->bagian }}</td>
+                        </tr>
+                        <tr>
                             <th class="text-right col-4">Tanggal Dibuat:</th>
                             <td class="col-9">{{ $user->created_at }}</td>
                         </tr>

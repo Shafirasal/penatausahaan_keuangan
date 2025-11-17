@@ -22,6 +22,7 @@ class UserModel extends Authenticatable
     protected $fillable = [
         'nip',
         'level',
+        'bagian',
         'password',
     ];
 

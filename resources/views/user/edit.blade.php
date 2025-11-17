@@ -169,16 +169,25 @@
 
                 <div class="form-group">
                     <label>Level</label>
-                    <select name="level" class="form-control" required>
+                    <select name="level" id="level-select" class="form-control" required>
                         <option value="">-- Pilih --</option>
-                        <option value="pegawai" {{ $user->level == 'pegawai' ? 'selected' : '' }}>Pegawai</option>
                         <option value="admin" {{ $user->level == 'admin' ? 'selected' : '' }}>Admin</option>
                         <option value="operator" {{ $user->level == 'operator' ? 'selected' : '' }}>Operator</option>
                         <option value="pimpinan" {{ $user->level == 'pimpinan' ? 'selected' : '' }}>Pimpinan</option>
                     </select>
                     <small id="error-level" class="error-text form-text text-danger"></small>
                 </div>
-
+                <div class="form-group">
+                    <label>Bagian</label>
+                    <select name="bagian" id="bagian-select" class="form-control" required>
+                        <option value="">-- Pilih --</option>
+                        <option value="PBJ" {{ $user->bagian == 'PBJ' ? 'selected' : '' }}>PBJ</option>
+                        <option value="LPSE" {{ $user->bagian == 'LPSE' ? 'selected' : '' }}>LPSE</option>
+                        <option value="PEMBINAAN" {{ $user->bagian == 'PEMBINAAN' ? 'selected' : '' }}>PEMBINAAN</option>
+                        <option value="TU" {{ $user->bagian == 'TU' ? 'selected' : '' }}>TU</option>
+                    </select>
+                    <small id="error-bagian" class="error-text form-text text-danger"></small>
+                </div>
                 <div class="form-group">
                     <label>Password Baru (Opsional)</label>
                     <div class="input-group">
@@ -244,9 +253,32 @@
 
 <script>
     $(document).ready(function () {
+            // Function untuk toggle bagian dropdown
+        function toggleBagianField() {
+            const selectedLevel = $('#level-select').val();
+            const bagianSelect = $('#bagian-select');
+            
+            if (selectedLevel === 'admin' || selectedLevel === 'pimpinan') {
+                bagianSelect.prop('disabled', true);
+                bagianSelect.val(''); // Reset value
+                bagianSelect.removeClass('is-invalid');
+                $('#error-bagian').text('');
+            } else {
+                bagianSelect.prop('disabled', false);
+            }
+        }
+        
+        // Jalankan saat halaman load
+        toggleBagianField();
+        
+        // Jalankan saat level berubah
+        $('#level-select').on('change', function() {
+            toggleBagianField();
+        });
         $('#form-edit').validate({
             rules: {
                 level: { required: true },
+                bagian: { required: true },
                 password: { minlength: 5 },
                 password_confirmation: {
                     equalTo: "[name='password']"

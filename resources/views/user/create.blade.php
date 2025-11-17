@@ -149,14 +149,23 @@
                     <label>Level</label>
                     <select name="level" id="level" class="form-control" required>
                         <option value="">-- Pilih Level --</option>
-                        <option value="pegawai">Pegawai</option>
                         <option value="admin">Admin</option>
                         <option value="operator">Operator</option>
                         <option value="pimpinan">Pimpinan</option>
                     </select>
                     <small id="error-level" class="error-text form-text text-danger"></small>
                 </div>
-
+                <div class="form-group">
+                    <label>Bagian</label>
+                    <select name="bagian" id="bagian" class="form-control" required>
+                        <option value="">-- Pilih Bagian --</option>
+                        <option value="PBJ">PBJ</option>
+                        <option value="LPSE">LPSE</option>
+                        <option value="PEMBINAAN">PEMBINAAN</option>
+                        <option value="TU">TU</option>
+                    </select>
+                    <small id="error-bagian" class="error-text form-text text-danger"></small>
+                </div>
                 <div class="form-group">
                     <label>Password</label>
                     <div style="position: relative;">
@@ -204,12 +213,30 @@ $(document).ready(function() {
         width: '100%',
         dropdownParent: $('#myModal') // Replace with your actual modal ID
     });
+        $('#bagian').select2({
+        placeholder: "-- Pilih Bagian --",
+        allowClear: true,
+        width: '100%',
+        dropdownParent: $('#myModal') // Replace with your actual modal ID
+    });
+
+        // Disable "bagian" if level is admin or pimpinan
+    $('#level').on('change', function() {
+        const level = $(this).val();
+        if(level === 'admin' || level === 'pimpinan') {
+            $('#bagian').val(null).trigger('change'); // Clear selection
+            $('#bagian').prop('disabled', true);
+        } else {
+            $('#bagian').prop('disabled', false);
+        }
+    });
 
     // Form validation and submission
     $("#form-tambah").validate({
         rules: {
             nip: { required: true },
             level: { required: true },
+            bagian: { required: true },
             password: { required: true, minlength: 5 }
         },
             submitHandler: function(form) {
