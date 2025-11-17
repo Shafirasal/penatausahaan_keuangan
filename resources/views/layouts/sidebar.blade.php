@@ -1,10 +1,10 @@
        <aside id="sidebar-wrapper">
            <div class="sidebar-brand">
                {{-- <img src="assets/logo.png"> --}}
-               <a href="index.html">BIRO PBJ</a>
+               <a href="{{'/dashboard_general'}}">BIRO PBJ</a>
            </div>
            <div class="sidebar-brand sidebar-brand-sm">
-               <a href="index.html">BPBJ</a>
+               <a href="{{'/dashboard_general'}}">BPBJ</a>
            </div>
 @if(
     in_array(auth()->user()->level, ['admin', 'pimpinan']) || 
