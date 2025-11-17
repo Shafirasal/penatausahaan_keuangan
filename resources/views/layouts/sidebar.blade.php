@@ -6,7 +6,11 @@
            <div class="sidebar-brand sidebar-brand-sm">
                <a href="index.html">BPBJ</a>
            </div>
-
+@if(
+    in_array(auth()->user()->level, ['admin', 'pimpinan']) || 
+    (auth()->user()->level === 'operator' && in_array(auth()->user()->bagian, ['PBJ','LPSE']))
+)
+@endif
            {{-- sidebar menu --}}
            <ul class="sidebar-menu">
                <li class="menu-header">Dashboard</li>
@@ -27,7 +31,9 @@
                            <li><a class="nav-link" href="{{ url('/pegawai') }}">Daftar Pegawai</a></li>
                         @endif
 
-                       @if (in_array(auth()->user()->level, ['admin', 'operator', 'pimpinan', 'pegawai']))
+                        @if(
+                            in_array(auth()->user()->level, ['admin', 'pimpinan']) || (auth()->user()->level === 'operator' && in_array(auth()->user()->bagian, ['PBJ','LPSE','PEMBINAAN', 'TU']))
+                        )
                            <li><a class="nav-link" href="{{ url('/riwayat_pendidikan') }}">Riwayat Pendidikan</a></li>
                            <li><a class="nav-link" href="{{ url('/jabatan_fungsional') }}">Jabatan Fungsional</a></li>
                            <li><a class="nav-link" href="{{ url('/jabatan_struktural') }}">Jabatan Struktural</a></li>
@@ -37,7 +43,9 @@
                    </ul>
                </li>
                {{-- <li class="active"><a class="nav-link" href="blank.html"><i class="far fa-square"></i> <span>Blank Page</span></a></li> --}}
-               @if (in_array(auth()->user()->level, ['admin', 'operator', 'pimpinan']))
+                @if(
+                        in_array(auth()->user()->level, ['admin', 'pimpinan']) || (auth()->user()->level === 'operator' && in_array(auth()->user()->bagian, ['PBJ','LPSE','PEMBINAAN', 'TU']))
+                )
 
                    <li class="nav-item dropdown">
                        <a href="#" class="nav-link has-dropdown"><i class="fas fa-th"></i> <span>SIPD</span></a>
@@ -56,15 +64,26 @@
                    </li>
                @endif
 
-              @if (in_array(auth()->user()->level, ['admin', 'operator']))
+                {{-- @if(
+                    in_array(auth()->user()->level, ['admin', 'pimpinan']) || (auth()->user()->level === 'operator' && in_array(auth()->user()->bagian, ['PBJ','LPSE','PEMBINAAN', 'TU']))
+                ) --}}
+                @if(in_array(auth()->user()->level, ['admin','operator']))
                <li class="menu-header">Transaksional</li>
                <li class="nav-item dropdown">
                    <a href="#" class="nav-link has-dropdown"><i class="fas fa-th-large"></i> <span>Realisasi Anggaran</span></a>
                    <ul class="dropdown-menu">
+                    @if(in_array(auth()->user()->level, ['admin']) || (auth()->user()->level === 'operator' && auth()->user()->bagian === 'PBJ'))
                        <li><a class="nav-link" href="{{ url('/realisasipbj') }}">Bagian PBJ</a></li>
+                       @endif
+                        @if(in_array(auth()->user()->level, ['admin']) || (auth()->user()->level === 'operator' && auth()->user()->bagian === 'LPSE'))
                        <li><a class="nav-link" href="{{ url('/realisasilpse') }}">Bagian LPSE</a></li>
+                       @endif
+                        @if(in_array(auth()->user()->level, ['admin']) || (auth()->user()->level === 'operator' && auth()->user()->bagian === 'PEMBINAAN'))
                        <li><a class="nav-link" href={{ url('/realisasipembinaan') }}>Bagian Pembinaan</a></li>
+                       @endif
+                        @if(in_array(auth()->user()->level, ['admin']) || (auth()->user()->level === 'operator' && auth()->user()->bagian === 'TU'))
                        <li><a class="nav-link" href={{ url('/realisasitatakelola') }}>Bagian TU</a></li>
+                       @endif
                    </ul>
                </li>
                @endif
@@ -99,3 +118,5 @@
                </a>
            </div> --}}
        </aside>
+
+
