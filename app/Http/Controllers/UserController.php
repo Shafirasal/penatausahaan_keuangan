@@ -39,7 +39,7 @@ class UserController extends Controller
 {
     // Ambil semua data user dan relasi ke pegawai (berdasarkan NIP)
     $data = UserModel::with('pegawai')
-        ->select('id_user', 'nip', 'level', 'created_at', 'updated_at');
+        ->select('id_user', 'nip', 'level', 'bagian', 'created_at', 'updated_at');
 
     // Filter level jika disediakan di request
 if ($request->has('level') && $request->level != '') {
@@ -50,6 +50,9 @@ if ($request->has('level') && $request->level != '') {
     return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('nama_pegawai', function ($row) {return $row->pegawai->nama ?? '-';})
+        ->addColumn('bagian', function($user) {
+            return $user->bagian ?? '-';
+        })
         ->addColumn('aksi', function ($row) {
             return '
                 <button onclick="modalAction(`' . url('/user/' . $row->id_user . '/edit') . '`)" class="btn btn-warning btn-sm">Edit</button>
@@ -74,6 +77,7 @@ public function create()
         $request->validate([
         'nip' => 'required|string|max:20|unique:t_user,nip',
         'level' => 'required|in:pegawai,admin,operator,pimpinan',
+        'bagian' => 'required_if:level,operator|in:PBJ,LPSE,PEMBINAAN,TU,ADMIN',
         'password' => 'required|min:5|max:225',
         ]);
 
@@ -275,6 +279,7 @@ public function update(Request $request, $id)
 
         // Update level
         $user->level = $request->level;
+        $user->bagian = $request->bagian;
         $user->save();
 
         return response()->json([
