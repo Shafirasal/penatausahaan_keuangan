@@ -241,7 +241,7 @@ Route::middleware(['web', 'session.auth'])->group(function () {
 
 });
 
-        Route::group(['middleware' => ['cek.level:admin,operator']], function () {
+        Route::group(['middleware' => ['cek.level:admin,operator', 'cek.bagian:PBJ']], function () {
         Route::prefix('realisasipbj')->group(function () {
             // DataTables
             Route::post('/list', [RealisasipbjController::class, 'list']);
@@ -264,9 +264,10 @@ Route::middleware(['web', 'session.auth'])->group(function () {
             Route::get('/rekening/{id_rekening}/ssh',           [RealisasipbjController::class, 'getSshByRekening']);
             Route::get('/ssh/{id}/histori', [RealisasipbjController::class, 'histori']);
         });
+    });
 
-
-    Route::prefix('realisasilpse')->group(function () {
+        Route::group(['middleware' => ['cek.level:admin,operator', 'cek.bagian:LPSE']], function () {
+        Route::prefix('realisasilpse')->group(function () {
         // DataTables
         Route::post('/list', [RealisasilpseController::class, 'list']);
 
@@ -288,10 +289,11 @@ Route::middleware(['web', 'session.auth'])->group(function () {
         Route::get('/rekening/{id_rekening}/ssh',           [RealisasilpseController::class, 'getSshByRekening']);
 
         Route::get('/ssh/{id}/histori', [RealisasilpseController::class, 'histori']);
+        });
     });
 
-
-    Route::prefix('realisasipembinaan')->group(function () {
+        Route::group(['middleware' => ['cek.level:admin,operator', 'cek.bagian:PEMBINAAN']], function () {
+        Route::prefix('realisasipembinaan')->group(function () {
         // DataTables
         Route::post('/list', [RealisasiPembinaanController::class, 'list']);
 
@@ -314,8 +316,10 @@ Route::middleware(['web', 'session.auth'])->group(function () {
 
         Route::get('/ssh/{id}/histori', [RealisasiPembinaanController::class, 'histori']);
     });
+    });
 
-    Route::prefix('realisasitatakelola')->group(function () {
+        Route::group(['middleware' => ['cek.level:admin,operator', 'cek.bagian:TU']], function () {
+        Route::prefix('realisasitatakelola')->group(function () {
         // DataTables
         Route::post('/list', [RealisasiTatakelolaController::class, 'list']);
 
@@ -337,7 +341,7 @@ Route::middleware(['web', 'session.auth'])->group(function () {
         Route::get('/rekening/{id_rekening}/ssh',           [RealisasiTatakelolaController::class, 'getSshByRekening']);
 
         Route::get('/ssh/{id}/histori', [RealisasiTatakelolaController::class, 'histori']);
+        });
     });
 });
 
-});
