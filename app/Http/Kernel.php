@@ -68,6 +68,8 @@ class Kernel extends HttpKernel
         'jwt.refresh' => \PHPOpenSourceSaver\JWTAuth\Http\Middleware\RefreshToken::class,
         'session.auth' => \App\Http\Middleware\SessionAuth::class,
         'cek.level' => \App\Http\Middleware\CekLevel::class,
+        'cek.bagian' => \App\Http\Middleware\CekBagian::class,
+
 
     ];
 }
