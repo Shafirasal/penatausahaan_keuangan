@@ -42,6 +42,7 @@ class GeneralDashboardController extends Controller
         $totalPBJ = $this->getTotalAnggaranPBJ($tahunDipilih);
         $totalLPSE = $this->getTotalAnggaranLPSE($tahunDipilih);
         $totalPembinaan = $this->getTotalAnggaranPembinaan($tahunDipilih);
+        $trenRealisasiPerBulan = $this->getTrenRealisasiPerBulan($tahunDipilih);
 
         return view('dashboard.index', compact(
             'breadcrumb',
@@ -57,7 +58,9 @@ class GeneralDashboardController extends Controller
             'totalPembinaan',
             'tahunRange',
             'tahunSekarang',
-            'tahunDipilih'
+            'tahunDipilih',
+            'trenRealisasiPerBulan'
+
         ));
     }
 
@@ -239,4 +242,20 @@ class GeneralDashboardController extends Controller
 
         return $total ?? 0;
     }
+
+    /**
+ * 🔸 Tren Realisasi Per Bulan dengan Persentase (filter by tahun)
+ */
+public function getTrenRealisasiPerBulan($tahun)
+{
+    return DB::table('t_transaksional_realisasi_anggaran')
+        ->whereYear('tanggal_realisasi', $tahun)
+        ->select(
+            DB::raw('MONTH(tanggal_realisasi) AS bulan'),
+            DB::raw('SUM(nilai_realisasi) AS total_realisasi')
+        )
+        ->groupBy(DB::raw('MONTH(tanggal_realisasi)'))
+        ->orderBy('bulan')
+        ->get();
+}
 }

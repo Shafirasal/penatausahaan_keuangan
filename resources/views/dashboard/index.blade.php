@@ -99,16 +99,16 @@
                                 </div>
                             </div>
 
-                            {{-- <div class="col-12 col-md-6 col-lg-6">
+                            <div class="col-12 col-md-6 col-lg-6">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h4>Line Chart</h4>
+                                        <h4>Tren Realisasi Per Bulan Berdasarkan Tahun</h4>
                                     </div>
                                     <div class="card-body">
                                         <canvas id="myChart"></canvas>
                                     </div>
                                 </div>
-                            </div> --}}
+                            </div>
 
                             <div class="col-12 col-md-6 col-lg-6">
                                 <div class="card">
@@ -290,5 +290,93 @@ const ctx2 = document.getElementById("myChart2");
             }
         });
     }
+
+var ctx = document.getElementById("myChart").getContext('2d');
+var dataBulan = @json($trenRealisasiPerBulan);
+var namaBulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+var labels = [];
+var dataRealisasi = [];
+dataBulan.forEach(function(item) {
+    labels.push(namaBulan[item.bulan - 1]);
+    dataRealisasi.push(item.total_realisasi);
+});
+
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Realisasi',
+            data: dataRealisasi,
+            borderWidth: 2,
+            backgroundColor: '#6777ef',
+            borderColor: '#6777ef',
+            borderWidth: 2.5,
+            pointBackgroundColor: '#ffffff',
+            pointRadius: 4,
+            fill: true
+        }]
+    },
+    options: {
+        legend: {
+            display: false
+        },
+        tooltips: {
+            callbacks: {
+                label: function(tooltipItem) {
+                    var value = tooltipItem.yLabel;
+                    // Format tooltip dengan pemisah ribuan
+                    return 'Rp ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                }
+            }
+        },
+        scales: {
+            yAxes: [{
+                gridLines: {
+                    drawBorder: false,
+                    color: '#f2f2f2',
+                },
+                ticks: {
+                    beginAtZero: true,
+                    callback: function(value) {
+                        // Format Miliar
+                        if (value >= 1000000000) {
+                            return 'Rp ' + (value / 1000000000).toFixed(1) + ' M';
+                        } 
+                        // Format Juta
+                        else if (value >= 1000000) {
+                            return 'Rp ' + (value / 1000000).toFixed(1) + ' Jt';
+                        } 
+                        // Format Ribuan
+                        else if (value >= 1000) {
+                            return 'Rp ' + (value / 1000).toFixed(0) + ' Rb';
+                        }
+                        // Di bawah 1000
+                        return 'Rp ' + value;
+    }
+                    // callback: function(value, index, values) {
+                    //     // Format dalam jutaan (Jt)
+                    //     if (value >= 1000000) {
+                    //         return 'Rp ' + (value / 1000000).toFixed(0) + ' Jt';
+                    //     }
+                    //     // Format dalam ribuan (Rb)
+                    //     else if (value >= 1000) {
+                    //         return 'Rp ' + (value / 1000).toFixed(0) + ' Rb';
+                    //     }
+                    //     return 'Rp ' + value;
+                    // }
+                }
+            }],
+            xAxes: [{
+                ticks: {
+                    display: false
+                },
+                gridLines: {
+                    display: false
+                }
+            }]
+        },
+    }
+});
 </script>
 @endpush
