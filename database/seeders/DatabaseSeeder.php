@@ -25,16 +25,16 @@ class DatabaseSeeder extends Seeder
             PegawaiSeeder::class,
             UserLoginSeeder::class,
             // UserSeeder::class,
-            PendidikanSeeder::class,
-            JabatanFungsionalSeeder::class,
-            JabatanStrukturalSeeder::class,
-            RiwayatKepegawaianSeeder::class,
+            // PendidikanSeeder::class,
+            // JabatanFungsionalSeeder::class,
+            // JabatanStrukturalSeeder::class,
+            // RiwayatKepegawaianSeeder::class,
             UserLoginSeeder::class,
             ProgramSeeder::class,
             KegiatanSeeder::class,
             MasterSubKegiatanSeeder::class,
             RekeningSeeder::class,
-            SshSeeder::class,
+            // SshSeeder::class,
         ]);
     }
 }
