@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('t_transakslonal_realisasi_anggaran', function (Blueprint $table) {
+        Schema::table('t_transaksional_realisasi_anggaran', function (Blueprint $table) {
             $table->decimal('nilai_realisasi', 15, 2)->change();
         });
     }
