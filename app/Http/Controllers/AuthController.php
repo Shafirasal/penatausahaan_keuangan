@@ -130,40 +130,62 @@ class AuthController extends Controller
     }
     
     /**
-     * Menghitung realisasi berdasarkan kode_kegiatan
+     * Menghitung realisasi berdasarkan kode_kegiatan (LOGIKA BARU)
      */
     private function hitungRealisasiByKegiatan($kodeKegiatan)
     {
-        // Ambil total pagu
-        $totalPagu = SshModel::whereHas('sub_kegiatan.kegiatan', function($query) use ($kodeKegiatan) {
-                $query->where('kode_kegiatan', $kodeKegiatan);
-            })
-            ->selectRaw('SUM(COALESCE(NULLIF(pagu2, 0), pagu1, 0)) as total')
-            ->value('total') ?? 0;
+        // Ambil total pagu dengan logika BARU
+        $paguData = DB::table('t_ssh as s')
+            ->join('t_master_sub_kegiatan as sk', 's.id_sub_kegiatan', '=', 'sk.id_sub_kegiatan')
+            ->join('t_master_kegiatan as k', 'sk.id_kegiatan', '=', 'k.id_kegiatan')
+            ->where('k.kode_kegiatan', $kodeKegiatan)
+            ->selectRaw('
+                SUM(s.pagu1) AS total_pagu1,
+                SUM(s.pagu2) AS total_pagu2,
+                CASE
+                    WHEN SUM(s.pagu2) = 0 AND SUM(s.pagu1) > 0 THEN SUM(s.pagu1)
+                    WHEN SUM(s.pagu2) > 0 THEN SUM(s.pagu2)
+                    ELSE 0
+                END AS total_dipakai
+            ')
+            ->first();
+        
+        $totalPagu = $paguData->total_dipakai ?? 0;
         
         // Ambil total realisasi
-        $totalRealisasi = RealisasiModel::whereHas('ssh.sub_kegiatan.kegiatan', function($query) use ($kodeKegiatan) {
-                $query->where('kode_kegiatan', $kodeKegiatan);
-            })
-            ->selectRaw('SUM(COALESCE(nilai_realisasi, 0)) as total')
-            ->value('total') ?? 0;
+        $totalRealisasi = DB::table('t_transaksional_realisasi_anggaran as r')
+            ->join('t_ssh as s', 'r.id_ssh', '=', 's.id_ssh')
+            ->join('t_master_sub_kegiatan as sk', 's.id_sub_kegiatan', '=', 'sk.id_sub_kegiatan')
+            ->join('t_master_kegiatan as k', 'sk.id_kegiatan', '=', 'k.id_kegiatan')
+            ->where('k.kode_kegiatan', $kodeKegiatan)
+            ->sum('r.nilai_realisasi') ?? 0;
         
         return $this->formatHasilRealisasi($totalPagu, $totalRealisasi);
     }
     
     /**
-     * Menghitung realisasi berdasarkan kode_program (semua kegiatan dalam program tersebut)
+     * Menghitung realisasi berdasarkan kode_program
      */
     private function hitungRealisasiByProgram($kodeProgram)
     {
-        // Ambil total pagu dari semua kegiatan dalam program ini
-        $totalPagu = DB::table('t_ssh as s')
+        // Ambil total pagu dengan logika BARU
+        $paguData = DB::table('t_ssh as s')
             ->join('t_master_sub_kegiatan as sk', 's.id_sub_kegiatan', '=', 'sk.id_sub_kegiatan')
             ->join('t_master_kegiatan as k', 'sk.id_kegiatan', '=', 'k.id_kegiatan')
             ->join('t_master_program as p', 'k.id_program', '=', 'p.id_program')
             ->where('p.kode_program', $kodeProgram)
-            ->selectRaw('SUM(COALESCE(NULLIF(s.pagu2, 0), s.pagu1, 0)) as total')
-            ->value('total') ?? 0;
+            ->selectRaw('
+                SUM(s.pagu1) AS total_pagu1,
+                SUM(s.pagu2) AS total_pagu2,
+                CASE
+                    WHEN SUM(s.pagu2) = 0 AND SUM(s.pagu1) > 0 THEN SUM(s.pagu1)
+                    WHEN SUM(s.pagu2) > 0 THEN SUM(s.pagu2)
+                    ELSE 0
+                END AS total_dipakai
+            ')
+            ->first();
+        
+        $totalPagu = $paguData->total_dipakai ?? 0;
         
         // Ambil total realisasi
         $totalRealisasi = DB::table('t_transaksional_realisasi_anggaran as r')
@@ -172,7 +194,7 @@ class AuthController extends Controller
             ->join('t_master_kegiatan as k', 'sk.id_kegiatan', '=', 'k.id_kegiatan')
             ->join('t_master_program as p', 'k.id_program', '=', 'p.id_program')
             ->where('p.kode_program', $kodeProgram)
-            ->selectRaw('SUM(COALESCE(r.nilai_realisasi, 0)) as total')
+            ->selectRaw('SUM(r.nilai_realisasi) as total')
             ->value('total') ?? 0;
         
         return $this->formatHasilRealisasi($totalPagu, $totalRealisasi);

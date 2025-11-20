@@ -418,6 +418,7 @@
       <div class="container d-flex justify-content-between align-items-center">
         <div class="logo">
           <a href="#"><img src="{{ asset('assets/logo-pbj.png') }}" alt="Logo"></a>
+          <a href="https://jti.polinema.ac.id/" target="_blank"><img src="{{ asset('assets/Jti_polinema.png') }}" alt="Logo"></a>
           <a href="#"><img src="{{ asset('assets/logo_monitrack.png') }}" width="80" height="100"alt="Logo"></a>
         </div>
         <nav>
