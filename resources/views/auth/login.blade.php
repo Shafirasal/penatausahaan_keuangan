@@ -423,7 +423,7 @@
         </div>
         <nav>
           <ul class="nav">
-            <li class="nav-item"><a href="#" class="nav-link" data-scroll-to="#pelayanan">Pelayanan</a></li>
+            <li class="nav-item"><a href="#" class="nav-link" data-scroll-to="#pelayanan">Realisasi</a></li>
             <li class="nav-item"><a href="#" class="nav-link" data-scroll-to="#kontak">Kontak</a></li>
             <li class="nav-item"><a href="#" class="nav-link" data-scroll-to="#tentang">Tentang</a></li>
           </ul>
@@ -473,8 +473,8 @@
     {{-- Header Section --}}
     <div class="row text-center mb-5" data-aos="fade-up">
       <div class="col">
-        <h2 style="font-weight: 600; color: #2c3e50;">Pelayanan Kami</h2>
-        <p class="text-muted">Layanan utama yang kami sediakan untuk mendukung proses pengadaan.</p>
+        <h2 style="font-weight: 600; color: #2c3e50;">Data Realisasi Tahun {{$tahun}}</h2>
+        {{-- <p class="text-muted">Data Tahun <small>{{$tahun}}</small></p> --}}
       </div>
     </div>
     

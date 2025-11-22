@@ -23,8 +23,11 @@ class AuthController extends Controller
      */
     public function showLoginForm()
     {
-        // Ambil data realisasi untuk section pelayanan (4 bagian)
-        $dataBagian = $this->getRealisasiByBagian();
+        // Ambil tahun sekarang
+        $tahun = date('Y');
+
+        // Ambil data realisasi untuk section pelayanan (4 bagian) - filtered by tahun
+        $dataBagian = $this->getRealisasiByBagian($tahun);
         
         // Hitung total keseluruhan (hanya 3 bagian: PBJ, LPSE, Pembinaan)
         $totalKeseluruhan = [
@@ -36,8 +39,25 @@ class AuthController extends Controller
             ? round(($totalKeseluruhan['realisasi'] / $totalKeseluruhan['pagu']) * 100, 2) 
             : 0;
         
-        return view('auth.login', compact('dataBagian', 'totalKeseluruhan'));
+        return view('auth.login', compact('dataBagian', 'totalKeseluruhan', 'tahun'));
     }
+    // public function showLoginForm()
+    // {
+        // Ambil data realisasi untuk section pelayanan (4 bagian)
+    //     $dataBagian = $this->getRealisasiByBagian();
+        
+         // Hitung total keseluruhan (hanya 3 bagian: PBJ, LPSE, Pembinaan)
+    //     $totalKeseluruhan = [
+    //         'pagu' => $dataBagian['pbj']['pagu'] + $dataBagian['lpse']['pagu'] + $dataBagian['pembinaan']['pagu'],
+    //         'realisasi' => $dataBagian['pbj']['realisasi'] + $dataBagian['lpse']['realisasi'] + $dataBagian['pembinaan']['realisasi'],
+    //     ];
+    //     $totalKeseluruhan['selisih'] = $totalKeseluruhan['pagu'] - $totalKeseluruhan['realisasi'];
+    //     $totalKeseluruhan['persentase'] = $totalKeseluruhan['pagu'] > 0 
+    //     //    ? round(($totalKeseluruhan['realisasi'] / $totalKeseluruhan['pagu']) * 100, 2) 
+    //         : 0;
+        
+    //     return view('auth.login', compact('dataBagian', 'totalKeseluruhan'));
+    // }
 
     /**
      * Proses login dengan AJAX
@@ -107,8 +127,9 @@ class AuthController extends Controller
 
     /**
      * Mengambil data realisasi untuk 4 bagian (PBJ, LPSE, Pembinaan, Tata Kelola)
+     * Filtered berdasarkan field tahun di t_ssh
      */
-    private function getRealisasiByBagian()
+    private function getRealisasiByBagian($tahun)
     {
         $result = [];
         
@@ -120,25 +141,50 @@ class AuthController extends Controller
         ];
         
         foreach ($kodeKegiatan as $bagian => $kode) {
-            $result[$bagian] = $this->hitungRealisasiByKegiatan($kode);
+            $result[$bagian] = $this->hitungRealisasiByKegiatan($kode, $tahun);
         }
         
         // Tata Kelola berdasarkan kode_program (semua kegiatan dalam program 40101)
-        $result['tatakelola'] = $this->hitungRealisasiByProgram('40101');
+        $result['tatakelola'] = $this->hitungRealisasiByProgram('40101', $tahun);
         
         return $result;
     }
-    
+
     /**
-     * Menghitung realisasi berdasarkan kode_kegiatan (LOGIKA BARU)
+     * Mengambil data realisasi untuk 4 bagian (PBJ, LPSE, Pembinaan, Tata Kelola)
      */
-    private function hitungRealisasiByKegiatan($kodeKegiatan)
+    // private function getRealisasiByBagian()
+    // {
+    //     $result = [];
+        
+    //     // 3 Bagian berdasarkan kode_kegiatan
+    //     $kodeKegiatan = [
+    //         'pbj' => '40107101',
+    //         'lpse' => '40107102',
+    //         'pembinaan' => '40107103'
+    //     ];
+        
+    //     foreach ($kodeKegiatan as $bagian => $kode) {
+    //         $result[$bagian] = $this->hitungRealisasiByKegiatan($kode);
+    //     }
+        
+    //     // Tata Kelola berdasarkan kode_program (semua kegiatan dalam program 40101)
+    //     $result['tatakelola'] = $this->hitungRealisasiByProgram('40101');
+        
+    //     return $result;
+    // }
+
+    /**
+     * Menghitung realisasi berdasarkan kode_kegiatan dengan filter tahun
+     */
+    private function hitungRealisasiByKegiatan($kodeKegiatan, $tahun)
     {
-        // Ambil total pagu dengan logika BARU
+        // Ambil total pagu dengan logika baru - filter berdasarkan field tahun di t_ssh
         $paguData = DB::table('t_ssh as s')
             ->join('t_master_sub_kegiatan as sk', 's.id_sub_kegiatan', '=', 'sk.id_sub_kegiatan')
             ->join('t_master_kegiatan as k', 'sk.id_kegiatan', '=', 'k.id_kegiatan')
             ->where('k.kode_kegiatan', $kodeKegiatan)
+            ->whereYear('s.tahun', $tahun)
             ->selectRaw('
                 SUM(s.pagu1) AS total_pagu1,
                 SUM(s.pagu2) AS total_pagu2,
@@ -152,28 +198,62 @@ class AuthController extends Controller
         
         $totalPagu = $paguData->total_dipakai ?? 0;
         
-        // Ambil total realisasi
+        // Ambil total realisasi - filter berdasarkan field tahun di t_ssh
         $totalRealisasi = DB::table('t_transaksional_realisasi_anggaran as r')
             ->join('t_ssh as s', 'r.id_ssh', '=', 's.id_ssh')
             ->join('t_master_sub_kegiatan as sk', 's.id_sub_kegiatan', '=', 'sk.id_sub_kegiatan')
             ->join('t_master_kegiatan as k', 'sk.id_kegiatan', '=', 'k.id_kegiatan')
             ->where('k.kode_kegiatan', $kodeKegiatan)
+            ->whereYear('s.tahun', $tahun)
             ->sum('r.nilai_realisasi') ?? 0;
         
         return $this->formatHasilRealisasi($totalPagu, $totalRealisasi);
     }
     
+    
     /**
-     * Menghitung realisasi berdasarkan kode_program
+     * Menghitung realisasi berdasarkan kode_kegiatan (LOGIKA BARU)
      */
-    private function hitungRealisasiByProgram($kodeProgram)
+    // private function hitungRealisasiByKegiatan($kodeKegiatan)
+    // {
+    //     // Ambil total pagu dengan logika BARU
+    //     $paguData = DB::table('t_ssh as s')
+    //         ->join('t_master_sub_kegiatan as sk', 's.id_sub_kegiatan', '=', 'sk.id_sub_kegiatan')
+    //         ->join('t_master_kegiatan as k', 'sk.id_kegiatan', '=', 'k.id_kegiatan')
+    //         ->where('k.kode_kegiatan', $kodeKegiatan)
+    //         ->selectRaw('
+    //             SUM(s.pagu1) AS total_pagu1,
+    //             SUM(s.pagu2) AS total_pagu2,
+    //             CASE
+    //                 WHEN SUM(s.pagu2) = 0 AND SUM(s.pagu1) > 0 THEN SUM(s.pagu1)
+    //                 WHEN SUM(s.pagu2) > 0 THEN SUM(s.pagu2)
+    //                 ELSE 0
+    //             END AS total_dipakai
+    //         ')
+    //         ->first();
+        
+    //     $totalPagu = $paguData->total_dipakai ?? 0;
+        
+    //     // Ambil total realisasi
+    //     $totalRealisasi = DB::table('t_transaksional_realisasi_anggaran as r')
+    //         ->join('t_ssh as s', 'r.id_ssh', '=', 's.id_ssh')
+    //         ->join('t_master_sub_kegiatan as sk', 's.id_sub_kegiatan', '=', 'sk.id_sub_kegiatan')
+    //         ->join('t_master_kegiatan as k', 'sk.id_kegiatan', '=', 'k.id_kegiatan')
+    //         ->where('k.kode_kegiatan', $kodeKegiatan)
+    //         ->sum('r.nilai_realisasi') ?? 0;
+        
+    //     return $this->formatHasilRealisasi($totalPagu, $totalRealisasi);
+    // }
+    
+    private function hitungRealisasiByProgram($kodeProgram, $tahun)
     {
-        // Ambil total pagu dengan logika BARU
+        // Ambil total pagu dengan logika baru - filter berdasarkan field tahun di t_ssh
         $paguData = DB::table('t_ssh as s')
             ->join('t_master_sub_kegiatan as sk', 's.id_sub_kegiatan', '=', 'sk.id_sub_kegiatan')
             ->join('t_master_kegiatan as k', 'sk.id_kegiatan', '=', 'k.id_kegiatan')
             ->join('t_master_program as p', 'k.id_program', '=', 'p.id_program')
             ->where('p.kode_program', $kodeProgram)
+            ->whereYear('s.tahun', $tahun)
             ->selectRaw('
                 SUM(s.pagu1) AS total_pagu1,
                 SUM(s.pagu2) AS total_pagu2,
@@ -187,18 +267,55 @@ class AuthController extends Controller
         
         $totalPagu = $paguData->total_dipakai ?? 0;
         
-        // Ambil total realisasi
+        // Ambil total realisasi - filter berdasarkan field tahun di t_ssh
         $totalRealisasi = DB::table('t_transaksional_realisasi_anggaran as r')
             ->join('t_ssh as s', 'r.id_ssh', '=', 's.id_ssh')
             ->join('t_master_sub_kegiatan as sk', 's.id_sub_kegiatan', '=', 'sk.id_sub_kegiatan')
             ->join('t_master_kegiatan as k', 'sk.id_kegiatan', '=', 'k.id_kegiatan')
             ->join('t_master_program as p', 'k.id_program', '=', 'p.id_program')
             ->where('p.kode_program', $kodeProgram)
+            ->whereYear('s.tahun', $tahun)
             ->selectRaw('SUM(r.nilai_realisasi) as total')
             ->value('total') ?? 0;
         
         return $this->formatHasilRealisasi($totalPagu, $totalRealisasi);
     }
+    /**
+     * Menghitung realisasi berdasarkan kode_program
+     */
+    // private function hitungRealisasiByProgram($kodeProgram)
+    // {
+    //     // Ambil total pagu dengan logika BARU
+    //     $paguData = DB::table('t_ssh as s')
+    //         ->join('t_master_sub_kegiatan as sk', 's.id_sub_kegiatan', '=', 'sk.id_sub_kegiatan')
+    //         ->join('t_master_kegiatan as k', 'sk.id_kegiatan', '=', 'k.id_kegiatan')
+    //         ->join('t_master_program as p', 'k.id_program', '=', 'p.id_program')
+    //         ->where('p.kode_program', $kodeProgram)
+    //         ->selectRaw('
+    //             SUM(s.pagu1) AS total_pagu1,
+    //             SUM(s.pagu2) AS total_pagu2,
+    //             CASE
+    //                 WHEN SUM(s.pagu2) = 0 AND SUM(s.pagu1) > 0 THEN SUM(s.pagu1)
+    //                 WHEN SUM(s.pagu2) > 0 THEN SUM(s.pagu2)
+    //                 ELSE 0
+    //             END AS total_dipakai
+    //         ')
+    //         ->first();
+        
+    //     $totalPagu = $paguData->total_dipakai ?? 0;
+        
+    //     // Ambil total realisasi
+    //     $totalRealisasi = DB::table('t_transaksional_realisasi_anggaran as r')
+    //         ->join('t_ssh as s', 'r.id_ssh', '=', 's.id_ssh')
+    //         ->join('t_master_sub_kegiatan as sk', 's.id_sub_kegiatan', '=', 'sk.id_sub_kegiatan')
+    //         ->join('t_master_kegiatan as k', 'sk.id_kegiatan', '=', 'k.id_kegiatan')
+    //         ->join('t_master_program as p', 'k.id_program', '=', 'p.id_program')
+    //         ->where('p.kode_program', $kodeProgram)
+    //         ->selectRaw('SUM(r.nilai_realisasi) as total')
+    //         ->value('total') ?? 0;
+        
+    //     return $this->formatHasilRealisasi($totalPagu, $totalRealisasi);
+    // }
     
     /**
      * Format hasil perhitungan realisasi
