@@ -42,6 +42,10 @@ class GeneralDashboardController extends Controller
         $totalPBJ = $this->getTotalAnggaranPBJ($tahunDipilih);
         $totalLPSE = $this->getTotalAnggaranLPSE($tahunDipilih);
         $totalPembinaan = $this->getTotalAnggaranPembinaan($tahunDipilih);
+
+        $totalAnggaranProgram1 = $this->getTotalAnggaranProgram1($tahunDipilih);
+        $totalRealisasiProgram1 = $this->getTotalRealisasiProgram1($tahunDipilih);
+        $totalSisaProgram1 = $totalAnggaranProgram1 - $totalRealisasiProgram1;
         $trenRealisasiPerBulan = $this->getTrenRealisasiPerBulan($tahunDipilih);
 
         return view('dashboard.index', compact(
@@ -59,7 +63,10 @@ class GeneralDashboardController extends Controller
             'tahunRange',
             'tahunSekarang',
             'tahunDipilih',
-            'trenRealisasiPerBulan'
+            'trenRealisasiPerBulan',
+            'totalAnggaranProgram1',     
+            'totalRealisasiProgram1',   
+            'totalSisaProgram1', 
 
         ));
     }
@@ -128,54 +135,140 @@ class GeneralDashboardController extends Controller
     }
 
     /**
-     * 🔸 Total anggaran, realisasi, dan sisa per kegiatan (Program ID = 2, filter tahun)
+     * 🔸 Total anggaran, realisasi, dan sisa per kegiatan (Program ID = 2, filter tahun) barchart
      */
-    public function totalAnggaranRealisasiSisaPerkegiatan($tahun)
-    {
-        $data = DB::table('t_master_kegiatan as k')
-            ->leftJoin('t_ssh as s', 's.id_kegiatan', '=', 'k.id_kegiatan')
-            ->leftJoinSub(
-                DB::table('t_transaksional_realisasi_anggaran')
-                    ->select('id_kegiatan', DB::raw('SUM(nilai_realisasi) as total_realisasi'))
-                    ->where('id_program', 2)
-                    ->whereYear('tanggal_realisasi', $tahun)
-                    ->groupBy('id_kegiatan'),
-                'tr',
-                function ($join) {
-                    $join->on('tr.id_kegiatan', '=', 'k.id_kegiatan');
-                }
-            )
-            ->select(
-                'k.id_kegiatan',
-                'k.nama_kegiatan',
-                DB::raw("
-                    SUM(
-                        CASE
-                            WHEN s.pagu2 IS NOT NULL AND s.pagu2 > 0 THEN s.pagu2
-                            ELSE s.pagu1
-                        END
-                    ) AS total_anggaran
-                "),
-                DB::raw("COALESCE(SUM(DISTINCT tr.total_realisasi), 0) AS total_realisasi"),
-                DB::raw("
-                    (
-                        SUM(
-                            CASE
-                                WHEN s.pagu2 IS NOT NULL AND s.pagu2 > 0 THEN s.pagu2
-                                ELSE s.pagu1
-                            END
-                        ) - COALESCE(SUM(DISTINCT tr.total_realisasi), 0)
-                    ) AS sisa_anggaran
-                ")
-            )
-            ->where('k.id_program', 2)
-            ->whereYear('s.created_at', $tahun)
-            ->groupBy('k.id_kegiatan', 'k.nama_kegiatan')
-            ->orderBy('k.id_kegiatan')
-            ->get();
 
-        return $data;
-    }
+    public function totalAnggaranRealisasiSisaPerkegiatan($tahun) 
+{
+    $data = DB::table('t_master_kegiatan as k')
+        ->leftJoin('t_ssh as s', 's.id_kegiatan', '=', 'k.id_kegiatan')
+        ->leftJoinSub(
+            DB::table('t_transaksional_realisasi_anggaran')
+                ->select('id_kegiatan', DB::raw('SUM(nilai_realisasi) as total_realisasi'))
+                ->where('id_program', 2)
+                ->whereYear('tanggal_realisasi', $tahun)
+                ->groupBy('id_kegiatan'),
+            'tr',
+            function ($join) {
+                $join->on('tr.id_kegiatan', '=', 'k.id_kegiatan');
+            }
+        )
+        ->select(
+            'k.id_kegiatan',
+            'k.nama_kegiatan',
+
+            // === LOGIKA TOTAL_ANGGARAN BARU ===
+            DB::raw("
+                CASE
+                    WHEN SUM(s.pagu2) = 0 AND SUM(s.pagu1) > 0 THEN SUM(s.pagu1)
+                    WHEN SUM(s.pagu2) > 0 THEN SUM(s.pagu2)
+                    ELSE 0
+                END AS total_anggaran
+            "),
+
+            DB::raw("COALESCE(tr.total_realisasi, 0) AS total_realisasi"),
+
+            // === SISA ANGGARAN MENGGUNAKAN LOGIKA TOTAL_ANGGARAN BARU ===
+            DB::raw("
+                (
+                    CASE
+                        WHEN SUM(s.pagu2) = 0 AND SUM(s.pagu1) > 0 THEN SUM(s.pagu1)
+                        WHEN SUM(s.pagu2) > 0 THEN SUM(s.pagu2)
+                        ELSE 0
+                    END
+                    - COALESCE(tr.total_realisasi, 0)
+                ) AS sisa_anggaran
+            ")
+        )
+        ->where('k.id_program', 2)
+        ->whereYear('s.created_at', $tahun)
+        ->groupBy('k.id_kegiatan', 'k.nama_kegiatan', 'tr.total_realisasi')
+        ->orderBy('k.id_kegiatan')
+        ->get();
+
+    return $data;
+}
+
+/**
+ * 🔸 Total anggaran untuk Program 1 (kode_program = '40101')
+ */
+public function getTotalAnggaranProgram1($tahun)
+{
+    $total = DB::table('t_ssh as s')
+        ->join('t_master_program as p', 'p.id_program', '=', 's.id_program')
+        ->where('p.kode_program', '40101')
+        ->whereYear('s.created_at', $tahun)
+        ->selectRaw("
+            CASE
+                WHEN SUM(s.pagu2) = 0 AND SUM(s.pagu1) > 0 THEN SUM(s.pagu1)
+                WHEN SUM(s.pagu2) > 0 THEN SUM(s.pagu2)
+                ELSE 0
+            END AS total_anggaran
+        ")
+        ->value('total_anggaran');
+
+    return $total ?? 0;
+}
+
+/**
+ * 🔸 Total realisasi untuk Program 1 (kode_program = '40101')
+ */
+public function getTotalRealisasiProgram1($tahun)
+{
+    return DB::table('t_transaksional_realisasi_anggaran as tr')
+        ->join('t_master_program as p', 'p.id_program', '=', 'tr.id_program')
+        ->where('p.kode_program', '40101')
+        ->whereYear('tr.tanggal_realisasi', $tahun)
+        ->selectRaw('SUM(tr.nilai_realisasi) as total')
+        ->value('total') ?? 0;
+}
+
+    // public function totalAnggaranRealisasiSisaPerkegiatan($tahun)
+    // {
+    //     $data = DB::table('t_master_kegiatan as k')
+    //         ->leftJoin('t_ssh as s', 's.id_kegiatan', '=', 'k.id_kegiatan')
+    //         ->leftJoinSub(
+    //             DB::table('t_transaksional_realisasi_anggaran')
+    //                 ->select('id_kegiatan', DB::raw('SUM(nilai_realisasi) as total_realisasi'))
+    //                 ->where('id_program', 2)
+    //                 ->whereYear('tanggal_realisasi', $tahun)
+    //                 ->groupBy('id_kegiatan'),
+    //             'tr',
+    //             function ($join) {
+    //                 $join->on('tr.id_kegiatan', '=', 'k.id_kegiatan');
+    //             }
+    //         )
+    //         ->select(
+    //             'k.id_kegiatan',
+    //             'k.nama_kegiatan',
+    //             DB::raw("
+    //                 SUM(
+    //                     CASE
+    //                         WHEN s.pagu2 IS NOT NULL AND s.pagu2 > 0 THEN s.pagu2
+    //                         ELSE s.pagu1
+    //                     END
+    //                 ) AS total_anggaran
+    //             "),
+    //             DB::raw("COALESCE(SUM(DISTINCT tr.total_realisasi), 0) AS total_realisasi"),
+    //             DB::raw("
+    //                 (
+    //                     SUM(
+    //                         CASE
+    //                             WHEN s.pagu2 IS NOT NULL AND s.pagu2 > 0 THEN s.pagu2
+    //                             ELSE s.pagu1
+    //                         END
+    //                     ) - COALESCE(SUM(DISTINCT tr.total_realisasi), 0)
+    //                 ) AS sisa_anggaran
+    //             ")
+    //         )
+    //         ->where('k.id_program', 2)
+    //         ->whereYear('s.created_at', $tahun)
+    //         ->groupBy('k.id_kegiatan', 'k.nama_kegiatan')
+    //         ->orderBy('k.id_kegiatan')
+    //         ->get();
+
+    //     return $data;
+    // }
 
     /**
      * 🔸 Total anggaran untuk kegiatan PBJ
@@ -259,3 +352,16 @@ public function getTrenRealisasiPerBulan($tahun)
         ->get();
 }
 }
+
+
+
+           // ->selectRaw("
+            //     SUM(
+            //         CASE
+            //             WHEN s.pagu2 > 0 THEN s.pagu2
+            //             ELSE s.pagu1
+            //         END
+            //     ) AS total_anggaran
+            // ")
+            // ->value('total_anggaran');
+             // return $total ?? 0;
