@@ -52,7 +52,7 @@
                                 title: 'Berhasil',
                                 text: response.message
                             });
-                            tableRekening.ajax.reload(); // reload datatable jenis sertifikasi
+                            dataMasterRekening.ajax.reload(); // reload datatable jenis sertifikasi
                         } else { // jika error
                             $('.error-text').text('');
                             $.each(response.msgField, function(prefix, val) {
