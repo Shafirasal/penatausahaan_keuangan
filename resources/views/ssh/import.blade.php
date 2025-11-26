@@ -52,7 +52,7 @@
                                 title: 'Berhasil',
                                 text: response.message
                             });
-                            tableSSH.ajax.reload(); // reload datatable jenis sertifikasi
+                            dataSSH.ajax.reload(); // reload datatable jenis sertifikasi
                         } else { // jika error
                             $('.error-text').text('');
                             $.each(response.msgField, function(prefix, val) {
