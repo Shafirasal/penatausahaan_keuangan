@@ -837,7 +837,7 @@
     <footer>
       <div class="container d-flex justify-content-between">
         <span>© 2025 Biro PBJ</span>
-        <span>Developed by Tim IT</span>
+        <span>Developed by shafira wisam athiyan</span>
       </div>
     </footer>
   </div>
