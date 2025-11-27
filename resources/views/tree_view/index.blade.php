@@ -7,7 +7,7 @@
 @section('content')
     <section class="section">
         <div class="section-header">
-            <h1>{{ $breadcrumb->title ?? 'Tree View SSH' }}</h1>
+            <h1>{{ $breadcrumb->title ?? 'List DPA' }}</h1>
             @include('layouts.breadcrumb', ['list' => $breadcrumb->list ?? []])
         </div>
 
