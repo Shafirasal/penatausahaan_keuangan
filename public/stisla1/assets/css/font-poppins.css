@@ -1,0 +1,32 @@
+@font-face {
+  font-family: "Poppins";
+  src: url("/stisla1/assets/fonts/poppins/Poppins-Regular.ttf")
+    format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/stisla1/assets/fonts/poppins/Poppins-Medium.ttf")
+    format("truetype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/stisla1/assets/fonts/poppins/Poppins-SemiBold.ttf")
+    format("truetype");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/stisla1/assets/fonts/poppins/Poppins-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+
+/* Default global */
+body,
+html {
+  font-family: "Poppins", sans-serif;
+}

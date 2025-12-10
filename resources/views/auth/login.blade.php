@@ -7,22 +7,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ asset('stisla1/node_modules/bootstrap/dist/css/bootstrap.min.css') }}">
 
-  <!-- FontAwesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ asset('stisla1/assets/css/font-poppins.css') }}">
+
 
   <!-- AOS (Animate On Scroll) -->
-  <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ asset('stisla1\assets\aos\dist\aos.css') }}">
 
   <!-- Gilroy font -->
   <style>
-    @font-face {
-      font-family: 'Gilroy';
-      src: url('{{ asset('fonts/Gilroy-Regular.woff2') }}') format('woff2');
-      font-weight: normal;
-      font-style: normal;
-    }
+
+  body, html {
+    font-family: 'Poppins', sans-serif;
+  }
 
     html {
       scroll-behavior: smooth;
@@ -30,7 +28,7 @@
 
     body {
       background: #f5f6f8;
-      font-family: 'Gilroy', sans-serif;
+      font-family: 'Poppins', sans-serif;
     }
 
     .main-container {
@@ -773,7 +771,7 @@
           </div>
           <div class="col-md-6" data-aos="fade-left">
             <div class="tentang-image-wrapper">
-              <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2832&auto=format&fit=crop" alt="Tentang Biro PBJ" class="img-fluid">
+              <img src="{{asset('assets\poto_pbj.png')}}" alt="Tentang Biro PBJ" class="img-fluid">
             </div>
           </div>
         </div>
@@ -806,14 +804,14 @@
           <div class="col-lg-3 col-md-6">
             <h5>Alamat Kantor</h5>
             <div class="d-flex">
-              <div class="map-wrapper me-3">
+              {{-- <div class="map-wrapper me-3">
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3957.955805132482!2d112.73773547460928!3d-7.245870092760547!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7f93e2c857c81%3A0xa60e788025c37814!2sBiro%20Pengadaan%20Barang%2FJasa%20Provinsi%20Jawa%20Timur!5e0!3m2!1sen!2sid!4v1752639383735!5m2!1sen!2sid"
                   allowfullscreen=""
                   loading="lazy"
                   referrerpolicy="no-referrer-when-downgrade">
                 </iframe>
-              </div>
+              </div> --}}
               <p>
                 Jl. Pahlawan No.110 Lt. 3 dan Lt. 6, Krembangan Sel., Kec. Krembangan, Surabaya, Jawa Timur 60175
               </p>
@@ -843,10 +841,11 @@
   </div>
 
   <!-- LIBS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  {{-- <script src="{{ asset('stisla1/assets/jquery/jquery-3.7.0.min.js') }}"></script> --}}
+  <script src="{{ asset('stisla1\assets\lottie-web\build\player\lottie.min.js') }}"></script>
+  {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> --}}
+  <script src="{{ asset('stisla1/assets/jquery/dist/jquery.min.js') }}"></script>
+  <script src="{{ asset('stisla1/assets/aos/dist/aos.js') }}"></script>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {

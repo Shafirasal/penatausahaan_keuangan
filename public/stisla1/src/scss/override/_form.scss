@@ -68,7 +68,7 @@ select.form-control:not([size]):not([multiple]) {
     font-weight: 600;
     color: color(fontdark);
     font-size: 12px;
-    letter-spacing: .5px;
+    letter-spacing: 0.5px;
   }
   &.floating-addon {
     position: relative;
@@ -89,7 +89,8 @@ select.form-control:not([size]):not([multiple]) {
         right: 0;
       }
     }
-    .input-group-prepend .input-group-text, .input-group-append .input-group-text {
+    .input-group-prepend .input-group-text,
+    .input-group-append .input-group-text {
       border-color: transparent;
       background-color: transparent;
       font-size: 20px;
@@ -114,8 +115,8 @@ select.form-control:not([size]):not([multiple]) {
   line-height: 22px;
 }
 
-.custom-radio .custom-control-input:checked~.custom-control-label::before,
-.custom-control-input:checked~.custom-control-label::before {
+.custom-radio .custom-control-input:checked ~ .custom-control-label::before,
+.custom-control-input:checked ~ .custom-control-label::before {
   background-color: color(primary) !important;
 }
 
@@ -129,7 +130,8 @@ select.form-control:not([size]):not([multiple]) {
     line-height: 2.2;
     border-color: transparent;
   }
-  &:focus, &:active {
+  &:focus,
+  &:active {
     box-shadow: none;
     outline: none;
   }
@@ -199,8 +201,8 @@ select.form-control:not([size]):not([multiple]) {
 }
 
 .selectgroup-button-icon {
-  padding-left: .5rem;
-  padding-right: .5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
   i {
     font-size: 14px;
   }
@@ -221,7 +223,7 @@ select.form-control:not([size]):not([multiple]) {
   -ms-flex-align: start;
   align-items: flex-start;
   .selectgroup-item {
-    margin-right: .5rem;
+    margin-right: 0.5rem;
     -ms-flex-positive: 0;
     flex-grow: 0;
   }
@@ -255,7 +257,7 @@ select.form-control:not([size]):not([multiple]) {
   -ms-flex-direction: column;
   flex-direction: column;
   .custom-switch {
-    margin-bottom: .5rem;
+    margin-bottom: 0.5rem;
   }
 }
 
@@ -268,9 +270,9 @@ select.form-control:not([size]):not([multiple]) {
   position: relative;
   vertical-align: bottom;
   border: 1px solid rgba(0, 40, 100, 0.12);
-  transition: .3s border-color, .3s background-color;
+  transition: 0.3s border-color, 0.3s background-color;
   &:before {
-    content: '';
+    content: "";
     position: absolute;
     height: calc(1.25rem - 4px);
     width: calc(1.25rem - 4px);
@@ -278,7 +280,7 @@ select.form-control:not([size]):not([multiple]) {
     left: 1px;
     background: #fff;
     border-radius: 50%;
-    transition: .3s left;
+    transition: 0.3s left;
   }
 }
 
@@ -295,9 +297,9 @@ select.form-control:not([size]):not([multiple]) {
 }
 
 .custom-switch-description {
-  margin-left: .5rem;
+  margin-left: 0.5rem;
   color: #6e7687;
-  transition: .3s color;
+  transition: 0.3s color;
 }
 
 .custom-switch-input:checked ~ .custom-switch-description {
@@ -335,10 +337,10 @@ select.form-control:not([size]):not([multiple]) {
 }
 
 .imagecheck-figure:before {
-  content: '';
+  content: "";
   position: absolute;
-  top: .25rem;
-  left: .25rem;
+  top: 0.25rem;
+  left: 0.25rem;
   display: block;
   width: 1rem;
   height: 1rem;
@@ -347,12 +349,14 @@ select.form-control:not([size]):not([multiple]) {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  background: color(primary) url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E") no-repeat center (center / 50%) 50%;
+  background: color(primary)
+    url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E")
+    no-repeat center (center / 50%) 50%;
   color: #fff;
   z-index: 1;
   border-radius: 3px;
   opacity: 0;
-  transition: .3s opacity;
+  transition: 0.3s opacity;
 }
 
 .imagecheck-input:checked ~ .imagecheck-figure:before {
@@ -361,8 +365,8 @@ select.form-control:not([size]):not([multiple]) {
 
 .imagecheck-image {
   max-width: 100%;
-  opacity: .64;
-  transition: .3s opacity;
+  opacity: 0.64;
+  transition: 0.3s opacity;
   &:first-child {
     border-top-left-radius: 2px;
     border-top-right-radius: 2px;
@@ -378,17 +382,18 @@ select.form-control:not([size]):not([multiple]) {
 }
 
 .imagecheck-input {
-  &:focus ~ .imagecheck-figure .imagecheck-image, &:checked ~ .imagecheck-figure .imagecheck-image {
+  &:focus ~ .imagecheck-figure .imagecheck-image,
+  &:checked ~ .imagecheck-figure .imagecheck-image {
     opacity: 1;
   }
 }
 
 .imagecheck-caption {
   text-align: center;
-  padding: .25rem .25rem;
+  padding: 0.25rem 0.25rem;
   color: #9aa0ac;
   font-size: 0.875rem;
-  transition: .3s color;
+  transition: 0.3s color;
 }
 
 .imagecheck:hover .imagecheck-caption {
@@ -396,7 +401,8 @@ select.form-control:not([size]):not([multiple]) {
 }
 
 .imagecheck-input {
-  &:focus ~ .imagecheck-figure .imagecheck-caption, &:checked ~ .imagecheck-figure .imagecheck-caption {
+  &:focus ~ .imagecheck-figure .imagecheck-caption,
+  &:checked ~ .imagecheck-figure .imagecheck-caption {
     color: #495057;
   }
 }
@@ -424,15 +430,16 @@ select.form-control:not([size]):not([multiple]) {
   color: #fff;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   &:before {
-    content: '';
+    content: "";
     opacity: 0;
     position: absolute;
-    top: .25rem;
-    left: .25rem;
+    top: 0.25rem;
+    left: 0.25rem;
     height: 1.25rem;
     width: 1.25rem;
-    transition: .3s opacity;
-    background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E") no-repeat center (center / 50%) 50%;
+    transition: 0.3s opacity;
+    background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E")
+      no-repeat center (center / 50%) 50%;
   }
 }
 
